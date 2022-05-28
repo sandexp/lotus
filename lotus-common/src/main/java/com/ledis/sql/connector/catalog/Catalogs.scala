@@ -22,12 +22,12 @@ import java.util
 import java.util.NoSuchElementException
 import java.util.regex.Pattern
 
-import org.apache.spark.SparkException
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.util.CaseInsensitiveStringMap
-import org.apache.spark.util.Utils
+import com.ledis.SparkException
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.util.CaseInsensitiveStringMap
+import com.ledis.util.Utils
 
-private[sql] object Catalogs {
+object Catalogs {
   /**
    * Load and configure a catalog by name.
    * <p>
@@ -38,7 +38,7 @@ private[sql] object Catalogs {
    * @param conf a SQLConf
    * @return an initialized CatalogPlugin
    * @throws CatalogNotFoundException if the plugin class cannot be found
-   * @throws org.apache.spark.SparkException           if the plugin class cannot be instantiated
+   * @throws com.ledis.SparkException           if the plugin class cannot be instantiated
    */
   @throws[CatalogNotFoundException]
   @throws[SparkException]

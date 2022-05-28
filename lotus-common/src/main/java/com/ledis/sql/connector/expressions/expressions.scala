@@ -17,9 +17,9 @@
 
 package com.ledis.sql.connector.expressions
 
-import org.apache.spark.sql.catalyst
-import org.apache.spark.sql.catalyst.parser.CatalystSqlParser
-import org.apache.spark.sql.types.{DataType, IntegerType, StringType}
+import com.ledis.sql.catalyst
+import com.ledis.sql.catalyst.parser.CatalystSqlParser
+import com.ledis.sql.types.{DataType, IntegerType, StringType}
 
 /**
  * Helper methods for working with the logical expressions API.
@@ -250,7 +250,7 @@ private[sql] final case class LiteralValue[T](value: T, dataType: DataType) exte
 }
 
 private[sql] final case class FieldReference(parts: Seq[String]) extends NamedReference {
-  import org.apache.spark.sql.connector.catalog.CatalogV2Implicits.MultipartIdentifierHelper
+  import com.ledis.sql.connector.catalog.CatalogV2Implicits.MultipartIdentifierHelper
   override def fieldNames: Array[String] = parts.toArray
   override def describe: String = parts.quoted
   override def toString: String = describe

@@ -17,14 +17,14 @@
 
 package com.ledis.sql.catalyst.rules
 
-import org.apache.spark.internal.Logging
-import org.apache.spark.sql.catalyst.QueryPlanningTracker
-import org.apache.spark.sql.catalyst.errors.TreeNodeException
-import org.apache.spark.sql.catalyst.trees.TreeNode
-import org.apache.spark.sql.catalyst.util.DateTimeConstants.NANOS_PER_SECOND
-import org.apache.spark.sql.catalyst.util.sideBySide
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.util.Utils
+import com.ledis.internal.Logging
+import com.ledis.sql.catalyst.QueryPlanningTracker
+import com.ledis.sql.catalyst.errors.TreeNodeException
+import com.ledis.sql.catalyst.trees.TreeNode
+import com.ledis.sql.catalyst.util.DateTimeConstants.NANOS_PER_SECOND
+import com.ledis.sql.catalyst.util.sideBySide
+import com.ledis.sql.internal.SQLConf
+import com.ledis.util.Utils
 
 object RuleExecutor {
   protected val queryExecutionMeter = QueryExecutionMetering()

@@ -19,18 +19,15 @@ package com.ledis.sql.catalyst.analysis
 
 import scala.util.control.NonFatal
 
-import org.apache.spark.internal.Logging
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.planning.ExtractEquiJoinKeys
-import org.apache.spark.sql.catalyst.plans.logical.{EventTimeWatermark, LogicalPlan}
-import org.apache.spark.sql.catalyst.plans.logical.EventTimeWatermark._
-import org.apache.spark.sql.catalyst.util.DateTimeConstants.MICROS_PER_DAY
-import org.apache.spark.sql.types._
-import org.apache.spark.unsafe.types.CalendarInterval
+import com.ledis.internal.Logging
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.planning.ExtractEquiJoinKeys
+import com.ledis.sql.catalyst.plans.logical.{EventTimeWatermark, LogicalPlan}
+import com.ledis.sql.catalyst.plans.logical.EventTimeWatermark._
+import com.ledis.sql.catalyst.util.DateTimeConstants.MICROS_PER_DAY
+import com.ledis.sql.types._
+import com.ledis.unsafe.types.CalendarInterval
 
-/**
- * Helper object for stream joins. See [[StreamingSymmetricHashJoinExec]] in SQL for more details.
- */
 object StreamingJoinHelper extends PredicateHelper with Logging {
 
   /**

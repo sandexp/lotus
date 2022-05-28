@@ -17,15 +17,15 @@
 
 package com.ledis.sql.connector.catalog
 
-import org.apache.spark.internal.Logging
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.{FunctionIdentifier, TableIdentifier}
-import org.apache.spark.sql.internal.{SQLConf, StaticSQLConf}
+import com.ledis.exception.AnalysisException
+import com.ledis.internal.Logging
+import com.ledis.sql.catalyst.{FunctionIdentifier, TableIdentifier}
+import com.ledis.sql.internal.{SQLConf, StaticSQLConf}
 
 /**
  * A trait to encapsulate catalog lookup function and helpful extractors.
  */
-private[sql] trait LookupCatalog extends Logging {
+trait LookupCatalog extends Logging {
 
   protected val catalogManager: CatalogManager
 
@@ -57,7 +57,7 @@ private[sql] trait LookupCatalog extends Logging {
    * Extract session catalog and identifier from a multi-part identifier.
    */
   object SessionCatalogAndIdentifier {
-    import org.apache.spark.sql.connector.catalog.CatalogV2Implicits.MultipartIdentifierHelper
+    import com.ledis.sql.connector.catalog.CatalogV2Implicits.MultipartIdentifierHelper
 
     def unapply(parts: Seq[String]): Option[(CatalogPlugin, Identifier)] = parts match {
       case CatalogAndIdentifier(catalog, ident) if CatalogV2Util.isSessionCatalog(catalog) =>
@@ -107,7 +107,7 @@ private[sql] trait LookupCatalog extends Logging {
    * before calling this pattern, as temp objects don't belong to any catalog.
    */
   object CatalogAndIdentifier {
-    import org.apache.spark.sql.connector.catalog.CatalogV2Implicits.MultipartIdentifierHelper
+    import com.ledis.sql.connector.catalog.CatalogV2Implicits.MultipartIdentifierHelper
 
     private val globalTempDB = SQLConf.get.getConf(StaticSQLConf.GLOBAL_TEMP_DATABASE)
 

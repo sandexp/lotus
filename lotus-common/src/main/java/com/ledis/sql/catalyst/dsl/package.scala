@@ -22,41 +22,41 @@ import java.time.{Instant, LocalDate}
 
 import scala.language.implicitConversions
 
-import org.apache.spark.api.java.function.FilterFunction
-import org.apache.spark.sql.Encoder
-import org.apache.spark.sql.catalyst.analysis._
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.aggregate._
-import org.apache.spark.sql.catalyst.expressions.objects.Invoke
-import org.apache.spark.sql.catalyst.plans.{Inner, JoinType}
-import org.apache.spark.sql.catalyst.plans.logical._
-import org.apache.spark.sql.types._
-import org.apache.spark.unsafe.types.UTF8String
+import com.ledis.api.java.function.FilterFunction
+import com.ledis.sql.Encoder
+import com.ledis.sql.catalyst.analysis._
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.expressions.aggregate._
+import com.ledis.sql.catalyst.expressions.objects.Invoke
+import com.ledis.sql.catalyst.plans.{Inner, JoinType}
+import com.ledis.sql.catalyst.plans.logical._
+import com.ledis.sql.types._
+import com.ledis.unsafe.types.UTF8String
 
 /**
  * A collection of implicit conversions that create a DSL for constructing catalyst data structures.
  *
  * {{{
- *  scala> import org.apache.spark.sql.catalyst.dsl.expressions._
+ *  scala> import com.ledis.sql.catalyst.dsl.expressions._
  *
  *  // Standard operators are added to expressions.
- *  scala> import org.apache.spark.sql.catalyst.expressions.Literal
+ *  scala> import com.ledis.sql.catalyst.expressions.Literal
  *  scala> Literal(1) + Literal(1)
- *  res0: org.apache.spark.sql.catalyst.expressions.Add = (1 + 1)
+ *  res0: com.ledis.sql.catalyst.expressions.Add = (1 + 1)
  *
  *  // There is a conversion from 'symbols to unresolved attributes.
  *  scala> 'a.attr
- *  res1: org.apache.spark.sql.catalyst.analysis.UnresolvedAttribute = 'a
+ *  res1: com.ledis.sql.catalyst.analysis.UnresolvedAttribute = 'a
  *
  *  // These unresolved attributes can be used to create more complicated expressions.
  *  scala> 'a === 'b
- *  res2: org.apache.spark.sql.catalyst.expressions.EqualTo = ('a = 'b)
+ *  res2: com.ledis.sql.catalyst.expressions.EqualTo = ('a = 'b)
  *
  *  // SQL verbs can be used to construct logical query plans.
- *  scala> import org.apache.spark.sql.catalyst.plans.logical._
- *  scala> import org.apache.spark.sql.catalyst.dsl.plans._
+ *  scala> import com.ledis.sql.catalyst.plans.logical._
+ *  scala> import com.ledis.sql.catalyst.dsl.plans._
  *  scala> LocalRelation('key.int, 'value.string).where('key === 1).select('value).analyze
- *  res3: org.apache.spark.sql.catalyst.plans.logical.LogicalPlan =
+ *  res3: com.ledis.sql.catalyst.plans.logical.LogicalPlan =
  *  Project [value#3]
  *   Filter (key#2 = 1)
  *    LocalRelation [key#2,value#3], []

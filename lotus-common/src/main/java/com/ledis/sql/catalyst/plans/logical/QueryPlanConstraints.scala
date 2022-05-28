@@ -17,7 +17,7 @@
 
 package com.ledis.sql.catalyst.plans.logical
 
-import org.apache.spark.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.expressions._
 
 
 trait QueryPlanConstraints extends ConstraintHelper { self: LogicalPlan =>

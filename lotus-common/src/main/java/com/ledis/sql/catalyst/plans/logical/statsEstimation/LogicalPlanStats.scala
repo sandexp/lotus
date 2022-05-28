@@ -17,7 +17,7 @@
 
 package com.ledis.sql.catalyst.plans.logical.statsEstimation
 
-import org.apache.spark.sql.catalyst.plans.logical._
+import com.ledis.sql.catalyst.plans.logical._
 
 /**
  * A trait to add statistics propagation to [[LogicalPlan]].

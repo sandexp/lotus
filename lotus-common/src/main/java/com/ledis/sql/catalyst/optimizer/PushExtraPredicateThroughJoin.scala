@@ -17,11 +17,11 @@
 
 package com.ledis.sql.catalyst.optimizer
 
-import org.apache.spark.sql.catalyst.expressions.{And, Expression, PredicateHelper}
-import org.apache.spark.sql.catalyst.plans._
-import org.apache.spark.sql.catalyst.plans.logical.{Filter, Join, LogicalPlan}
-import org.apache.spark.sql.catalyst.rules.Rule
-import org.apache.spark.sql.catalyst.trees.TreeNodeTag
+import com.ledis.sql.catalyst.expressions.{And, Expression, PredicateHelper}
+import com.ledis.sql.catalyst.plans._
+import com.ledis.sql.catalyst.plans.logical.{Filter, Join, LogicalPlan}
+import com.ledis.sql.catalyst.rules.Rule
+import com.ledis.sql.catalyst.trees.TreeNodeTag
 
 /**
  * Try pushing down disjunctive join condition into left and right child.

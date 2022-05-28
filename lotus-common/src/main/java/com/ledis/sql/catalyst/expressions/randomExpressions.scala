@@ -17,13 +17,13 @@
 
 package com.ledis.sql.catalyst.expressions
 
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.expressions.codegen.{CodegenContext, CodeGenerator, ExprCode, FalseLiteral}
-import org.apache.spark.sql.catalyst.expressions.codegen.Block._
-import org.apache.spark.sql.types._
-import org.apache.spark.util.Utils
-import org.apache.spark.util.random.XORShiftRandom
+import com.ledis.exception.AnalysisException
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.expressions.codegen.{CodeGenerator, CodegenContext, ExprCode, FalseLiteral}
+import com.ledis.sql.catalyst.expressions.codegen.Block._
+import com.ledis.sql.types._
+import com.ledis.util.Utils
+import com.ledis.util.random.XORShiftRandom
 
 /**
  * A Random distribution generating expression.

@@ -17,15 +17,15 @@
 
 package com.ledis.sql.catalyst.analysis
 
-import scala.collection.mutable
+import com.ledis.exception.AnalysisException
 
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.expressions.{Alias, AnsiCast, Attribute, Cast, NamedExpression}
-import org.apache.spark.sql.catalyst.plans.logical.{LogicalPlan, Project}
-import org.apache.spark.sql.catalyst.util.CharVarcharUtils
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.internal.SQLConf.StoreAssignmentPolicy
-import org.apache.spark.sql.types.DataType
+import scala.collection.mutable
+import com.ledis.sql.catalyst.expressions.{Alias, AnsiCast, Attribute, Cast, NamedExpression}
+import com.ledis.sql.catalyst.plans.logical.{LogicalPlan, Project}
+import com.ledis.sql.catalyst.util.CharVarcharUtils
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.internal.SQLConf.StoreAssignmentPolicy
+import com.ledis.sql.types.DataType
 
 object TableOutputResolver {
   def resolveOutputColumns(

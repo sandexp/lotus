@@ -20,19 +20,17 @@ package com.ledis.sql.types
 import scala.math.Ordering
 import scala.reflect.runtime.universe.typeTag
 
-import org.apache.spark.annotation.Experimental
-import org.apache.spark.unsafe.types.UTF8String
+import com.ledis.unsafe.types.UTF8String
 
-@Experimental
 case class CharType(length: Int) extends AtomicType {
   require(length >= 0, "The length of char type cannot be negative.")
 
-  private[sql] type InternalType = UTF8String
-  @transient private[sql] lazy val tag = typeTag[InternalType]
-  private[sql] val ordering = implicitly[Ordering[InternalType]]
+  type InternalType = UTF8String
+  @transient lazy val tag = typeTag[InternalType]
+  val ordering = implicitly[Ordering[InternalType]]
 
   override def defaultSize: Int = length
   override def typeName: String = s"char($length)"
   override def toString: String = s"CharType($length)"
-  private[spark] override def asNullable: CharType = this
+  override def asNullable: CharType = this
 }

@@ -20,12 +20,12 @@ package com.ledis.sql.catalyst.plans.logical.statsEstimation
 import scala.collection.immutable.HashSet
 import scala.collection.mutable
 
-import org.apache.spark.internal.Logging
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.Literal.{FalseLiteral, TrueLiteral}
-import org.apache.spark.sql.catalyst.plans.logical._
-import org.apache.spark.sql.catalyst.plans.logical.statsEstimation.EstimationUtils._
-import org.apache.spark.sql.types._
+import com.ledis.internal.Logging
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.expressions.Literal.{FalseLiteral, TrueLiteral}
+import com.ledis.sql.catalyst.plans.logical._
+import com.ledis.sql.catalyst.plans.logical.statsEstimation.EstimationUtils._
+import com.ledis.sql.types._
 
 case class FilterEstimation(plan: Filter) extends Logging {
 

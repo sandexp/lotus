@@ -17,14 +17,14 @@
 
 package com.ledis.sql.catalyst.analysis
 
-import org.apache.spark.internal.Logging
-import org.apache.spark.sql.catalyst.plans.logical.{HintErrorHandler, HintInfo}
+import com.ledis.internal.Logging
+import com.ledis.sql.catalyst.plans.logical.{HintErrorHandler, HintInfo}
 
 /**
  * The hint error handler that logs warnings for each hint error.
  */
 object HintErrorLogger extends HintErrorHandler with Logging {
-  import org.apache.spark.sql.connector.catalog.CatalogV2Implicits._
+  import com.ledis.sql.connector.catalog.CatalogV2Implicits._
 
   override def hintNotRecognized(name: String, parameters: Seq[Any]): Unit = {
     logWarning(s"Unrecognized hint: ${hintToPrettyString(name, parameters)}")

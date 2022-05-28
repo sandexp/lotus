@@ -21,29 +21,27 @@ import scala.math.Ordering
 
 import org.json4s.JsonDSL._
 
-import org.apache.spark.annotation.Stable
-import org.apache.spark.sql.catalyst.util.ArrayData
-import org.apache.spark.sql.catalyst.util.StringUtils.StringConcat
+import com.ledis.sql.catalyst.util.ArrayData
+import com.ledis.sql.catalyst.util.StringUtils.StringConcat
 
 /**
  * Companion object for ArrayType.
  *
  * @since 1.3.0
  */
-@Stable
 object ArrayType extends AbstractDataType {
   /**
    * Construct a [[ArrayType]] object with the given element type. The `containsNull` is true.
    */
   def apply(elementType: DataType): ArrayType = ArrayType(elementType, containsNull = true)
 
-  override private[sql] def defaultConcreteType: DataType = ArrayType(NullType, containsNull = true)
+  override def defaultConcreteType: DataType = ArrayType(NullType, containsNull = true)
 
-  override private[sql] def acceptsType(other: DataType): Boolean = {
+  override def acceptsType(other: DataType): Boolean = {
     other.isInstanceOf[ArrayType]
   }
 
-  override private[spark] def simpleString: String = "array"
+  override def simpleString: String = "array"
 }
 
 /**
@@ -58,16 +56,13 @@ object ArrayType extends AbstractDataType {
  *
  * @param elementType The data type of values.
  * @param containsNull Indicates if values have `null` values
- *
- * @since 1.3.0
  */
-@Stable
 case class ArrayType(elementType: DataType, containsNull: Boolean) extends DataType {
 
   /** No-arg constructor for kryo. */
   protected def this() = this(null, false)
 
-  private[sql] def buildFormattedString(
+  def buildFormattedString(
       prefix: String,
       stringConcat: StringConcat,
       maxDepth: Int): Unit = {
@@ -78,7 +73,7 @@ case class ArrayType(elementType: DataType, containsNull: Boolean) extends DataT
     }
   }
 
-  override private[sql] def jsonValue =
+  override def jsonValue =
     ("type" -> typeName) ~
       ("elementType" -> elementType.jsonValue) ~
       ("containsNull" -> containsNull)
@@ -95,16 +90,16 @@ case class ArrayType(elementType: DataType, containsNull: Boolean) extends DataT
 
   override def sql: String = s"ARRAY<${elementType.sql}>"
 
-  override private[spark] def asNullable: ArrayType =
+  override def asNullable: ArrayType =
     ArrayType(elementType.asNullable, containsNull = true)
 
-  override private[spark] def existsRecursively(f: (DataType) => Boolean): Boolean = {
+  override def existsRecursively(f: (DataType) => Boolean): Boolean = {
     f(this) || elementType.existsRecursively(f)
   }
 
   @transient
-  private[sql] lazy val interpretedOrdering: Ordering[ArrayData] = new Ordering[ArrayData] {
-    private[this] val elementOrdering: Ordering[Any] = elementType match {
+  lazy val interpretedOrdering: Ordering[ArrayData] = new Ordering[ArrayData] {
+    val elementOrdering: Ordering[Any] = elementType match {
       case dt: AtomicType => dt.ordering.asInstanceOf[Ordering[Any]]
       case a : ArrayType => a.interpretedOrdering.asInstanceOf[Ordering[Any]]
       case s: StructType => s.interpretedOrdering.asInstanceOf[Ordering[Any]]

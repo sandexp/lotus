@@ -28,10 +28,10 @@ import scala.util.control.NonFatal
 
 import sun.util.calendar.ZoneInfo
 
-import org.apache.spark.sql.catalyst.util.DateTimeConstants._
-import org.apache.spark.sql.catalyst.util.RebaseDateTime._
-import org.apache.spark.sql.types.Decimal
-import org.apache.spark.unsafe.types.{CalendarInterval, UTF8String}
+import com.ledis.sql.catalyst.util.DateTimeConstants._
+import com.ledis.sql.catalyst.util.RebaseDateTime._
+import com.ledis.sql.types.Decimal
+import com.ledis.unsafe.types.{CalendarInterval, UTF8String}
 
 /**
  * Helper functions for converting between internal and external date and time representations.
@@ -709,23 +709,23 @@ object DateTimeUtils {
   }
 
   // The constants are visible for testing purpose only.
-  private[sql] val TRUNC_INVALID = -1
+  val TRUNC_INVALID = -1
   // The levels from TRUNC_TO_MICROSECOND to TRUNC_TO_DAY are used in truncations
   // of TIMESTAMP values only.
-  private[sql] val TRUNC_TO_MICROSECOND = 0
-  private[sql] val MIN_LEVEL_OF_TIMESTAMP_TRUNC = TRUNC_TO_MICROSECOND
-  private[sql] val TRUNC_TO_MILLISECOND = 1
-  private[sql] val TRUNC_TO_SECOND = 2
-  private[sql] val TRUNC_TO_MINUTE = 3
-  private[sql] val TRUNC_TO_HOUR = 4
-  private[sql] val TRUNC_TO_DAY = 5
+  val TRUNC_TO_MICROSECOND = 0
+  val MIN_LEVEL_OF_TIMESTAMP_TRUNC = TRUNC_TO_MICROSECOND
+  val TRUNC_TO_MILLISECOND = 1
+  val TRUNC_TO_SECOND = 2
+  val TRUNC_TO_MINUTE = 3
+  val TRUNC_TO_HOUR = 4
+  val TRUNC_TO_DAY = 5
   // The levels from TRUNC_TO_WEEK to TRUNC_TO_YEAR are used in truncations
   // of DATE and TIMESTAMP values.
-  private[sql] val TRUNC_TO_WEEK = 6
-  private[sql] val MIN_LEVEL_OF_DATE_TRUNC = TRUNC_TO_WEEK
-  private[sql] val TRUNC_TO_MONTH = 7
-  private[sql] val TRUNC_TO_QUARTER = 8
-  private[sql] val TRUNC_TO_YEAR = 9
+  val TRUNC_TO_WEEK = 6
+  val MIN_LEVEL_OF_DATE_TRUNC = TRUNC_TO_WEEK
+  val TRUNC_TO_MONTH = 7
+  val TRUNC_TO_QUARTER = 8
+  val TRUNC_TO_YEAR = 9
 
   /**
    * Returns the trunc date from original date and trunc level.

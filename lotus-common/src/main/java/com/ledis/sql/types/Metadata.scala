@@ -22,9 +22,6 @@ import scala.collection.mutable
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
 
-import org.apache.spark.annotation.Stable
-
-
 /**
  * Metadata is a wrapper over Map[String, Any] that limits the value type to simple ones: Boolean,
  * Long, Double, String, Metadata, Array[Boolean], Array[Long], Array[Double], Array[String], and
@@ -37,7 +34,6 @@ import org.apache.spark.annotation.Stable
  *
  * @since 1.3.0
  */
-@Stable
 sealed class Metadata private[types] (private[types] val map: Map[String, Any])
   extends Serializable {
 
@@ -111,13 +107,13 @@ sealed class Metadata private[types] (private[types] val map: Map[String, Any])
     map(key).asInstanceOf[T]
   }
 
-  private[sql] def jsonValue: JValue = Metadata.toJsonValue(this)
+  def jsonValue: JValue = Metadata.toJsonValue(this)
 }
 
 /**
  * @since 1.3.0
  */
-@Stable
+// @Stable
 object Metadata {
 
   private[this] val _empty = new Metadata(Map.empty)
@@ -131,7 +127,7 @@ object Metadata {
   }
 
   /** Creates a Metadata instance from JSON AST. */
-  private[sql] def fromJObject(jObj: JObject): Metadata = {
+  def fromJObject(jObj: JObject): Metadata = {
     val builder = new MetadataBuilder
     jObj.obj.foreach {
       case (key, JInt(value)) =>
@@ -232,7 +228,6 @@ object Metadata {
  *
  * @since 1.3.0
  */
-@Stable
 class MetadataBuilder {
 
   private val map: mutable.Map[String, Any] = mutable.Map.empty

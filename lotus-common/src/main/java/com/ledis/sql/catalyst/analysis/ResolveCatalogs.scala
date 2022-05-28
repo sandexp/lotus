@@ -17,10 +17,10 @@
 
 package com.ledis.sql.catalyst.analysis
 
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.plans.logical._
-import org.apache.spark.sql.catalyst.rules.Rule
-import org.apache.spark.sql.connector.catalog.{CatalogManager, CatalogPlugin, LookupCatalog, TableCatalog, TableChange}
+import com.ledis.exception.AnalysisException
+import com.ledis.sql.catalyst.plans.logical._
+import com.ledis.sql.catalyst.rules.Rule
+import com.ledis.sql.connector.catalog.{CatalogManager, CatalogPlugin, LookupCatalog, TableCatalog, TableChange}
 
 /**
  * Resolves catalogs from the multi-part identifiers in SQL statements, and convert the statements
@@ -28,8 +28,8 @@ import org.apache.spark.sql.connector.catalog.{CatalogManager, CatalogPlugin, Lo
  */
 class ResolveCatalogs(val catalogManager: CatalogManager)
   extends Rule[LogicalPlan] with LookupCatalog {
-  import org.apache.spark.sql.connector.catalog.CatalogV2Implicits._
-  import org.apache.spark.sql.connector.catalog.CatalogV2Util._
+  import com.ledis.sql.connector.catalog.CatalogV2Implicits._
+  import com.ledis.sql.connector.catalog.CatalogV2Util._
 
   override def apply(plan: LogicalPlan): LogicalPlan = plan resolveOperators {
     case AlterTableAddColumnsStatement(

@@ -17,7 +17,7 @@
 
 package com.ledis.sql.catalyst
 
-import org.apache.spark.sql.internal.SQLConf
+import com.ledis.sql.internal.SQLConf
 
 /**
  * Trait for getting the active SQLConf.

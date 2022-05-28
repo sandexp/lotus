@@ -17,9 +17,9 @@
 
 package com.ledis.sql.catalyst.expressions
 
-import org.apache.spark.sql.catalyst.analysis.MultiAlias
-import org.apache.spark.sql.catalyst.expressions.aggregate.AggregateExpression
-import org.apache.spark.sql.catalyst.plans.logical.{Aggregate, Project}
+import com.ledis.sql.catalyst.analysis.MultiAlias
+import com.ledis.sql.catalyst.expressions.aggregate.AggregateExpression
+import com.ledis.sql.catalyst.plans.logical.{Aggregate, Project}
 
 /**
  * Helper methods for collecting and replacing aliases.

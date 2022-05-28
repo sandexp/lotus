@@ -17,10 +17,11 @@
 
 package com.ledis.sql.catalyst
 
-import scala.util.control.NonFatal
+import com.ledis.sql.catalyst.trees.TreeNode
 
-import org.apache.spark.SparkException
-import org.apache.spark.sql.catalyst.trees.TreeNode
+import scala.util.control.NonFatal
+import com.ledis.SparkException
+import com.ledis.sql.catalyst.trees.TreeNode
 
 /**
  * Functions for attaching and retrieving trees that are associated with errors.

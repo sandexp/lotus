@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.{DeserializationContext, JsonDeserializer,
 import org.json4s.JsonAST.JValue
 import org.json4s.jackson.{JValueDeserializer, JValueSerializer}
 
-import org.apache.spark.sql.types.DataType
+import com.ledis.sql.types.DataType
 
 object DataTypeJsonUtils {
   /**

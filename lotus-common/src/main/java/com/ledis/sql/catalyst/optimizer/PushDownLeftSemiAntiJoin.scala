@@ -17,10 +17,10 @@
 
 package com.ledis.sql.catalyst.optimizer
 
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.plans._
-import org.apache.spark.sql.catalyst.plans.logical._
-import org.apache.spark.sql.catalyst.rules.Rule
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.plans._
+import com.ledis.sql.catalyst.plans.logical._
+import com.ledis.sql.catalyst.rules.Rule
 
 /**
  * This rule is a variant of [[PushPredicateThroughNonJoin]] which can handle

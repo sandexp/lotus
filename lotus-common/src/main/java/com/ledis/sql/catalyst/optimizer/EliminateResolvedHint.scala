@@ -17,9 +17,9 @@
 
 package com.ledis.sql.catalyst.optimizer
 
-import org.apache.spark.sql.catalyst.plans.logical._
-import org.apache.spark.sql.catalyst.rules.Rule
-import org.apache.spark.sql.internal.SQLConf
+import com.ledis.sql.catalyst.plans.logical._
+import com.ledis.sql.catalyst.rules.Rule
+import com.ledis.sql.internal.SQLConf
 
 /**
  * Replaces [[ResolvedHint]] operators from the plan. Move the [[HintInfo]] to associated [[Join]]
@@ -60,7 +60,7 @@ object EliminateResolvedHint extends Rule[LogicalPlan] {
    * in this method will be cleaned up later by this rule, and may emit warnings depending on the
    * configurations.
    */
-  private[sql] def extractHintsFromPlan(plan: LogicalPlan): (LogicalPlan, Seq[HintInfo]) = {
+  def extractHintsFromPlan(plan: LogicalPlan): (LogicalPlan, Seq[HintInfo]) = {
     plan match {
       case h: ResolvedHint =>
         val (plan, hints) = extractHintsFromPlan(h.child)

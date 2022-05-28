@@ -22,8 +22,8 @@ import java.lang.{Boolean => JBool}
 import scala.collection.mutable.ArrayBuffer
 import scala.language.implicitConversions
 
-import org.apache.spark.sql.catalyst.trees.TreeNode
-import org.apache.spark.sql.types.{BooleanType, DataType}
+import com.ledis.sql.catalyst.trees.TreeNode
+import com.ledis.sql.types.{BooleanType, DataType}
 
 /**
  * Trait representing an opaque fragments of java code.

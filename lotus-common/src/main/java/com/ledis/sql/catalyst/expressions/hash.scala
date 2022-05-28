@@ -26,17 +26,17 @@ import scala.annotation.tailrec
 
 import org.apache.commons.codec.digest.DigestUtils
 
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.analysis.TypeCheckResult
-import org.apache.spark.sql.catalyst.expressions.codegen._
-import org.apache.spark.sql.catalyst.expressions.codegen.Block._
-import org.apache.spark.sql.catalyst.util.{ArrayData, MapData}
-import org.apache.spark.sql.catalyst.util.DateTimeConstants._
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
-import org.apache.spark.unsafe.Platform
-import org.apache.spark.unsafe.hash.Murmur3_x86_32
-import org.apache.spark.unsafe.types.{CalendarInterval, UTF8String}
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.analysis.TypeCheckResult
+import com.ledis.sql.catalyst.expressions.codegen._
+import com.ledis.sql.catalyst.expressions.codegen.Block._
+import com.ledis.sql.catalyst.util.{ArrayData, MapData}
+import com.ledis.sql.catalyst.util.DateTimeConstants._
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
+import com.ledis.unsafe.Platform
+import com.ledis.unsafe.hash.Murmur3_x86_32
+import com.ledis.unsafe.types.{CalendarInterval, UTF8String}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // This file defines all the expressions for hashing.

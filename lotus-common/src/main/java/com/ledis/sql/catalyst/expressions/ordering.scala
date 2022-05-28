@@ -17,10 +17,10 @@
 
 package com.ledis.sql.catalyst.expressions
 
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.expressions.BindReferences.bindReferences
-import org.apache.spark.sql.catalyst.expressions.codegen.GenerateOrdering
-import org.apache.spark.sql.types._
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.expressions.BindReferences.bindReferences
+import com.ledis.sql.catalyst.expressions.codegen.GenerateOrdering
+import com.ledis.sql.types._
 
 
 /**

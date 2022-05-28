@@ -19,10 +19,10 @@ package com.ledis.sql.catalyst.analysis
 
 import scala.util.control.NonFatal
 
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.plans.logical.{LocalRelation, LogicalPlan}
-import org.apache.spark.sql.catalyst.rules.Rule
-import org.apache.spark.sql.types.{StructField, StructType}
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.plans.logical.{LocalRelation, LogicalPlan}
+import com.ledis.sql.catalyst.rules.Rule
+import com.ledis.sql.types.{StructField, StructType}
 
 /**
  * An analyzer rule that replaces [[UnresolvedInlineTable]] with [[LocalRelation]].

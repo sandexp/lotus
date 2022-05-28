@@ -22,16 +22,16 @@ import java.util
 import scala.collection.JavaConverters._
 import scala.collection.mutable
 
-import org.apache.spark.sql.catalyst.TableIdentifier
-import org.apache.spark.sql.catalyst.catalog.CatalogTable
-import org.apache.spark.sql.connector.catalog.CatalogV2Implicits.quoteIfNeeded
-import org.apache.spark.sql.connector.expressions.{LogicalExpressions, Transform}
-import org.apache.spark.sql.types.StructType
+import com.ledis.sql.catalyst.TableIdentifier
+import com.ledis.sql.catalyst.catalog.CatalogTable
+import com.ledis.sql.connector.catalog.CatalogV2Implicits.quoteIfNeeded
+import com.ledis.sql.connector.expressions.{LogicalExpressions, Transform}
+import com.ledis.sql.types.StructType
 
 /**
  * An implementation of catalog v2 `Table` to expose v1 table metadata.
  */
-private[sql] case class V1Table(v1Table: CatalogTable) extends Table {
+case class V1Table(v1Table: CatalogTable) extends Table {
   implicit class IdentifierHelper(identifier: TableIdentifier) {
     def quoted: String = {
       identifier.database match {
@@ -85,6 +85,6 @@ private[sql] case class V1Table(v1Table: CatalogTable) extends Table {
  * A V2 table with V1 fallback support. This is used to fallback to V1 table when the V2 one
  * doesn't implement specific capabilities but V1 already has.
  */
-private[sql] trait V2TableWithV1Fallback extends Table {
+trait V2TableWithV1Fallback extends Table {
   def v1Table: CatalogTable
 }

@@ -17,8 +17,8 @@
 
 package com.ledis.sql.catalyst.plans.logical
 
-import org.apache.spark.sql.catalyst.expressions.{Expression, Generator, WindowExpression}
-import org.apache.spark.sql.catalyst.expressions.aggregate.AggregateExpression
+import com.ledis.sql.catalyst.expressions.{Expression, Generator, WindowExpression}
+import com.ledis.sql.catalyst.expressions.aggregate.AggregateExpression
 
 /**
  * [[PlanHelper]] contains utility methods that can be used by Analyzer and Optimizer.

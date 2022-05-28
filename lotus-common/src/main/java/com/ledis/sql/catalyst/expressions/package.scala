@@ -20,10 +20,9 @@ package com.ledis.sql.catalyst
 import java.util.Locale
 
 import com.google.common.collect.Maps
-
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.analysis.{Resolver, UnresolvedAttribute}
-import org.apache.spark.sql.types.{StructField, StructType}
+import com.ledis.exception.AnalysisException
+import com.ledis.sql.catalyst.analysis.{Resolver, UnresolvedAttribute}
+import com.ledis.sql.types.{StructField, StructType}
 
 /**
  * A set of classes that can be used to represent trees of relational expressions.  A key goal of

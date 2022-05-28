@@ -17,17 +17,17 @@
 
 package com.ledis.sql.catalyst.analysis
 
-import scala.collection.mutable
+import com.ledis.exception.AnalysisException
 
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.optimizer.{CombineUnions, OptimizeUpdateFields}
-import org.apache.spark.sql.catalyst.plans.logical.{LogicalPlan, Project, Union}
-import org.apache.spark.sql.catalyst.rules.Rule
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
-import org.apache.spark.sql.util.SchemaUtils
-import org.apache.spark.unsafe.types.UTF8String
+import scala.collection.mutable
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.optimizer.{CombineUnions, OptimizeUpdateFields}
+import com.ledis.sql.catalyst.plans.logical.{LogicalPlan, Project, Union}
+import com.ledis.sql.catalyst.rules.Rule
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
+import com.ledis.sql.util.SchemaUtils
+import com.ledis.unsafe.types.UTF8String
 
 /**
  * Resolves different children of Union to a common set of columns.

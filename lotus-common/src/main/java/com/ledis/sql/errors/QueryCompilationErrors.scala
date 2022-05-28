@@ -17,20 +17,20 @@
 
 package com.ledis.sql.errors
 
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.expressions.{Expression, GroupingID}
-import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
-import org.apache.spark.sql.catalyst.util.toPrettySQL
-import org.apache.spark.sql.connector.catalog.TableChange
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types.{AbstractDataType, DataType, StructType}
+import com.ledis.exception.AnalysisException
+import com.ledis.sql.catalyst.expressions.{Expression, GroupingID}
+import com.ledis.sql.catalyst.plans.logical.LogicalPlan
+import com.ledis.sql.catalyst.util.toPrettySQL
+import com.ledis.sql.connector.catalog.TableChange
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types.{AbstractDataType, DataType, StructType}
 
 /**
  * Object for grouping all error messages of the query compilation.
  * Currently it includes all AnalysisExcpetions created and thrown directly in
- * org.apache.spark.sql.catalyst.analysis.Analyzer.
+ * com.ledis.sql.catalyst.analysis.Analyzer.
  */
-private[spark] object QueryCompilationErrors {
+object QueryCompilationErrors {
 
   def groupingIDMismatchError(groupingID: GroupingID, groupByExprs: Seq[Expression]): Throwable = {
     new AnalysisException(

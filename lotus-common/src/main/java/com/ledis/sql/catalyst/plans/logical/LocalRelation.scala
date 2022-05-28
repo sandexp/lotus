@@ -17,12 +17,12 @@
 
 package com.ledis.sql.catalyst.plans.logical
 
-import org.apache.spark.sql.Row
-import org.apache.spark.sql.catalyst.{CatalystTypeConverters, InternalRow}
-import org.apache.spark.sql.catalyst.analysis
-import org.apache.spark.sql.catalyst.expressions.{Attribute, Literal}
-import org.apache.spark.sql.catalyst.plans.logical.statsEstimation.EstimationUtils
-import org.apache.spark.sql.types.{StructField, StructType}
+import com.ledis.sql.Row
+import com.ledis.sql.catalyst.{CatalystTypeConverters, InternalRow}
+import com.ledis.sql.catalyst.analysis
+import com.ledis.sql.catalyst.expressions.{Attribute, Literal}
+import com.ledis.sql.catalyst.plans.logical.statsEstimation.EstimationUtils
+import com.ledis.sql.types.{StructField, StructType}
 
 object LocalRelation {
   def apply(output: Attribute*): LocalRelation = new LocalRelation(output)

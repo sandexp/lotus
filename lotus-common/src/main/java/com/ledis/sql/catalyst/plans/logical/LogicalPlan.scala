@@ -17,13 +17,13 @@
 
 package com.ledis.sql.catalyst.plans.logical
 
-import org.apache.spark.internal.Logging
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.analysis._
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.plans.QueryPlan
-import org.apache.spark.sql.catalyst.plans.logical.statsEstimation.LogicalPlanStats
-import org.apache.spark.sql.types.StructType
+import com.ledis.exception.AnalysisException
+import com.ledis.internal.Logging
+import com.ledis.sql.catalyst.analysis._
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.plans.QueryPlan
+import com.ledis.sql.catalyst.plans.logical.statsEstimation.LogicalPlanStats
+import com.ledis.sql.types.StructType
 
 
 abstract class LogicalPlan
@@ -63,7 +63,7 @@ abstract class LogicalPlan
    * Returns true if this expression and all its children have been resolved to a specific schema
    * and false if it still contains any unresolved placeholders. Implementations of LogicalPlan
    * can override this (e.g.
-   * [[org.apache.spark.sql.catalyst.analysis.UnresolvedRelation UnresolvedRelation]]
+   * [[com.ledis.sql.catalyst.analysis.UnresolvedRelation UnresolvedRelation]]
    * should return `false`).
    */
   lazy val resolved: Boolean = expressions.forall(_.resolved) && childrenResolved

@@ -17,8 +17,7 @@
 
 package com.ledis.sql.sources
 
-import org.apache.spark.annotation.{Evolving, Stable}
-import org.apache.spark.sql.connector.catalog.CatalogV2Implicits.parseColumnPath
+import com.ledis.sql.connector.catalog.CatalogV2Implicits.parseColumnPath
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // This file defines all the filters that we can push down to the data sources.
@@ -26,11 +25,9 @@ import org.apache.spark.sql.connector.catalog.CatalogV2Implicits.parseColumnPath
 
 /**
  * A filter predicate for data sources. Mapping between Spark SQL types and filter value
- * types follow the convention for return type of [[org.apache.spark.sql.Row#get(int)]].
+ * types follow the convention for return type of [[com.ledis.sql.Row#get(int)]].
  *
- * @since 1.3.0
  */
-@Stable
 sealed abstract class Filter {
   /**
    * List of columns that are referenced by this filter.
@@ -60,7 +57,7 @@ sealed abstract class Filter {
   /**
    * If any of the references of this filter contains nested column
    */
-  private[sql] def containsNestedColumn: Boolean = {
+  def containsNestedColumn: Boolean = {
     this.v2references.exists(_.length > 1)
   }
 }
@@ -74,7 +71,7 @@ sealed abstract class Filter {
  *                  it is quoted to avoid confusion.
  * @since 1.3.0
  */
-@Stable
+// @Stable
 case class EqualTo(attribute: String, value: Any) extends Filter {
   override def references: Array[String] = Array(attribute) ++ findReferences(value)
 }
@@ -89,7 +86,7 @@ case class EqualTo(attribute: String, value: Any) extends Filter {
  *                  it is quoted to avoid confusion.
  * @since 1.5.0
  */
-@Stable
+// @Stable
 case class EqualNullSafe(attribute: String, value: Any) extends Filter {
   override def references: Array[String] = Array(attribute) ++ findReferences(value)
 }
@@ -103,7 +100,7 @@ case class EqualNullSafe(attribute: String, value: Any) extends Filter {
  *                  it is quoted to avoid confusion.
  * @since 1.3.0
  */
-@Stable
+// @Stable
 case class GreaterThan(attribute: String, value: Any) extends Filter {
   override def references: Array[String] = Array(attribute) ++ findReferences(value)
 }
@@ -117,7 +114,7 @@ case class GreaterThan(attribute: String, value: Any) extends Filter {
  *                  it is quoted to avoid confusion.
  * @since 1.3.0
  */
-@Stable
+// @Stable
 case class GreaterThanOrEqual(attribute: String, value: Any) extends Filter {
   override def references: Array[String] = Array(attribute) ++ findReferences(value)
 }
@@ -131,7 +128,7 @@ case class GreaterThanOrEqual(attribute: String, value: Any) extends Filter {
  *                  it is quoted to avoid confusion.
  * @since 1.3.0
  */
-@Stable
+// @Stable
 case class LessThan(attribute: String, value: Any) extends Filter {
   override def references: Array[String] = Array(attribute) ++ findReferences(value)
 }
@@ -145,7 +142,7 @@ case class LessThan(attribute: String, value: Any) extends Filter {
  *                  it is quoted to avoid confusion.
  * @since 1.3.0
  */
-@Stable
+// @Stable
 case class LessThanOrEqual(attribute: String, value: Any) extends Filter {
   override def references: Array[String] = Array(attribute) ++ findReferences(value)
 }
@@ -158,7 +155,7 @@ case class LessThanOrEqual(attribute: String, value: Any) extends Filter {
  *                  it is quoted to avoid confusion.
  * @since 1.3.0
  */
-@Stable
+// @Stable
 case class In(attribute: String, values: Array[Any]) extends Filter {
   override def hashCode(): Int = {
     var h = attribute.hashCode
@@ -188,7 +185,7 @@ case class In(attribute: String, values: Array[Any]) extends Filter {
  *                  it is quoted to avoid confusion.
  * @since 1.3.0
  */
-@Stable
+// @Stable
 case class IsNull(attribute: String) extends Filter {
   override def references: Array[String] = Array(attribute)
 }
@@ -201,7 +198,7 @@ case class IsNull(attribute: String) extends Filter {
  *                  it is quoted to avoid confusion.
  * @since 1.3.0
  */
-@Stable
+// @Stable
 case class IsNotNull(attribute: String) extends Filter {
   override def references: Array[String] = Array(attribute)
 }
@@ -211,7 +208,7 @@ case class IsNotNull(attribute: String) extends Filter {
  *
  * @since 1.3.0
  */
-@Stable
+// @Stable
 case class And(left: Filter, right: Filter) extends Filter {
   override def references: Array[String] = left.references ++ right.references
 }
@@ -221,7 +218,7 @@ case class And(left: Filter, right: Filter) extends Filter {
  *
  * @since 1.3.0
  */
-@Stable
+// @Stable
 case class Or(left: Filter, right: Filter) extends Filter {
   override def references: Array[String] = left.references ++ right.references
 }
@@ -231,7 +228,7 @@ case class Or(left: Filter, right: Filter) extends Filter {
  *
  * @since 1.3.0
  */
-@Stable
+// @Stable
 case class Not(child: Filter) extends Filter {
   override def references: Array[String] = child.references
 }
@@ -245,7 +242,7 @@ case class Not(child: Filter) extends Filter {
  *                  it is quoted to avoid confusion.
  * @since 1.3.1
  */
-@Stable
+// @Stable
 case class StringStartsWith(attribute: String, value: String) extends Filter {
   override def references: Array[String] = Array(attribute)
 }
@@ -259,7 +256,7 @@ case class StringStartsWith(attribute: String, value: String) extends Filter {
  *                  it is quoted to avoid confusion.
  * @since 1.3.1
  */
-@Stable
+// @Stable
 case class StringEndsWith(attribute: String, value: String) extends Filter {
   override def references: Array[String] = Array(attribute)
 }
@@ -273,7 +270,7 @@ case class StringEndsWith(attribute: String, value: String) extends Filter {
  *                  it is quoted to avoid confusion.
  * @since 1.3.1
  */
-@Stable
+// @Stable
 case class StringContains(attribute: String, value: String) extends Filter {
   override def references: Array[String] = Array(attribute)
 }
@@ -283,12 +280,12 @@ case class StringContains(attribute: String, value: String) extends Filter {
  *
  * @since 3.0.0
  */
-@Evolving
+// @Evolving
 case class AlwaysTrue() extends Filter {
   override def references: Array[String] = Array.empty
 }
 
-@Evolving
+// @Evolving
 object AlwaysTrue extends AlwaysTrue {
 }
 
@@ -297,11 +294,11 @@ object AlwaysTrue extends AlwaysTrue {
  *
  * @since 3.0.0
  */
-@Evolving
+// @Evolving
 case class AlwaysFalse() extends Filter {
   override def references: Array[String] = Array.empty
 }
 
-@Evolving
+// @Evolving
 object AlwaysFalse extends AlwaysFalse {
 }

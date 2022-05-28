@@ -17,7 +17,7 @@
 
 package com.ledis.sql.catalyst.plans.physical
 
-import org.apache.spark.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.InternalRow
 
 /**
  * Marker trait to identify the shape in which tuples are broadcasted. Typical examples of this are

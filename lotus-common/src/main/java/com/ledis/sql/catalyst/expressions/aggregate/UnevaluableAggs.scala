@@ -17,9 +17,9 @@
 
 package com.ledis.sql.catalyst.expressions.aggregate
 
-import org.apache.spark.sql.catalyst.analysis.{FunctionRegistry, TypeCheckResult}
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.types._
+import com.ledis.sql.catalyst.analysis.{FunctionRegistry, TypeCheckResult}
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.types._
 
 abstract class UnevaluableBooleanAggBase(arg: Expression)
   extends UnevaluableAggregate with ImplicitCastInputTypes {

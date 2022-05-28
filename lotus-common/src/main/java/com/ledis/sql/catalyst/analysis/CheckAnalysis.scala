@@ -16,20 +16,20 @@
  */
 package com.ledis.sql.catalyst.analysis
 
-import scala.collection.mutable
+import com.ledis.exception.AnalysisException
 
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.SubExprUtils._
-import org.apache.spark.sql.catalyst.expressions.aggregate.AggregateExpression
-import org.apache.spark.sql.catalyst.optimizer.BooleanSimplification
-import org.apache.spark.sql.catalyst.plans._
-import org.apache.spark.sql.catalyst.plans.logical._
-import org.apache.spark.sql.catalyst.util.{CharVarcharUtils, TypeUtils}
-import org.apache.spark.sql.connector.catalog.{SupportsAtomicPartitionManagement, SupportsPartitionManagement, Table}
-import org.apache.spark.sql.connector.catalog.TableChange.{AddColumn, After, ColumnPosition, DeleteColumn, RenameColumn, UpdateColumnComment, UpdateColumnNullability, UpdateColumnPosition, UpdateColumnType}
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
+import scala.collection.mutable
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.expressions.SubExprUtils._
+import com.ledis.sql.catalyst.expressions.aggregate.AggregateExpression
+import com.ledis.sql.catalyst.optimizer.BooleanSimplification
+import com.ledis.sql.catalyst.plans._
+import com.ledis.sql.catalyst.plans.logical._
+import com.ledis.sql.catalyst.util.{CharVarcharUtils, TypeUtils}
+import com.ledis.sql.connector.catalog.{SupportsAtomicPartitionManagement, SupportsPartitionManagement, Table}
+import com.ledis.sql.connector.catalog.TableChange.{AddColumn, After, ColumnPosition, DeleteColumn, RenameColumn, UpdateColumnComment, UpdateColumnNullability, UpdateColumnPosition, UpdateColumnType}
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
 
 /**
  * Throws user facing errors when passed invalid queries that fail to analyze.
@@ -38,7 +38,7 @@ trait CheckAnalysis extends PredicateHelper {
 
   protected def isView(nameParts: Seq[String]): Boolean
 
-  import org.apache.spark.sql.connector.catalog.CatalogV2Implicits._
+  import com.ledis.sql.connector.catalog.CatalogV2Implicits._
 
   /**
    * Override to provide additional checks for correct analysis.

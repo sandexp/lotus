@@ -17,7 +17,7 @@
 
 package com.ledis.sql.catalyst
 
-import org.apache.spark.sql.Encoder
+import com.ledis.sql.Encoder
 
 package object encoders {
   /**

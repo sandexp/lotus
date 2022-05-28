@@ -20,9 +20,8 @@ package com.ledis.sql.types
 import org.json4s.JsonAST.JValue
 import org.json4s.JsonDSL._
 
-import org.apache.spark.annotation.Stable
-import org.apache.spark.sql.catalyst.util.{escapeSingleQuotedString, quoteIdentifier}
-import org.apache.spark.sql.catalyst.util.StringUtils.StringConcat
+import com.ledis.sql.catalyst.util.{escapeSingleQuotedString, quoteIdentifier}
+import com.ledis.sql.catalyst.util.StringUtils.StringConcat
 
 /**
  * A field inside a StructType.
@@ -34,7 +33,6 @@ import org.apache.spark.sql.catalyst.util.StringUtils.StringConcat
  *
  * @since 1.3.0
  */
-@Stable
 case class StructField(
     name: String,
     dataType: DataType,
@@ -44,7 +42,7 @@ case class StructField(
   /** No-arg constructor for kryo. */
   protected def this() = this(null, null)
 
-  private[sql] def buildFormattedString(
+  def buildFormattedString(
       prefix: String,
       stringConcat: StringConcat,
       maxDepth: Int): Unit = {
@@ -57,7 +55,7 @@ case class StructField(
   // override the default toString to be compatible with legacy parquet files.
   override def toString: String = s"StructField($name,$dataType,$nullable)"
 
-  private[sql] def jsonValue: JValue = {
+  def jsonValue: JValue = {
     ("name" -> name) ~
       ("type" -> dataType.jsonValue) ~
       ("nullable" -> nullable) ~
@@ -91,13 +89,11 @@ case class StructField(
    * Returns a string containing a schema in SQL format. For example the following value:
    * `StructField("eventId", IntegerType)` will be converted to `eventId`: INT.
    */
-  private[sql] def sql = s"${quoteIdentifier(name)}: ${dataType.sql}$getDDLComment"
+  def sql = s"${quoteIdentifier(name)}: ${dataType.sql}$getDDLComment"
 
   /**
    * Returns a string containing a schema in DDL format. For example, the following value:
    * `StructField("eventId", IntegerType)` will be converted to `eventId` INT.
-   *
-   * @since 2.4.0
    */
   def toDDL: String = s"${quoteIdentifier(name)} ${dataType.sql}$getDDLComment"
 }

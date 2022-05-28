@@ -19,7 +19,7 @@ package com.ledis.sql.catalyst.parser
 
 import scala.util.parsing.combinator.RegexParsers
 
-import org.apache.spark.sql.types._
+import com.ledis.sql.types._
 
 /**
  * Parser that turns case class strings into datatypes. This is only here to maintain compatibility

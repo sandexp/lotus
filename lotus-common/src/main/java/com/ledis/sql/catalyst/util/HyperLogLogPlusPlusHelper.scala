@@ -20,10 +20,10 @@ package com.ledis.sql.catalyst.util
 import java.lang.{Long => JLong}
 import java.util
 
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.expressions.XxHash64Function
-import org.apache.spark.sql.catalyst.optimizer.NormalizeFloatingNumbers.{DOUBLE_NORMALIZER, FLOAT_NORMALIZER}
-import org.apache.spark.sql.types._
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.expressions.XxHash64Function
+import com.ledis.sql.catalyst.optimizer.NormalizeFloatingNumbers.{DOUBLE_NORMALIZER, FLOAT_NORMALIZER}
+import com.ledis.sql.types._
 
 // A helper class for HyperLogLogPlusPlus.
 class HyperLogLogPlusPlusHelper(relativeSD: Double) extends Serializable {

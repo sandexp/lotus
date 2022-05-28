@@ -19,24 +19,24 @@ package com.ledis.sql.types
 
 import scala.reflect.runtime.universe.typeTag
 
-import org.apache.spark.annotation.Stable
-import org.apache.spark.sql.catalyst.util.TypeUtils
+// import com.ledis.annotation.Stable
+import com.ledis.sql.catalyst.util.TypeUtils
 
 /**
  * The data type representing `Array[Byte]` values.
  * Please use the singleton `DataTypes.BinaryType`.
  */
-@Stable
+// @Stable
 class BinaryType private() extends AtomicType {
   // The companion object and this class is separated so the companion object also subclasses
   // this type. Otherwise, the companion object would be of type "BinaryType$" in byte code.
   // Defined with a private constructor so the companion object is the only possible instantiation.
 
-  private[sql] type InternalType = Array[Byte]
+  type InternalType = Array[Byte]
 
-  @transient private[sql] lazy val tag = typeTag[InternalType]
+  @transient lazy val tag = typeTag[InternalType]
 
-  private[sql] val ordering =
+  val ordering =
     (x: Array[Byte], y: Array[Byte]) => TypeUtils.compareBinary(x, y)
 
   /**
@@ -44,11 +44,11 @@ class BinaryType private() extends AtomicType {
    */
   override def defaultSize: Int = 100
 
-  private[spark] override def asNullable: BinaryType = this
+  override def asNullable: BinaryType = this
 }
 
 /**
  * @since 1.3.0
  */
-@Stable
+//@Stable
 case object BinaryType extends BinaryType

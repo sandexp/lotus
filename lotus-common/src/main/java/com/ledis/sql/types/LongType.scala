@@ -20,24 +20,22 @@ package com.ledis.sql.types
 import scala.math.{Integral, Numeric, Ordering}
 import scala.reflect.runtime.universe.typeTag
 
-import org.apache.spark.annotation.Stable
+// import org.apache.spark.annotation.Stable
 
 /**
  * The data type representing `Long` values. Please use the singleton `DataTypes.LongType`.
  *
- * @since 1.3.0
  */
-@Stable
 class LongType private() extends IntegralType {
   // The companion object and this class is separated so the companion object also subclasses
   // this type. Otherwise, the companion object would be of type "LongType$" in byte code.
   // Defined with a private constructor so the companion object is the only possible instantiation.
-  private[sql] type InternalType = Long
-  @transient private[sql] lazy val tag = typeTag[InternalType]
-  private[sql] val numeric = implicitly[Numeric[Long]]
-  private[sql] val integral = implicitly[Integral[Long]]
-  private[sql] val ordering = implicitly[Ordering[InternalType]]
-  override private[sql] val exactNumeric = LongExactNumeric
+  type InternalType = Long
+  @transient lazy val tag = typeTag[InternalType]
+  val numeric = implicitly[Numeric[Long]]
+  val integral = implicitly[Integral[Long]]
+  val ordering = implicitly[Ordering[InternalType]]
+  override val exactNumeric = LongExactNumeric
 
   /**
    * The default size of a value of the LongType is 8 bytes.
@@ -46,11 +44,11 @@ class LongType private() extends IntegralType {
 
   override def simpleString: String = "bigint"
 
-  private[spark] override def asNullable: LongType = this
+  override def asNullable: LongType = this
 }
 
 /**
  * @since 1.3.0
  */
-@Stable
+// @Stable
 case object LongType extends LongType

@@ -25,15 +25,15 @@ import scala.util.parsing.combinator.RegexParsers
 import com.fasterxml.jackson.core._
 import com.fasterxml.jackson.core.json.JsonReadFeature
 
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.analysis.TypeCheckResult
-import org.apache.spark.sql.catalyst.expressions.codegen.CodegenFallback
-import org.apache.spark.sql.catalyst.json._
-import org.apache.spark.sql.catalyst.util._
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
-import org.apache.spark.unsafe.types.UTF8String
-import org.apache.spark.util.Utils
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.analysis.TypeCheckResult
+import com.ledis.sql.catalyst.expressions.codegen.CodegenFallback
+import com.ledis.sql.catalyst.json._
+import com.ledis.sql.catalyst.util._
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
+import com.ledis.unsafe.types.UTF8String
+import com.ledis.util.Utils
 
 private[this] sealed trait PathInstruction
 private[this] object PathInstruction {

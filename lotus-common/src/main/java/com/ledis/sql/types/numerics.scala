@@ -20,10 +20,10 @@ package com.ledis.sql.types
 import scala.math.Numeric._
 import scala.math.Ordering
 
-import org.apache.spark.sql.catalyst.util.SQLOrderingUtil
-import org.apache.spark.sql.types.Decimal.DecimalIsConflicted
+import com.ledis.sql.catalyst.util.SQLOrderingUtil
+import com.ledis.sql.types.Decimal.DecimalIsConflicted
 
-private[sql] object ByteExactNumeric extends ByteIsIntegral with Ordering.ByteOrdering {
+object ByteExactNumeric extends ByteIsIntegral with Ordering.ByteOrdering {
   private def checkOverflow(res: Int, x: Byte, y: Byte, op: String): Unit = {
     if (res > Byte.MaxValue || res < Byte.MinValue) {
       throw new ArithmeticException(s"$x $op $y caused overflow.")
@@ -57,7 +57,7 @@ private[sql] object ByteExactNumeric extends ByteIsIntegral with Ordering.ByteOr
 }
 
 
-private[sql] object ShortExactNumeric extends ShortIsIntegral with Ordering.ShortOrdering {
+object ShortExactNumeric extends ShortIsIntegral with Ordering.ShortOrdering {
   private def checkOverflow(res: Int, x: Short, y: Short, op: String): Unit = {
     if (res > Short.MaxValue || res < Short.MinValue) {
       throw new ArithmeticException(s"$x $op $y caused overflow.")
@@ -91,7 +91,7 @@ private[sql] object ShortExactNumeric extends ShortIsIntegral with Ordering.Shor
 }
 
 
-private[sql] object IntegerExactNumeric extends IntIsIntegral with Ordering.IntOrdering {
+object IntegerExactNumeric extends IntIsIntegral with Ordering.IntOrdering {
   override def plus(x: Int, y: Int): Int = Math.addExact(x, y)
 
   override def minus(x: Int, y: Int): Int = Math.subtractExact(x, y)
@@ -101,7 +101,7 @@ private[sql] object IntegerExactNumeric extends IntIsIntegral with Ordering.IntO
   override def negate(x: Int): Int = Math.negateExact(x)
 }
 
-private[sql] object LongExactNumeric extends LongIsIntegral with Ordering.LongOrdering {
+object LongExactNumeric extends LongIsIntegral with Ordering.LongOrdering {
   override def plus(x: Long, y: Long): Long = Math.addExact(x, y)
 
   override def minus(x: Long, y: Long): Long = Math.subtractExact(x, y)
@@ -118,7 +118,7 @@ private[sql] object LongExactNumeric extends LongIsIntegral with Ordering.LongOr
     }
 }
 
-private[sql] object FloatExactNumeric extends FloatIsFractional {
+object FloatExactNumeric extends FloatIsFractional {
   private def overflowException(x: Float, dataType: String) =
     throw new ArithmeticException(s"Casting $x to $dataType causes overflow")
 
@@ -152,7 +152,7 @@ private[sql] object FloatExactNumeric extends FloatIsFractional {
   override def compare(x: Float, y: Float): Int = SQLOrderingUtil.compareFloats(x, y)
 }
 
-private[sql] object DoubleExactNumeric extends DoubleIsFractional {
+object DoubleExactNumeric extends DoubleIsFractional {
   private def overflowException(x: Double, dataType: String) =
     throw new ArithmeticException(s"Casting $x to $dataType causes overflow")
 
@@ -180,7 +180,7 @@ private[sql] object DoubleExactNumeric extends DoubleIsFractional {
   override def compare(x: Double, y: Double): Int = SQLOrderingUtil.compareDoubles(x, y)
 }
 
-private[sql] object DecimalExactNumeric extends DecimalIsConflicted {
+object DecimalExactNumeric extends DecimalIsConflicted {
   override def toInt(x: Decimal): Int = x.roundToInt()
 
   override def toLong(x: Decimal): Long = x.roundToLong()

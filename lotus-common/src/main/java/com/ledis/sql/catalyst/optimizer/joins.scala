@@ -17,15 +17,15 @@
 
 package com.ledis.sql.catalyst.optimizer
 
-import scala.annotation.tailrec
+import com.ledis.exception.AnalysisException
 
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.planning.ExtractFiltersAndInnerJoins
-import org.apache.spark.sql.catalyst.plans._
-import org.apache.spark.sql.catalyst.plans.logical._
-import org.apache.spark.sql.catalyst.rules._
-import org.apache.spark.sql.internal.SQLConf
+import scala.annotation.tailrec
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.planning.ExtractFiltersAndInnerJoins
+import com.ledis.sql.catalyst.plans._
+import com.ledis.sql.catalyst.plans.logical._
+import com.ledis.sql.catalyst.rules._
+import com.ledis.sql.internal.SQLConf
 
 /**
  * Reorder the joins and push all the conditions into join, so that the bottom ones have at least

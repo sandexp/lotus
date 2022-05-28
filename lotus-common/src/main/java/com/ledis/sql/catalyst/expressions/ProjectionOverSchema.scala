@@ -17,7 +17,7 @@
 
 package com.ledis.sql.catalyst.expressions
 
-import org.apache.spark.sql.types._
+import com.ledis.sql.types._
 
 /**
  * A Scala extractor that projects an expression over a given schema. Data types,

@@ -19,10 +19,10 @@ package com.ledis.sql.catalyst.util
 
 import scala.collection.mutable
 
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
-import org.apache.spark.unsafe.array.ByteArrayMethods
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
+import com.ledis.unsafe.array.ByteArrayMethods
 
 /**
  * A builder of [[ArrayBasedMapData]], which fails if a null map key is detected, and removes

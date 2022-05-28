@@ -17,13 +17,13 @@
 
 package com.ledis.sql.catalyst.expressions.aggregate
 
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.analysis.TypeCheckResult
-import org.apache.spark.sql.catalyst.analysis.TypeCheckResult.{TypeCheckFailure, TypeCheckSuccess}
-import org.apache.spark.sql.catalyst.expressions.{ExpectsInputTypes, Expression, ExpressionDescription, Literal}
-import org.apache.spark.sql.types._
-import org.apache.spark.unsafe.types.UTF8String
-import org.apache.spark.util.sketch.CountMinSketch
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.analysis.TypeCheckResult
+import com.ledis.sql.catalyst.analysis.TypeCheckResult.{TypeCheckFailure, TypeCheckSuccess}
+import com.ledis.sql.catalyst.expressions.{ExpectsInputTypes, Expression, ExpressionDescription, Literal}
+import com.ledis.sql.types._
+import com.ledis.unsafe.types.UTF8String
+import com.ledis.util.sketch.CountMinSketch
 
 /**
  * This function returns a count-min sketch of a column with the given esp, confidence and seed.

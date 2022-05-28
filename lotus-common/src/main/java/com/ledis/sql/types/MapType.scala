@@ -20,8 +20,8 @@ package com.ledis.sql.types
 import org.json4s.JsonAST.JValue
 import org.json4s.JsonDSL._
 
-import org.apache.spark.annotation.Stable
-import org.apache.spark.sql.catalyst.util.StringUtils.StringConcat
+// import com.ledis.annotation.Stable
+import com.ledis.sql.catalyst.util.StringUtils.StringConcat
 
 /**
  * The data type for Maps. Keys in a map are not allowed to have `null` values.
@@ -32,7 +32,7 @@ import org.apache.spark.sql.catalyst.util.StringUtils.StringConcat
  * @param valueType The data type of map values.
  * @param valueContainsNull Indicates if map values have `null` values.
  */
-@Stable
+// @Stable
 case class MapType(
   keyType: DataType,
   valueType: DataType,
@@ -41,7 +41,7 @@ case class MapType(
   /** No-arg constructor for kryo. */
   def this() = this(null, null, false)
 
-  private[sql] def buildFormattedString(
+  def buildFormattedString(
       prefix: String,
       stringConcat: StringConcat,
       maxDepth: Int = Int.MaxValue): Unit = {
@@ -54,7 +54,7 @@ case class MapType(
     }
   }
 
-  override private[sql] def jsonValue: JValue =
+  override def jsonValue: JValue =
     ("type" -> typeName) ~
       ("keyType" -> keyType.jsonValue) ~
       ("valueType" -> valueType.jsonValue) ~
@@ -73,10 +73,10 @@ case class MapType(
 
   override def sql: String = s"MAP<${keyType.sql}, ${valueType.sql}>"
 
-  override private[spark] def asNullable: MapType =
+  override def asNullable: MapType =
     MapType(keyType.asNullable, valueType.asNullable, valueContainsNull = true)
 
-  override private[spark] def existsRecursively(f: (DataType) => Boolean): Boolean = {
+  override def existsRecursively(f: (DataType) => Boolean): Boolean = {
     f(this) || keyType.existsRecursively(f) || valueType.existsRecursively(f)
   }
 }
@@ -84,16 +84,16 @@ case class MapType(
 /**
  * @since 1.3.0
  */
-@Stable
+// @Stable
 object MapType extends AbstractDataType {
 
-  override private[sql] def defaultConcreteType: DataType = apply(NullType, NullType)
+  override def defaultConcreteType: DataType = apply(NullType, NullType)
 
-  override private[sql] def acceptsType(other: DataType): Boolean = {
+  override def acceptsType(other: DataType): Boolean = {
     other.isInstanceOf[MapType]
   }
 
-  override private[sql] def simpleString: String = "map"
+  override def simpleString: String = "map"
 
   /**
    * Construct a [[MapType]] object with the given key type and value type.

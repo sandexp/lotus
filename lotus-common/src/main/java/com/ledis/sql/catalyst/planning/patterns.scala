@@ -17,14 +17,14 @@
 
 package com.ledis.sql.catalyst.planning
 
-import org.apache.spark.internal.Logging
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.aggregate.AggregateExpression
-import org.apache.spark.sql.catalyst.optimizer.JoinSelectionHelper
-import org.apache.spark.sql.catalyst.plans._
-import org.apache.spark.sql.catalyst.plans.logical._
-import org.apache.spark.sql.internal.SQLConf
+import com.ledis.exception.AnalysisException
+import com.ledis.internal.Logging
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.expressions.aggregate.AggregateExpression
+import com.ledis.sql.catalyst.optimizer.JoinSelectionHelper
+import com.ledis.sql.catalyst.plans._
+import com.ledis.sql.catalyst.plans.logical._
+import com.ledis.sql.internal.SQLConf
 
 trait OperationHelper {
   type ReturnType = (Seq[NamedExpression], Seq[Expression], LogicalPlan)
@@ -54,7 +54,7 @@ trait OperationHelper {
  * A pattern that matches any number of project or filter operations on top of another relational
  * operator.  All filter operators are collected and their conditions are broken up and returned
  * together with the top project operator.
- * [[org.apache.spark.sql.catalyst.expressions.Alias Aliases]] are in-lined/substituted if
+ * [[com.ledis.sql.catalyst.expressions.Alias Aliases]] are in-lined/substituted if
  * necessary.
  */
 object PhysicalOperation extends OperationHelper with PredicateHelper {

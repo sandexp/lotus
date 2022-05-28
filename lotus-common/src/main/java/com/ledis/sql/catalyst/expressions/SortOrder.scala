@@ -17,13 +17,13 @@
 
 package com.ledis.sql.catalyst.expressions
 
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.analysis.TypeCheckResult
-import org.apache.spark.sql.catalyst.expressions.codegen.{CodegenContext, ExprCode}
-import org.apache.spark.sql.catalyst.expressions.codegen.Block._
-import org.apache.spark.sql.types._
-import org.apache.spark.unsafe.types.UTF8String
-import org.apache.spark.util.collection.unsafe.sort.PrefixComparators._
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.analysis.TypeCheckResult
+import com.ledis.sql.catalyst.expressions.codegen.{CodegenContext, ExprCode}
+import com.ledis.sql.catalyst.expressions.codegen.Block._
+import com.ledis.sql.types._
+import com.ledis.unsafe.types.UTF8String
+import com.ledis.util.collection.unsafe.sort.PrefixComparators._
 
 abstract sealed class SortDirection {
   def sql: String

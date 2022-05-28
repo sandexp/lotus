@@ -17,16 +17,16 @@
 
 package com.ledis.sql.catalyst.parser
 
-import org.apache.spark.annotation.DeveloperApi
-import org.apache.spark.sql.catalyst.{FunctionIdentifier, TableIdentifier}
-import org.apache.spark.sql.catalyst.expressions.Expression
-import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
-import org.apache.spark.sql.types.{DataType, StructType}
+// import com.ledis.annotation.DeveloperApi
+import com.ledis.sql.catalyst.{FunctionIdentifier, TableIdentifier}
+import com.ledis.sql.catalyst.expressions.Expression
+import com.ledis.sql.catalyst.plans.logical.LogicalPlan
+import com.ledis.sql.types.{DataType, StructType}
 
 /**
  * Interface for a parser.
  */
-@DeveloperApi
+// @DeveloperApi
 trait ParserInterface {
   /**
    * Parse a string to a [[LogicalPlan]].

@@ -27,12 +27,12 @@ import javax.annotation.Nullable
 
 import scala.language.existentials
 
-import org.apache.spark.sql.Row
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.util._
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
-import org.apache.spark.unsafe.types.UTF8String
+import com.ledis.sql.Row
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.util._
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
+import com.ledis.unsafe.types.UTF8String
 
 /**
  * Functions to convert Scala types to Catalyst types and vice versa.
@@ -42,7 +42,7 @@ object CatalystTypeConverters {
   // Since the map values can be mutable, we explicitly import scala.collection.Map at here.
   import scala.collection.Map
 
-  private[sql] def isPrimitive(dataType: DataType): Boolean = {
+  def isPrimitive(dataType: DataType): Boolean = {
     dataType match {
       case BooleanType => true
       case ByteType => true

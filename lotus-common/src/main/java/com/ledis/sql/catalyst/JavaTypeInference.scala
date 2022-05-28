@@ -27,13 +27,13 @@ import scala.language.existentials
 
 import com.google.common.reflect.TypeToken
 
-import org.apache.spark.sql.catalyst.DeserializerBuildHelper._
-import org.apache.spark.sql.catalyst.SerializerBuildHelper._
-import org.apache.spark.sql.catalyst.analysis.GetColumnByOrdinal
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.objects._
-import org.apache.spark.sql.catalyst.util.ArrayBasedMapData
-import org.apache.spark.sql.types._
+import com.ledis.sql.catalyst.DeserializerBuildHelper._
+import com.ledis.sql.catalyst.SerializerBuildHelper._
+import com.ledis.sql.catalyst.analysis.GetColumnByOrdinal
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.expressions.objects._
+import com.ledis.sql.catalyst.util.ArrayBasedMapData
+import com.ledis.sql.types._
 
 /**
  * Type-inference utilities for POJOs and Java collections.

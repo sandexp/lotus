@@ -17,12 +17,12 @@
 
 package com.ledis.sql.catalyst.expressions
 
-import org.apache.spark.rdd.InputFileBlockHolder
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.expressions.codegen.{CodegenContext, CodeGenerator, ExprCode, FalseLiteral}
-import org.apache.spark.sql.catalyst.expressions.codegen.Block._
-import org.apache.spark.sql.types.{DataType, LongType, StringType}
-import org.apache.spark.unsafe.types.UTF8String
+import com.ledis.rdd.InputFileBlockHolder
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.expressions.codegen.{CodegenContext, CodeGenerator, ExprCode, FalseLiteral}
+import com.ledis.sql.catalyst.expressions.codegen.Block._
+import com.ledis.sql.types.{DataType, LongType, StringType}
+import com.ledis.unsafe.types.UTF8String
 
 // scalastyle:off whitespace.end.of.line
 @ExpressionDescription(

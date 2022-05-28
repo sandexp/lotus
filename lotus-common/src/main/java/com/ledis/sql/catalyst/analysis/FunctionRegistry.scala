@@ -18,20 +18,20 @@
 package com.ledis.sql.catalyst.analysis
 
 import java.util.Locale
+
+import com.ledis.exception.AnalysisException
 import javax.annotation.concurrent.GuardedBy
 
 import scala.collection.mutable
 import scala.reflect.ClassTag
-
-import org.apache.spark.internal.Logging
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.FunctionIdentifier
-import org.apache.spark.sql.catalyst.analysis.FunctionRegistry.FunctionBuilder
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.aggregate._
-import org.apache.spark.sql.catalyst.expressions.xml._
-import org.apache.spark.sql.catalyst.trees.TreeNodeTag
-import org.apache.spark.sql.types._
+import com.ledis.internal.Logging
+import com.ledis.sql.catalyst.FunctionIdentifier
+import com.ledis.sql.catalyst.analysis.FunctionRegistry.FunctionBuilder
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.expressions.aggregate._
+import com.ledis.sql.catalyst.expressions.xml._
+import com.ledis.sql.catalyst.trees.TreeNodeTag
+import com.ledis.sql.types._
 
 
 /**

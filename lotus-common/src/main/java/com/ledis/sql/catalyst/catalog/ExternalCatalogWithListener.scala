@@ -17,9 +17,9 @@
 
 package com.ledis.sql.catalyst.catalog
 
-import org.apache.spark.sql.catalyst.expressions.Expression
-import org.apache.spark.sql.types.StructType
-import org.apache.spark.util.ListenerBus
+import com.ledis.sql.catalyst.expressions.Expression
+import com.ledis.sql.types.StructType
+import com.ledis.util.ListenerBus
 
 /**
  * Wraps an ExternalCatalog to provide listener events.
@@ -89,7 +89,7 @@ class ExternalCatalogWithListener(delegate: ExternalCatalog)
     val db = tableDefinition.database
     val name = tableDefinition.identifier.table
     val tableDefinitionWithVersion =
-      tableDefinition.copy(createVersion = org.apache.spark.SPARK_VERSION)
+      tableDefinition.copy(createVersion = com.ledis.SPARK_VERSION)
     postToAll(CreateTablePreEvent(db, name))
     delegate.createTable(tableDefinitionWithVersion, ignoreIfExists)
     postToAll(CreateTableEvent(db, name))

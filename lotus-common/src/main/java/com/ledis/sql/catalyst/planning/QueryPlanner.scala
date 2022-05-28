@@ -17,9 +17,9 @@
 
 package com.ledis.sql.catalyst.planning
 
-import org.apache.spark.internal.Logging
-import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
-import org.apache.spark.sql.catalyst.trees.TreeNode
+import com.ledis.internal.Logging
+import com.ledis.sql.catalyst.plans.logical.LogicalPlan
+import com.ledis.sql.catalyst.trees.TreeNode
 
 /**
  * Given a [[LogicalPlan]], returns a list of `PhysicalPlan`s that can

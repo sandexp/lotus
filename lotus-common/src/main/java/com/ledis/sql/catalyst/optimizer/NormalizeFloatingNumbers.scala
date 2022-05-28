@@ -17,12 +17,12 @@
 
 package com.ledis.sql.catalyst.optimizer
 
-import org.apache.spark.sql.catalyst.expressions.{Alias, And, ArrayTransform, CaseWhen, Coalesce, CreateArray, CreateMap, CreateNamedStruct, EqualTo, ExpectsInputTypes, Expression, GetStructField, If, IsNull, KnownFloatingPointNormalized, LambdaFunction, Literal, NamedLambdaVariable, UnaryExpression}
-import org.apache.spark.sql.catalyst.expressions.codegen.{CodegenContext, ExprCode}
-import org.apache.spark.sql.catalyst.planning.ExtractEquiJoinKeys
-import org.apache.spark.sql.catalyst.plans.logical.{LogicalPlan, Window}
-import org.apache.spark.sql.catalyst.rules.Rule
-import org.apache.spark.sql.types._
+import com.ledis.sql.catalyst.expressions.{Alias, And, ArrayTransform, CaseWhen, Coalesce, CreateArray, CreateMap, CreateNamedStruct, EqualTo, ExpectsInputTypes, Expression, GetStructField, If, IsNull, KnownFloatingPointNormalized, LambdaFunction, Literal, NamedLambdaVariable, UnaryExpression}
+import com.ledis.sql.catalyst.expressions.codegen.{CodegenContext, ExprCode}
+import com.ledis.sql.catalyst.planning.ExtractEquiJoinKeys
+import com.ledis.sql.catalyst.plans.logical.{LogicalPlan, Window}
+import com.ledis.sql.catalyst.rules.Rule
+import com.ledis.sql.types._
 
 /**
  * We need to take care of special floating numbers (NaN and -0.0) in several places:
@@ -101,7 +101,7 @@ object NormalizeFloatingNumbers extends Rule[LogicalPlan] {
     case _ => false
   }
 
-  private[sql] def normalize(expr: Expression): Expression = expr match {
+  def normalize(expr: Expression): Expression = expr match {
     case _ if !needNormalize(expr) => expr
 
     case a: Alias =>

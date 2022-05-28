@@ -17,16 +17,16 @@
 
 package com.ledis.sql.catalyst.analysis
 
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.catalog.CatalogTypes.TablePartitionSpec
-import org.apache.spark.sql.connector.catalog.CatalogV2Implicits._
-import org.apache.spark.sql.connector.catalog.Identifier
-import org.apache.spark.sql.types.StructType
+import com.ledis.exception.AnalysisException
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.catalog.CatalogTypes.TablePartitionSpec
+import com.ledis.sql.connector.catalog.CatalogV2Implicits._
+import com.ledis.sql.connector.catalog.Identifier
+import com.ledis.sql.types.StructType
 
 /**
  * Thrown by a catalog when an item already exists. The analyzer will rethrow the exception
- * as an [[org.apache.spark.sql.AnalysisException]] with the correct position information.
+ * as an [[AnalysisException]] with the correct position information.
  */
 class DatabaseAlreadyExistsException(db: String)
   extends NamespaceAlreadyExistsException(s"Database '$db' already exists")

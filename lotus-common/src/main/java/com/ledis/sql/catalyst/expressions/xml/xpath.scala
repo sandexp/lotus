@@ -17,13 +17,13 @@
 
 package com.ledis.sql.catalyst.expressions.xml
 
-import org.apache.spark.sql.catalyst.analysis.{FunctionRegistry, TypeCheckResult}
-import org.apache.spark.sql.catalyst.analysis.TypeCheckResult.TypeCheckFailure
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.codegen.CodegenFallback
-import org.apache.spark.sql.catalyst.util.GenericArrayData
-import org.apache.spark.sql.types._
-import org.apache.spark.unsafe.types.UTF8String
+import com.ledis.sql.catalyst.analysis.{FunctionRegistry, TypeCheckResult}
+import com.ledis.sql.catalyst.analysis.TypeCheckResult.TypeCheckFailure
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.expressions.codegen.CodegenFallback
+import com.ledis.sql.catalyst.util.GenericArrayData
+import com.ledis.sql.types._
+import com.ledis.unsafe.types.UTF8String
 
 /**
  * Base class for xpath_boolean, xpath_double, xpath_int, etc.

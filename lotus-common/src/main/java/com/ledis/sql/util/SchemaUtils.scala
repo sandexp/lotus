@@ -19,19 +19,18 @@ package com.ledis.sql.util
 
 import java.util.Locale
 
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.analysis._
-import org.apache.spark.sql.catalyst.expressions.{Alias, Attribute, NamedExpression}
-import org.apache.spark.sql.connector.expressions.{BucketTransform, FieldReference, NamedTransform, Transform}
-import org.apache.spark.sql.types.{ArrayType, DataType, MapType, StructField, StructType}
+import com.ledis.exception.AnalysisException
+import com.ledis.sql.catalyst.analysis.{Resolver, UnresolvedAttribute}
+import com.ledis.sql.catalyst.expressions.{Alias, Attribute, NamedExpression}
+import com.ledis.sql.connector.expressions.{BucketTransform, FieldReference, NamedTransform, Transform}
+import com.ledis.sql.types._
 
 
 /**
  * Utils for handling schemas.
  *
- * TODO: Merge this file with [[org.apache.spark.ml.util.SchemaUtils]].
  */
-private[spark] object SchemaUtils {
+object SchemaUtils {
 
   /**
    * Checks if an input schema has duplicate column names. This throws an exception if the

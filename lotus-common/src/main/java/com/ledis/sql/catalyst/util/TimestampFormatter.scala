@@ -27,13 +27,13 @@ import java.util.{Calendar, GregorianCalendar, Locale, TimeZone}
 
 import org.apache.commons.lang3.time.FastDateFormat
 
-import org.apache.spark.sql.catalyst.util.DateTimeConstants._
-import org.apache.spark.sql.catalyst.util.DateTimeUtils._
-import org.apache.spark.sql.catalyst.util.LegacyDateFormats.{LegacyDateFormat, LENIENT_SIMPLE_DATE_FORMAT}
-import org.apache.spark.sql.catalyst.util.RebaseDateTime._
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.internal.SQLConf.LegacyBehaviorPolicy._
-import org.apache.spark.sql.types.Decimal
+import com.ledis.sql.catalyst.util.DateTimeConstants._
+import com.ledis.sql.catalyst.util.DateTimeUtils._
+import com.ledis.sql.catalyst.util.LegacyDateFormats.{LegacyDateFormat, LENIENT_SIMPLE_DATE_FORMAT}
+import com.ledis.sql.catalyst.util.RebaseDateTime._
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.internal.SQLConf.LegacyBehaviorPolicy._
+import com.ledis.sql.types.Decimal
 
 sealed trait TimestampFormatter extends Serializable {
   /**

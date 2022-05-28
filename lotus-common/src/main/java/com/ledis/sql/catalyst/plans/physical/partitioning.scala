@@ -17,8 +17,8 @@
 
 package com.ledis.sql.catalyst.plans.physical
 
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.types.{DataType, IntegerType}
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.types.{DataType, IntegerType}
 
 /**
  * Specifies how tuples that share common expressions will be distributed when a query is executed

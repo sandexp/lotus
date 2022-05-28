@@ -19,7 +19,7 @@ package com.ledis.sql.catalyst.catalog
 
 import java.util.Locale
 
-import org.apache.spark.sql.AnalysisException
+import com.ledis.exception.AnalysisException
 
 /** A trait that represents the type of a resourced needed by a function. */
 abstract class FunctionResourceType(val resourceType: String)

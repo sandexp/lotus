@@ -17,10 +17,10 @@
 
 package com.ledis.sql.catalyst.expressions
 
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.expressions.codegen.CodegenFallback
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.expressions.codegen.CodegenFallback
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
 
 /**
  * A placeholder expression for cube/rollup, which will be replaced by analyzer

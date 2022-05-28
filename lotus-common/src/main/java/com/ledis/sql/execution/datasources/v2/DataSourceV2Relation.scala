@@ -17,16 +17,16 @@
 
 package com.ledis.sql.execution.datasources.v2
 
-import org.apache.spark.sql.catalyst.analysis.{MultiInstanceRelation, NamedRelation}
-import org.apache.spark.sql.catalyst.expressions.{Attribute, AttributeReference}
-import org.apache.spark.sql.catalyst.plans.logical.{LeafNode, LogicalPlan, Statistics}
-import org.apache.spark.sql.catalyst.util.{truncatedString, CharVarcharUtils}
-import org.apache.spark.sql.connector.catalog.{CatalogPlugin, Identifier, MetadataColumn, SupportsMetadataColumns, Table, TableCapability}
-import org.apache.spark.sql.connector.read.{Scan, Statistics => V2Statistics, SupportsReportStatistics}
-import org.apache.spark.sql.connector.read.streaming.{Offset, SparkDataStream}
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.util.CaseInsensitiveStringMap
-import org.apache.spark.util.Utils
+import com.ledis.sql.catalyst.analysis.{MultiInstanceRelation, NamedRelation}
+import com.ledis.sql.catalyst.expressions.{Attribute, AttributeReference}
+import com.ledis.sql.catalyst.plans.logical.{LeafNode, LogicalPlan, Statistics}
+import com.ledis.sql.catalyst.util.{truncatedString, CharVarcharUtils}
+import com.ledis.sql.connector.catalog.{CatalogPlugin, Identifier, MetadataColumn, SupportsMetadataColumns, Table, TableCapability}
+import com.ledis.sql.connector.read.{Scan, Statistics => V2Statistics, SupportsReportStatistics}
+import com.ledis.sql.connector.read.streaming.{Offset, SparkDataStream}
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.util.CaseInsensitiveStringMap
+import com.ledis.util.Utils
 
 /**
  * A logical plan representing a data source v2 table.
@@ -36,8 +36,8 @@ import org.apache.spark.util.Utils
  * @param catalog catalogPlugin for the table. None if no catalog is specified.
  * @param identifier the identifier for the table. None if no identifier is defined.
  * @param options The options for this table operation. It's used to create fresh
- *                [[org.apache.spark.sql.connector.read.ScanBuilder]] and
- *                [[org.apache.spark.sql.connector.write.WriteBuilder]].
+ *                [[com.ledis.sql.connector.read.ScanBuilder]] and
+ *                [[com.ledis.sql.connector.write.WriteBuilder]].
  */
 case class DataSourceV2Relation(
     table: Table,

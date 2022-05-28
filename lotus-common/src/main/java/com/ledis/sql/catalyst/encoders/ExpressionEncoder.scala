@@ -20,19 +20,19 @@ package com.ledis.sql.catalyst.encoders
 import scala.reflect.ClassTag
 import scala.reflect.runtime.universe.{typeTag, TypeTag}
 
-import org.apache.spark.sql.Encoder
-import org.apache.spark.sql.catalyst.{InternalRow, JavaTypeInference, ScalaReflection}
-import org.apache.spark.sql.catalyst.analysis.{Analyzer, GetColumnByOrdinal, SimpleAnalyzer, UnresolvedAttribute, UnresolvedExtractValue}
-import org.apache.spark.sql.catalyst.encoders.ExpressionEncoder.{Deserializer, Serializer}
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.codegen.GenerateUnsafeProjection
-import org.apache.spark.sql.catalyst.expressions.objects.{AssertNotNull, InitializeJavaBean, Invoke, NewInstance}
-import org.apache.spark.sql.catalyst.optimizer.{ReassignLambdaVariableID, SimplifyCasts}
-import org.apache.spark.sql.catalyst.plans.logical.{CatalystSerde, DeserializeToObject, LeafNode, LocalRelation}
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types.{ObjectType, StringType, StructField, StructType}
-import org.apache.spark.unsafe.types.UTF8String
-import org.apache.spark.util.Utils
+import com.ledis.sql.Encoder
+import com.ledis.sql.catalyst.{InternalRow, JavaTypeInference, ScalaReflection}
+import com.ledis.sql.catalyst.analysis.{Analyzer, GetColumnByOrdinal, SimpleAnalyzer, UnresolvedAttribute, UnresolvedExtractValue}
+import com.ledis.sql.catalyst.encoders.ExpressionEncoder.{Deserializer, Serializer}
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.expressions.codegen.GenerateUnsafeProjection
+import com.ledis.sql.catalyst.expressions.objects.{AssertNotNull, InitializeJavaBean, Invoke, NewInstance}
+import com.ledis.sql.catalyst.optimizer.{ReassignLambdaVariableID, SimplifyCasts}
+import com.ledis.sql.catalyst.plans.logical.{CatalystSerde, DeserializeToObject, LeafNode, LocalRelation}
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types.{ObjectType, StringType, StructField, StructType}
+import com.ledis.unsafe.types.UTF8String
+import com.ledis.util.Utils
 
 /**
  * A factory for constructing encoders that convert objects and primitives to and from the

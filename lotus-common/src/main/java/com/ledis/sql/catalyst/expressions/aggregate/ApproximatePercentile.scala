@@ -21,15 +21,15 @@ import java.nio.ByteBuffer
 
 import com.google.common.primitives.{Doubles, Ints, Longs}
 
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.analysis.{FunctionRegistry, TypeCheckResult}
-import org.apache.spark.sql.catalyst.analysis.TypeCheckResult.{TypeCheckFailure, TypeCheckSuccess}
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.aggregate.ApproximatePercentile.PercentileDigest
-import org.apache.spark.sql.catalyst.util.{ArrayData, GenericArrayData}
-import org.apache.spark.sql.catalyst.util.QuantileSummaries
-import org.apache.spark.sql.catalyst.util.QuantileSummaries.{defaultCompressThreshold, Stats}
-import org.apache.spark.sql.types._
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.analysis.{FunctionRegistry, TypeCheckResult}
+import com.ledis.sql.catalyst.analysis.TypeCheckResult.{TypeCheckFailure, TypeCheckSuccess}
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.expressions.aggregate.ApproximatePercentile.PercentileDigest
+import com.ledis.sql.catalyst.util.{ArrayData, GenericArrayData}
+import com.ledis.sql.catalyst.util.QuantileSummaries
+import com.ledis.sql.catalyst.util.QuantileSummaries.{defaultCompressThreshold, Stats}
+import com.ledis.sql.types._
 
 /**
  * The ApproximatePercentile function returns the approximate percentile(s) of a column at the given
@@ -223,7 +223,7 @@ object ApproximatePercentile {
       this(new QuantileSummaries(defaultCompressThreshold, relativeError, compressed = true))
     }
 
-    private[sql] def isCompressed: Boolean = summaries.compressed
+    def isCompressed: Boolean = summaries.compressed
 
     /** Returns compressed object of [[QuantileSummaries]] */
     def quantileSummaries: QuantileSummaries = {

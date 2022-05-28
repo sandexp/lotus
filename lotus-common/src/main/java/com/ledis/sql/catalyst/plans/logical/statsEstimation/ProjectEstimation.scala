@@ -17,8 +17,8 @@
 
 package com.ledis.sql.catalyst.plans.logical.statsEstimation
 
-import org.apache.spark.sql.catalyst.expressions.AttributeMap
-import org.apache.spark.sql.catalyst.plans.logical.{Project, Statistics}
+import com.ledis.sql.catalyst.expressions.AttributeMap
+import com.ledis.sql.catalyst.plans.logical.{Project, Statistics}
 
 object ProjectEstimation {
   import EstimationUtils._

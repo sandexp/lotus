@@ -21,11 +21,11 @@ import java.util.concurrent.TimeUnit
 
 import scala.util.control.NonFatal
 
-import org.apache.spark.sql.catalyst.util.DateTimeConstants._
-import org.apache.spark.sql.catalyst.util.DateTimeUtils.millisToMicros
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types.Decimal
-import org.apache.spark.unsafe.types.{CalendarInterval, UTF8String}
+import com.ledis.sql.catalyst.util.DateTimeConstants._
+import com.ledis.sql.catalyst.util.DateTimeUtils.millisToMicros
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types.Decimal
+import com.ledis.unsafe.types.{CalendarInterval, UTF8String}
 
 object IntervalUtils {
 

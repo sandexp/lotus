@@ -24,17 +24,17 @@ import scala.collection.mutable.{Builder, IndexedSeq, WrappedArray}
 import scala.reflect.ClassTag
 import scala.util.{Properties, Try}
 
-import org.apache.spark.{SparkConf, SparkEnv}
-import org.apache.spark.serializer._
-import org.apache.spark.sql.Row
-import org.apache.spark.sql.catalyst.{InternalRow, ScalaReflection}
-import org.apache.spark.sql.catalyst.encoders.RowEncoder
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.codegen._
-import org.apache.spark.sql.catalyst.expressions.codegen.Block._
-import org.apache.spark.sql.catalyst.util.{ArrayBasedMapData, ArrayData, GenericArrayData, MapData}
-import org.apache.spark.sql.types._
-import org.apache.spark.util.Utils
+import com.ledis.{SparkConf, SparkEnv}
+import com.ledis.serializer._
+import com.ledis.sql.Row
+import com.ledis.sql.catalyst.{InternalRow, ScalaReflection}
+import com.ledis.sql.catalyst.encoders.RowEncoder
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.expressions.codegen._
+import com.ledis.sql.catalyst.expressions.codegen.Block._
+import com.ledis.sql.catalyst.util.{ArrayBasedMapData, ArrayData, GenericArrayData, MapData}
+import com.ledis.sql.types._
+import com.ledis.util.Utils
 
 /**
  * Common base class for [[StaticInvoke]], [[Invoke]], and [[NewInstance]].
@@ -380,7 +380,7 @@ case class Invoke(
         try {
           $resultVal = $funcCall;
         } catch (Exception e) {
-          org.apache.spark.unsafe.Platform.throwException(e);
+          com.ledis.unsafe.Platform.throwException(e);
         }
       """
     } else {

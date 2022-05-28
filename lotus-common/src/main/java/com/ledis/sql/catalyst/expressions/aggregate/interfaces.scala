@@ -17,11 +17,11 @@
 
 package com.ledis.sql.catalyst.expressions.aggregate
 
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.analysis.UnresolvedAttribute
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.codegen.{CodegenContext, CodegenFallback, ExprCode}
-import org.apache.spark.sql.types._
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.analysis.UnresolvedAttribute
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.expressions.codegen.{CodegenContext, CodegenFallback, ExprCode}
+import com.ledis.sql.types._
 
 /** The mode of an [[AggregateFunction]]. */
 sealed trait AggregateMode

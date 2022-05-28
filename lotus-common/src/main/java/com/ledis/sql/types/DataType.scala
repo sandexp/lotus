@@ -20,23 +20,21 @@ package com.ledis.sql.types
 import java.util.Locale
 
 import scala.util.control.NonFatal
-
 import com.fasterxml.jackson.databind.annotation.{JsonDeserialize, JsonSerialize}
+import com.ledis.exception.AnalysisException
 import org.json4s._
 import org.json4s.JsonAST.JValue
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods._
 
-import org.apache.spark.annotation.Stable
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.analysis.Resolver
-import org.apache.spark.sql.catalyst.expressions.{Cast, Expression}
-import org.apache.spark.sql.catalyst.parser.CatalystSqlParser
-import org.apache.spark.sql.catalyst.util.DataTypeJsonUtils.{DataTypeJsonDeserializer, DataTypeJsonSerializer}
-import org.apache.spark.sql.catalyst.util.StringUtils.StringConcat
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.internal.SQLConf.StoreAssignmentPolicy
-import org.apache.spark.sql.internal.SQLConf.StoreAssignmentPolicy.{ANSI, STRICT}
+import com.ledis.sql.catalyst.analysis.Resolver
+import com.ledis.sql.catalyst.expressions.{Cast, Expression}
+import com.ledis.sql.catalyst.parser.CatalystSqlParser
+import com.ledis.sql.catalyst.util.DataTypeJsonUtils.{DataTypeJsonDeserializer, DataTypeJsonSerializer}
+import com.ledis.sql.catalyst.util.StringUtils.StringConcat
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.internal.SQLConf.StoreAssignmentPolicy
+import com.ledis.sql.internal.SQLConf.StoreAssignmentPolicy.{ANSI, STRICT}
 import org.apache.spark.util.Utils
 
 /**
@@ -45,7 +43,6 @@ import org.apache.spark.util.Utils
  * @since 1.3.0
  */
 
-@Stable
 @JsonSerialize(using = classOf[DataTypeJsonSerializer])
 @JsonDeserialize(using = classOf[DataTypeJsonDeserializer])
 abstract class DataType extends AbstractDataType {
@@ -56,7 +53,7 @@ abstract class DataType extends AbstractDataType {
    *     ...
    * }}}
    */
-  private[sql] def unapply(e: Expression): Boolean = e.dataType == this
+  def unapply(e: Expression): Boolean = e.dataType == this
 
   /**
    * The default size of a value of this data type, used internally for size estimation.
@@ -70,7 +67,7 @@ abstract class DataType extends AbstractDataType {
       .toLowerCase(Locale.ROOT)
   }
 
-  private[sql] def jsonValue: JValue = typeName
+  def jsonValue: JValue = typeName
 
   /** The compact JSON representation of this data type. */
   def json: String = compact(render(jsonValue))
@@ -85,7 +82,7 @@ abstract class DataType extends AbstractDataType {
   def catalogString: String = simpleString
 
   /** Readable string representation for the type with truncation */
-  private[sql] def simpleString(maxNumberFields: Int): String = simpleString
+  def simpleString(maxNumberFields: Int): String = simpleString
 
   def sql: String = simpleString.toUpperCase(Locale.ROOT)
 
@@ -93,7 +90,7 @@ abstract class DataType extends AbstractDataType {
    * Check if `this` and `other` are the same data type when ignoring nullability
    * (`StructField.nullable`, `ArrayType.containsNull`, and `MapType.valueContainsNull`).
    */
-  private[spark] def sameType(other: DataType): Boolean =
+  def sameType(other: DataType): Boolean =
     if (SQLConf.get.caseSensitiveAnalysis) {
       DataType.equalsIgnoreNullability(this, other)
     } else {
@@ -104,23 +101,23 @@ abstract class DataType extends AbstractDataType {
    * Returns the same data type but set all nullability fields are true
    * (`StructField.nullable`, `ArrayType.containsNull`, and `MapType.valueContainsNull`).
    */
-  private[spark] def asNullable: DataType
+  def asNullable: DataType
 
   /**
    * Returns true if any `DataType` of this DataType tree satisfies the given function `f`.
    */
-  private[spark] def existsRecursively(f: (DataType) => Boolean): Boolean = f(this)
+  def existsRecursively(f: (DataType) => Boolean): Boolean = f(this)
 
-  override private[sql] def defaultConcreteType: DataType = this
+  override def defaultConcreteType: DataType = this
 
-  override private[sql] def acceptsType(other: DataType): Boolean = sameType(other)
+  override def acceptsType(other: DataType): Boolean = sameType(other)
 }
 
 
 /**
  * @since 1.3.0
  */
-@Stable
+// @Stable
 object DataType {
 
   private val FIXED_DECIMAL = """decimal\(\s*(\d+)\s*,\s*(\-?\d+)\s*\)""".r
@@ -196,7 +193,7 @@ object DataType {
   }
 
   // NOTE: Map fields must be sorted in alphabetical order to keep consistent with the Python side.
-  private[sql] def parseDataType(json: JValue): DataType = json match {
+  def parseDataType(json: JValue): DataType = json match {
     case JString(name) =>
       nameToType(name)
 
@@ -276,7 +273,7 @@ object DataType {
   /**
    * Compares two types, ignoring nullability of ArrayType, MapType, StructType.
    */
-  private[sql] def equalsIgnoreNullability(left: DataType, right: DataType): Boolean = {
+  def equalsIgnoreNullability(left: DataType, right: DataType): Boolean = {
     (left, right) match {
       case (ArrayType(leftElementType, _), ArrayType(rightElementType, _)) =>
         equalsIgnoreNullability(leftElementType, rightElementType)
@@ -306,7 +303,7 @@ object DataType {
    *   if and only if for all every pair of fields, `to.nullable` is true, or both
    *   of `fromField.nullable` and `toField.nullable` are false.
    */
-  private[sql] def equalsIgnoreCompatibleNullability(from: DataType, to: DataType): Boolean = {
+  def equalsIgnoreCompatibleNullability(from: DataType, to: DataType): Boolean = {
     equalsIgnoreCompatibleNullability(from, to, ignoreName = false)
   }
 
@@ -325,7 +322,7 @@ object DataType {
    *   if and only if for all every pair of fields, `to.nullable` is true, or both
    *   of `fromField.nullable` and `toField.nullable` are false.
    */
-  private[sql] def equalsIgnoreNameAndCompatibleNullability(
+  def equalsIgnoreNameAndCompatibleNullability(
       from: DataType,
       to: DataType): Boolean = {
     equalsIgnoreCompatibleNullability(from, to, ignoreName = true)
@@ -360,7 +357,7 @@ object DataType {
    * Compares two types, ignoring nullability of ArrayType, MapType, StructType, and ignoring case
    * sensitivity of field names in StructType.
    */
-  private[sql] def equalsIgnoreCaseAndNullability(from: DataType, to: DataType): Boolean = {
+  def equalsIgnoreCaseAndNullability(from: DataType, to: DataType): Boolean = {
     (from, to) match {
       case (ArrayType(fromElement, _), ArrayType(toElement, _)) =>
         equalsIgnoreCaseAndNullability(fromElement, toElement)

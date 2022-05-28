@@ -22,13 +22,13 @@ import java.util.concurrent.atomic.{AtomicInteger, AtomicReference}
 
 import scala.collection.mutable
 
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.analysis.{TypeCheckResult, TypeCoercion, UnresolvedException}
-import org.apache.spark.sql.catalyst.expressions.codegen._
-import org.apache.spark.sql.catalyst.util._
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
-import org.apache.spark.unsafe.array.ByteArrayMethods
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.analysis.{TypeCheckResult, TypeCoercion, UnresolvedException}
+import com.ledis.sql.catalyst.expressions.codegen._
+import com.ledis.sql.catalyst.util._
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
+import com.ledis.unsafe.array.ByteArrayMethods
 
 /**
  * A placeholder of lambda variables to prevent unexpected resolution of [[LambdaFunction]].

@@ -19,13 +19,13 @@ package com.ledis.sql.catalyst.util
 
 import scala.collection.mutable
 
-import org.apache.spark.internal.Logging
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.objects.StaticInvoke
-import org.apache.spark.sql.catalyst.parser.CatalystSqlParser
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
+import com.ledis.internal.Logging
+import com.ledis.sql.AnalysisException
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.expressions.objects.StaticInvoke
+import com.ledis.sql.catalyst.parser.CatalystSqlParser
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
 
 object CharVarcharUtils extends Logging {
 

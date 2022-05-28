@@ -21,37 +21,37 @@ import java.util
 import java.util.Locale
 import java.util.concurrent.atomic.AtomicBoolean
 
+import com.ledis.exception.AnalysisException
+
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 import scala.util.Random
-
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst._
-import org.apache.spark.sql.catalyst.catalog._
-import org.apache.spark.sql.catalyst.encoders.OuterScopes
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.SubExprUtils._
-import org.apache.spark.sql.catalyst.expressions.aggregate._
-import org.apache.spark.sql.catalyst.expressions.objects._
-import org.apache.spark.sql.catalyst.optimizer.OptimizeUpdateFields
-import org.apache.spark.sql.catalyst.plans._
-import org.apache.spark.sql.catalyst.plans.logical._
-import org.apache.spark.sql.catalyst.rules._
-import org.apache.spark.sql.catalyst.streaming.StreamingRelationV2
-import org.apache.spark.sql.catalyst.trees.TreeNodeRef
-import org.apache.spark.sql.catalyst.util.{toPrettySQL, CharVarcharUtils}
-import org.apache.spark.sql.connector.catalog._
-import org.apache.spark.sql.connector.catalog.CatalogV2Implicits._
-import org.apache.spark.sql.connector.catalog.TableChange.{AddColumn, After, ColumnChange, ColumnPosition, DeleteColumn, RenameColumn, UpdateColumnComment, UpdateColumnNullability, UpdateColumnPosition, UpdateColumnType}
-import org.apache.spark.sql.connector.expressions.{FieldReference, IdentityTransform, Transform}
-import org.apache.spark.sql.errors.QueryCompilationErrors
-import org.apache.spark.sql.execution.datasources.v2.DataSourceV2Relation
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.internal.SQLConf.{PartitionOverwriteMode, StoreAssignmentPolicy}
-import org.apache.spark.sql.types._
-import org.apache.spark.sql.util.{CaseInsensitiveStringMap, SchemaUtils}
-import org.apache.spark.unsafe.types.UTF8String
-import org.apache.spark.util.Utils
+import com.ledis.sql.catalyst._
+import com.ledis.sql.catalyst.catalog._
+import com.ledis.sql.catalyst.encoders.OuterScopes
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.expressions.SubExprUtils._
+import com.ledis.sql.catalyst.expressions.aggregate._
+import com.ledis.sql.catalyst.expressions.objects._
+import com.ledis.sql.catalyst.optimizer.OptimizeUpdateFields
+import com.ledis.sql.catalyst.plans._
+import com.ledis.sql.catalyst.plans.logical._
+import com.ledis.sql.catalyst.rules._
+import com.ledis.sql.catalyst.streaming.StreamingRelationV2
+import com.ledis.sql.catalyst.trees.TreeNodeRef
+import com.ledis.sql.catalyst.util.{CharVarcharUtils, toPrettySQL}
+import com.ledis.sql.connector.catalog._
+import com.ledis.sql.connector.catalog.CatalogV2Implicits._
+import com.ledis.sql.connector.catalog.TableChange.{AddColumn, After, ColumnChange, ColumnPosition, DeleteColumn, RenameColumn, UpdateColumnComment, UpdateColumnNullability, UpdateColumnPosition, UpdateColumnType}
+import com.ledis.sql.connector.expressions.{FieldReference, IdentityTransform, Transform}
+import com.ledis.sql.errors.QueryCompilationErrors
+import com.ledis.sql.execution.datasources.v2.DataSourceV2Relation
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.internal.SQLConf.{PartitionOverwriteMode, StoreAssignmentPolicy}
+import com.ledis.sql.types._
+import com.ledis.sql.util.{CaseInsensitiveStringMap, SchemaUtils}
+import com.ledis.unsafe.types.UTF8String
+import com.ledis.util.Utils
 
 /**
  * A trivial [[Analyzer]] with a dummy [[SessionCatalog]] and [[EmptyFunctionRegistry]].
@@ -961,7 +961,7 @@ class Analyzer(override val catalogManager: CatalogManager)
    * columns are not accidentally selected by *.
    */
   object AddMetadataColumns extends Rule[LogicalPlan] {
-    import org.apache.spark.sql.execution.datasources.v2.DataSourceV2Implicits._
+    import com.ledis.sql.execution.datasources.v2.DataSourceV2Implicits._
 
     private def hasMetadataCol(plan: LogicalPlan): Boolean = {
       plan.expressions.exists(_.find {
@@ -3737,7 +3737,7 @@ object EliminateEventTimeWatermark extends Rule[LogicalPlan] {
  * filter out the rows where the time column is not inside the time window.
  */
 object TimeWindowing extends Rule[LogicalPlan] {
-  import org.apache.spark.sql.catalyst.dsl.expressions._
+  import com.ledis.sql.catalyst.dsl.expressions._
 
   private final val WINDOW_COL_NAME = "window"
   private final val WINDOW_START = "start"

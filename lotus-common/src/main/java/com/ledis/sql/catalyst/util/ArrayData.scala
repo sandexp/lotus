@@ -17,12 +17,13 @@
 
 package com.ledis.sql.catalyst.util
 
-import scala.reflect.ClassTag
+import com.ledis.sql.types.DataType
 
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.expressions.{SpecializedGetters, UnsafeArrayData}
-import org.apache.spark.sql.types._
-import org.apache.spark.unsafe.array.ByteArrayMethods
+import scala.reflect.ClassTag
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.expressions.{SpecializedGetters, UnsafeArrayData}
+import com.ledis.sql.types._
+import com.ledis.unsafe.array.ByteArrayMethods
 
 object ArrayData {
   def toArrayData(input: Any): ArrayData = input match {

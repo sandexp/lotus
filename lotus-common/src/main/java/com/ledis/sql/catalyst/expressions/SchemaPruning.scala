@@ -17,8 +17,8 @@
 
 package com.ledis.sql.catalyst.expressions
 
-import org.apache.spark.sql.catalyst.SQLConfHelper
-import org.apache.spark.sql.types._
+import com.ledis.sql.catalyst.SQLConfHelper
+import com.ledis.sql.types._
 
 object SchemaPruning extends SQLConfHelper {
   /**

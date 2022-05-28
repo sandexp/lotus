@@ -17,14 +17,14 @@
 
 package com.ledis.sql.catalyst.analysis
 
-import scala.collection.mutable
+import com.ledis.exception.AnalysisException
 
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.expressions.SubqueryExpression
-import org.apache.spark.sql.catalyst.plans.logical.{LogicalPlan, SubqueryAlias, With}
-import org.apache.spark.sql.catalyst.rules.Rule
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.internal.SQLConf.{LEGACY_CTE_PRECEDENCE_POLICY, LegacyBehaviorPolicy}
+import scala.collection.mutable
+import com.ledis.sql.catalyst.expressions.SubqueryExpression
+import com.ledis.sql.catalyst.plans.logical.{LogicalPlan, SubqueryAlias, With}
+import com.ledis.sql.catalyst.rules.Rule
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.internal.SQLConf.{LEGACY_CTE_PRECEDENCE_POLICY, LegacyBehaviorPolicy}
 
 /**
  * Analyze WITH nodes and substitute child plan with CTE definitions.

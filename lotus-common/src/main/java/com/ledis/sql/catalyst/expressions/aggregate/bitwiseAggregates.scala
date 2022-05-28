@@ -17,8 +17,8 @@
 
 package com.ledis.sql.catalyst.expressions.aggregate
 
-import org.apache.spark.sql.catalyst.expressions.{AttributeReference, BinaryArithmetic, BitwiseAnd, BitwiseOr, BitwiseXor, ExpectsInputTypes, Expression, ExpressionDescription, If, IsNull, Literal}
-import org.apache.spark.sql.types.{AbstractDataType, DataType, IntegralType}
+import com.ledis.sql.catalyst.expressions.{AttributeReference, BinaryArithmetic, BitwiseAnd, BitwiseOr, BitwiseXor, ExpectsInputTypes, Expression, ExpressionDescription, If, IsNull, Literal}
+import com.ledis.sql.types.{AbstractDataType, DataType, IntegralType}
 
 abstract class BitAggregate extends DeclarativeAggregate with ExpectsInputTypes {
 

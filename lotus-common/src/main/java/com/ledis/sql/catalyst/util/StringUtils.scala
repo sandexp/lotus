@@ -19,13 +19,12 @@ package com.ledis.sql.catalyst.util
 
 import java.util.regex.{Pattern, PatternSyntaxException}
 
-import scala.collection.mutable.ArrayBuffer
+import com.ledis.exception.AnalysisException
 
-import org.apache.spark.internal.Logging
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.unsafe.array.ByteArrayMethods
-import org.apache.spark.unsafe.types.UTF8String
+import scala.collection.mutable.ArrayBuffer
+import com.ledis.internal.Logging
+import com.ledis.unsafe.array.ByteArrayMethods
+import com.ledis.unsafe.types.UTF8String
 
 object StringUtils extends Logging {
 
@@ -34,8 +33,8 @@ object StringUtils extends Logging {
    *
    * Underscores (_) are converted to '.' and percent signs (%) are converted to '.*', other
    * characters are quoted literally. Escaping is done according to the rules specified in
-   * [[org.apache.spark.sql.catalyst.expressions.Like]] usage documentation. An invalid pattern will
-   * throw an [[AnalysisException]].
+   * [[com.ledis.sql.catalyst.expressions.Like]] usage documentation. An invalid pattern will
+   * throw an [[com.ledis.exception.AnalysisException]].
    *
    * @param pattern the SQL pattern to convert
    * @param escapeChar the escape string contains one character.

@@ -17,21 +17,21 @@
 
 package com.ledis.sql.catalyst.optimizer
 
-import scala.collection.mutable
+import com.ledis.exception.AnalysisException
 
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.analysis._
-import org.apache.spark.sql.catalyst.catalog.{InMemoryCatalog, SessionCatalog}
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.aggregate._
-import org.apache.spark.sql.catalyst.plans._
-import org.apache.spark.sql.catalyst.plans.logical._
-import org.apache.spark.sql.catalyst.rules._
-import org.apache.spark.sql.connector.catalog.CatalogManager
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
-import org.apache.spark.sql.util.SchemaUtils._
-import org.apache.spark.util.Utils
+import scala.collection.mutable
+import com.ledis.sql.catalyst.analysis._
+import com.ledis.sql.catalyst.catalog.{InMemoryCatalog, SessionCatalog}
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.expressions.aggregate._
+import com.ledis.sql.catalyst.plans._
+import com.ledis.sql.catalyst.plans.logical._
+import com.ledis.sql.catalyst.rules._
+import com.ledis.sql.connector.catalog.CatalogManager
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
+import com.ledis.sql.util.SchemaUtils._
+import com.ledis.util.Utils
 
 /**
  * Abstract class all optimizers should inherit of, contains the standard batches (extending
@@ -1563,7 +1563,7 @@ object CheckCartesianProducts extends Rule[LogicalPlan] with PredicateHelper {
  * Speeds up aggregates on fixed-precision decimals by executing them on unscaled Long values.
  *
  * This uses the same rules for increasing the precision and scale of the output as
- * [[org.apache.spark.sql.catalyst.analysis.DecimalPrecision]].
+ * [[com.ledis.sql.catalyst.analysis.DecimalPrecision]].
  */
 object DecimalAggregates extends Rule[LogicalPlan] {
   import Decimal.MAX_LONG_DIGITS

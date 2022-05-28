@@ -17,10 +17,10 @@
 
 package com.ledis.sql.catalyst.expressions.aggregate
 
-import org.apache.spark.sql.catalyst.dsl.expressions._
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
+import com.ledis.sql.catalyst.dsl.expressions._
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
 
 /**
  * Compute the covariance between two expressions.

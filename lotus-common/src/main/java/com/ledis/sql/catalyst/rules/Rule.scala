@@ -17,9 +17,9 @@
 
 package com.ledis.sql.catalyst.rules
 
-import org.apache.spark.internal.Logging
-import org.apache.spark.sql.catalyst.SQLConfHelper
-import org.apache.spark.sql.catalyst.trees.TreeNode
+import com.ledis.internal.Logging
+import com.ledis.sql.catalyst.SQLConfHelper
+import com.ledis.sql.catalyst.trees.TreeNode
 
 abstract class Rule[TreeType <: TreeNode[_]] extends SQLConfHelper with Logging {
 

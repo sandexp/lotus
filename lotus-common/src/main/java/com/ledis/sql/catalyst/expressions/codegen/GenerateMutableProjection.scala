@@ -17,18 +17,18 @@
 
 package com.ledis.sql.catalyst.expressions.codegen
 
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.BindReferences.bindReferences
-import org.apache.spark.sql.catalyst.expressions.aggregate.NoOp
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.expressions.BindReferences.bindReferences
+import com.ledis.sql.catalyst.expressions.aggregate.NoOp
 
 // MutableProjection is not accessible in Java
 abstract class BaseMutableProjection extends MutableProjection
 
 /**
- * Generates byte code that produces a [[InternalRow]] object that can update itself based on a new
- * input [[InternalRow]] for a fixed set of [[Expression Expressions]].
+ * Generates byte code that produces a [[com.ledis.sql.catalyst.InternalRow]] object that can update itself based on a new
+ * input [[com.ledis.sql.catalyst.InternalRow]] for a fixed set of [[Expression Expressions]].
  * It exposes a `target` method, which is used to set the row that will be updated.
- * The internal [[InternalRow]] object created internally is used only when `target` is not used.
+ * The internal [[com.ledis.sql.catalyst.InternalRow]] object created internally is used only when `target` is not used.
  */
 object GenerateMutableProjection extends CodeGenerator[Seq[Expression], MutableProjection] {
 

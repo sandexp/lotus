@@ -17,14 +17,14 @@
 
 package com.ledis.sql.catalyst.expressions
 
-import org.apache.spark.{SPARK_REVISION, SPARK_VERSION_SHORT}
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.expressions.codegen._
-import org.apache.spark.sql.catalyst.expressions.codegen.Block._
-import org.apache.spark.sql.catalyst.util.RandomUUIDGenerator
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
-import org.apache.spark.unsafe.types.UTF8String
+import com.ledis.{SPARK_REVISION, SPARK_VERSION_SHORT}
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.expressions.codegen._
+import com.ledis.sql.catalyst.expressions.codegen.Block._
+import com.ledis.sql.catalyst.util.RandomUUIDGenerator
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
+import com.ledis.unsafe.types.UTF8String
 
 /**
  * Print the result of an expression to stderr (used for debugging codegen).
@@ -206,11 +206,11 @@ case class Uuid(randomSeed: Option[Long] = None) extends LeafExpression with Sta
 
   override def doGenCode(ctx: CodegenContext, ev: ExprCode): ExprCode = {
     val randomGen = ctx.freshName("randomGen")
-    ctx.addMutableState("org.apache.spark.sql.catalyst.util.RandomUUIDGenerator", randomGen,
+    ctx.addMutableState("com.ledis.sql.catalyst.util.RandomUUIDGenerator", randomGen,
       forceInline = true,
       useFreshName = false)
     ctx.addPartitionInitializationStatement(s"$randomGen = " +
-      "new org.apache.spark.sql.catalyst.util.RandomUUIDGenerator(" +
+      "new com.ledis.sql.catalyst.util.RandomUUIDGenerator(" +
       s"${randomSeed.get}L + partitionIndex);")
     ev.copy(code = code"final UTF8String ${ev.value} = $randomGen.getNextUUIDUTF8String();",
       isNull = FalseLiteral)

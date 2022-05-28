@@ -17,8 +17,8 @@
 
 package com.ledis.sql.catalyst.plans.logical.statsEstimation
 
-import org.apache.spark.sql.catalyst.expressions.Literal
-import org.apache.spark.sql.types._
+import com.ledis.sql.catalyst.expressions.Literal
+import com.ledis.sql.types._
 
 
 /** Value range of a column. */

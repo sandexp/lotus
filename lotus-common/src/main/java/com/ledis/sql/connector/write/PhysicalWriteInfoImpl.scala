@@ -17,4 +17,4 @@
 
 package com.ledis.sql.connector.write
 
-private[sql] case class PhysicalWriteInfoImpl(numPartitions: Int) extends PhysicalWriteInfo
+case class PhysicalWriteInfoImpl(numPartitions: Int) extends PhysicalWriteInfo

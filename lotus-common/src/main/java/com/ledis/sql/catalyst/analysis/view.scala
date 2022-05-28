@@ -19,10 +19,10 @@ package com.ledis.sql.catalyst.analysis
 
 import java.util.Locale
 
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.expressions.{Alias, Attribute}
-import org.apache.spark.sql.catalyst.plans.logical.{LogicalPlan, Project, View}
-import org.apache.spark.sql.catalyst.rules.Rule
+import com.ledis.exception.AnalysisException
+import com.ledis.sql.catalyst.expressions.{Alias, Attribute}
+import com.ledis.sql.catalyst.plans.logical.{LogicalPlan, Project, View}
+import com.ledis.sql.catalyst.rules.Rule
 
 /**
  * This file defines view types and analysis rules related to views.

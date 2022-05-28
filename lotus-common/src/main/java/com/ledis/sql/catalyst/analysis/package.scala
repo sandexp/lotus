@@ -17,14 +17,9 @@
 
 package com.ledis.sql.catalyst
 
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.trees.TreeNode
+import com.ledis.exception.AnalysisException
+import com.ledis.sql.catalyst.trees.TreeNode
 
-/**
- * Provides a logical query plan [[Analyzer]] and supporting classes for performing analysis.
- * Analysis consists of translating [[UnresolvedAttribute]]s and [[UnresolvedRelation]]s
- * into fully typed objects using information in a schema [[Catalog]].
- */
 package object analysis {
 
   /**

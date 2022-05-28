@@ -16,7 +16,7 @@
  */
 package com.ledis.sql.catalyst.catalog
 
-import org.apache.spark.scheduler.SparkListenerEvent
+import com.ledis.scheduler.SparkListenerEvent
 
 /**
  * Event emitted by the external catalog when it is modified. Events are either fired before or

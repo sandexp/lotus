@@ -17,9 +17,9 @@
 
 package com.ledis.sql.catalyst.analysis
 
-import org.apache.spark.sql.catalyst.expressions.Attribute
-import org.apache.spark.sql.catalyst.plans.logical.{LeafNode, LogicalPlan}
-import org.apache.spark.sql.catalyst.rules.Rule
+import com.ledis.sql.catalyst.expressions.Attribute
+import com.ledis.sql.catalyst.plans.logical.{LeafNode, LogicalPlan}
+import com.ledis.sql.catalyst.rules.Rule
 
 /**
  * Updates nullability of Attributes in a resolved LogicalPlan by using the nullability of

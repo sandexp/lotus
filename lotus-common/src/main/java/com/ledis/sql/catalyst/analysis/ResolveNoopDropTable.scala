@@ -17,8 +17,8 @@
 
 package com.ledis.sql.catalyst.analysis
 
-import org.apache.spark.sql.catalyst.plans.logical.{DropTable, LogicalPlan, NoopDropTable}
-import org.apache.spark.sql.catalyst.rules.Rule
+import com.ledis.sql.catalyst.plans.logical.{DropTable, LogicalPlan, NoopDropTable}
+import com.ledis.sql.catalyst.rules.Rule
 
 /**
  * A rule for handling [[DropTable]] logical plan when the table or temp view is not resolved.

@@ -17,8 +17,8 @@
 
 package com.ledis.sql.catalyst.util
 
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.unsafe.types.UTF8String
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.unsafe.types.UTF8String
 
 /**
  * Exception thrown when the underlying parser returns a partial result of parsing.

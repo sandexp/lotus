@@ -19,12 +19,12 @@ package com.ledis.sql.catalyst.optimizer
 
 import scala.collection.mutable
 
-import org.apache.spark.internal.Logging
-import org.apache.spark.sql.catalyst.expressions.{And, Attribute, AttributeSet, Expression, ExpressionSet, PredicateHelper}
-import org.apache.spark.sql.catalyst.plans.{Inner, InnerLike, JoinType}
-import org.apache.spark.sql.catalyst.plans.logical._
-import org.apache.spark.sql.catalyst.rules.Rule
-import org.apache.spark.sql.internal.SQLConf
+import com.ledis.internal.Logging
+import com.ledis.sql.catalyst.expressions.{And, Attribute, AttributeSet, Expression, ExpressionSet, PredicateHelper}
+import com.ledis.sql.catalyst.plans.{Inner, InnerLike, JoinType}
+import com.ledis.sql.catalyst.plans.logical._
+import com.ledis.sql.catalyst.rules.Rule
+import com.ledis.sql.internal.SQLConf
 
 
 /**

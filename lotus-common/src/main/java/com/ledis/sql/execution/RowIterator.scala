@@ -19,7 +19,7 @@ package com.ledis.sql.execution
 
 import java.util.NoSuchElementException
 
-import org.apache.spark.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.InternalRow
 
 /**
  * An internal iterator interface which presents a more restrictive API than

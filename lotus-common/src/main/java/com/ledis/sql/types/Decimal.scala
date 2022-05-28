@@ -21,8 +21,7 @@ import java.math.{BigDecimal => JavaBigDecimal, BigInteger, MathContext, Roundin
 
 import scala.util.Try
 
-import org.apache.spark.annotation.Unstable
-import org.apache.spark.sql.internal.SQLConf
+import com.ledis.sql.internal.SQLConf
 import org.apache.spark.unsafe.types.UTF8String
 
 /**
@@ -35,9 +34,8 @@ import org.apache.spark.unsafe.types.UTF8String
  *
  * Note, for values between -1.0 and 1.0, precision digits are only counted after dot.
  */
-@Unstable
 final class Decimal extends Ordered[Decimal] with Serializable {
-  import org.apache.spark.sql.types.Decimal._
+  import com.ledis.sql.types.Decimal._
 
   private var decimalVal: BigDecimal = null
   private var longVal: Long = 0L
@@ -257,7 +255,7 @@ final class Decimal extends Ordered[Decimal] with Serializable {
    * @return the Byte value that is equal to the rounded decimal.
    * @throws ArithmeticException if the decimal is too big to fit in Byte type.
    */
-  private[sql] def roundToByte(): Byte = {
+  def roundToByte(): Byte = {
     if (decimalVal.eq(null)) {
       val actualLongVal = longVal / POW_10(_scale)
       if (actualLongVal == actualLongVal.toByte) {
@@ -279,7 +277,7 @@ final class Decimal extends Ordered[Decimal] with Serializable {
    * @return the Short value that is equal to the rounded decimal.
    * @throws ArithmeticException if the decimal is too big to fit in Short type.
    */
-  private[sql] def roundToShort(): Short = {
+  def roundToShort(): Short = {
     if (decimalVal.eq(null)) {
       val actualLongVal = longVal / POW_10(_scale)
       if (actualLongVal == actualLongVal.toShort) {
@@ -301,7 +299,7 @@ final class Decimal extends Ordered[Decimal] with Serializable {
    * @return the Int value that is equal to the rounded decimal.
    * @throws ArithmeticException if the decimal too big to fit in Int type.
    */
-  private[sql] def roundToInt(): Int = {
+  def roundToInt(): Int = {
     if (decimalVal.eq(null)) {
       val actualLongVal = longVal / POW_10(_scale)
       if (actualLongVal == actualLongVal.toInt) {
@@ -323,7 +321,7 @@ final class Decimal extends Ordered[Decimal] with Serializable {
    * @return the Long value that is equal to the rounded decimal.
    * @throws ArithmeticException if the decimal too big to fit in Long type.
    */
-  private[sql] def roundToLong(): Long = {
+  def roundToLong(): Long = {
     if (decimalVal.eq(null)) {
       longVal / POW_10(_scale)
     } else {
@@ -353,7 +351,7 @@ final class Decimal extends Ordered[Decimal] with Serializable {
    * @return a non-null `Decimal` value if successful. Otherwise, if `nullOnOverflow` is true, null
    *         is returned; if `nullOnOverflow` is false, an `ArithmeticException` is thrown.
    */
-  private[sql] def toPrecision(
+  def toPrecision(
       precision: Int,
       scale: Int,
       roundMode: BigDecimal.RoundingMode.Value = ROUND_HALF_UP,
@@ -376,7 +374,7 @@ final class Decimal extends Ordered[Decimal] with Serializable {
    *
    * @return true if successful, false if overflow would occur
    */
-  private[sql] def changePrecision(
+  def changePrecision(
       precision: Int,
       scale: Int,
       roundMode: BigDecimal.RoundingMode.Value): Boolean = {
@@ -547,8 +545,8 @@ object Decimal {
 
   private val MATH_CONTEXT = new MathContext(DecimalType.MAX_PRECISION, RoundingMode.HALF_UP)
 
-  private[sql] val ZERO = Decimal(0)
-  private[sql] val ONE = Decimal(1)
+  val ZERO = Decimal(0)
+  val ONE = Decimal(1)
 
   def apply(value: Double): Decimal = new Decimal().set(value)
 
@@ -666,7 +664,7 @@ object Decimal {
   // See scala.math's Numeric.scala for examples for Scala's built-in types.
 
   /** Common methods for Decimal evidence parameters */
-  private[sql] trait DecimalIsConflicted extends Numeric[Decimal] {
+  trait DecimalIsConflicted extends Numeric[Decimal] {
     override def plus(x: Decimal, y: Decimal): Decimal = x + y
     override def times(x: Decimal, y: Decimal): Decimal = x * y
     override def minus(x: Decimal, y: Decimal): Decimal = x - y
@@ -683,12 +681,12 @@ object Decimal {
   }
 
   /** A [[scala.math.Fractional]] evidence parameter for Decimals. */
-  private[sql] object DecimalIsFractional extends DecimalIsConflicted with Fractional[Decimal] {
+  object DecimalIsFractional extends DecimalIsConflicted with Fractional[Decimal] {
     override def div(x: Decimal, y: Decimal): Decimal = x / y
   }
 
   /** A [[scala.math.Integral]] evidence parameter for Decimals. */
-  private[sql] object DecimalAsIfIntegral extends DecimalIsConflicted with Integral[Decimal] {
+  object DecimalAsIfIntegral extends DecimalIsConflicted with Integral[Decimal] {
     override def quot(x: Decimal, y: Decimal): Decimal = x quot y
     override def rem(x: Decimal, y: Decimal): Decimal = x % y
   }

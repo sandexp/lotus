@@ -21,30 +21,29 @@ import java.net.URI
 import java.util.Locale
 import java.util.concurrent.Callable
 import java.util.concurrent.TimeUnit
+
 import javax.annotation.concurrent.GuardedBy
 
 import scala.collection.mutable
 import scala.util.{Failure, Success, Try}
-
 import com.google.common.cache.{Cache, CacheBuilder}
+import com.ledis.exception.AnalysisException
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
-
-import org.apache.spark.internal.Logging
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst._
-import org.apache.spark.sql.catalyst.analysis._
-import org.apache.spark.sql.catalyst.analysis.FunctionRegistry.FunctionBuilder
-import org.apache.spark.sql.catalyst.expressions.{Expression, ExpressionInfo, ImplicitCastInputTypes}
-import org.apache.spark.sql.catalyst.parser.{CatalystSqlParser, ParserInterface}
-import org.apache.spark.sql.catalyst.plans.logical.{LogicalPlan, SubqueryAlias, View}
-import org.apache.spark.sql.catalyst.util.{CharVarcharUtils, StringUtils}
-import org.apache.spark.sql.connector.catalog.CatalogManager
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.internal.StaticSQLConf.GLOBAL_TEMP_DATABASE
-import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.util.{CaseInsensitiveStringMap, PartitioningUtils}
-import org.apache.spark.util.Utils
+import com.ledis.internal.Logging
+import com.ledis.sql.catalyst._
+import com.ledis.sql.catalyst.analysis._
+import com.ledis.sql.catalyst.analysis.FunctionRegistry.FunctionBuilder
+import com.ledis.sql.catalyst.expressions.{Expression, ExpressionInfo, ImplicitCastInputTypes}
+import com.ledis.sql.catalyst.parser.{CatalystSqlParser, ParserInterface}
+import com.ledis.sql.catalyst.plans.logical.{LogicalPlan, SubqueryAlias, View}
+import com.ledis.sql.catalyst.util.{CharVarcharUtils, StringUtils}
+import com.ledis.sql.connector.catalog.CatalogManager
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.internal.StaticSQLConf.GLOBAL_TEMP_DATABASE
+import com.ledis.sql.types.StructType
+import com.ledis.sql.util.{CaseInsensitiveStringMap, PartitioningUtils}
+import com.ledis.util.Utils
 
 object SessionCatalog {
   val DEFAULT_DATABASE = "default"
@@ -887,7 +886,7 @@ class SessionCatalog(
   // TODO: merge it with `isTemporaryTable`.
   def isTempView(nameParts: Seq[String]): Boolean = {
     if (nameParts.length > 2) return false
-    import org.apache.spark.sql.connector.catalog.CatalogV2Implicits._
+    import com.ledis.sql.connector.catalog.CatalogV2Implicits._
     isTemporaryTable(nameParts.asTableIdentifier)
   }
 
@@ -910,7 +909,7 @@ class SessionCatalog(
 
   def isView(nameParts: Seq[String]): Boolean = {
     nameParts.length <= 2 && {
-      import org.apache.spark.sql.connector.catalog.CatalogV2Implicits._
+      import com.ledis.sql.connector.catalog.CatalogV2Implicits._
       val ident = nameParts.asTableIdentifier
       try {
         getTempViewOrPermanentTableMetadata(ident).tableType == CatalogTableType.VIEW
@@ -1374,9 +1373,9 @@ class SessionCatalog(
     // Unfortunately we need to use reflection here because UserDefinedAggregateFunction
     // and ScalaUDAF are defined in sql/core module.
     val clsForUDAF =
-      Utils.classForName("org.apache.spark.sql.expressions.UserDefinedAggregateFunction")
+      Utils.classForName("com.ledis.sql.expressions.UserDefinedAggregateFunction")
     if (clsForUDAF.isAssignableFrom(clazz)) {
-      val cls = Utils.classForName("org.apache.spark.sql.execution.aggregate.ScalaUDAF")
+      val cls = Utils.classForName("com.ledis.sql.execution.aggregate.ScalaUDAF")
       val e = cls.getConstructor(classOf[Seq[Expression]], clsForUDAF, classOf[Int], classOf[Int])
         .newInstance(input,
           clazz.getConstructor().newInstance().asInstanceOf[Object], Int.box(1), Int.box(1))
@@ -1524,7 +1523,7 @@ class SessionCatalog(
   def lookupFunction(
       name: FunctionIdentifier,
       children: Seq[Expression]): Expression = synchronized {
-    import org.apache.spark.sql.connector.catalog.CatalogV2Implicits._
+    import com.ledis.sql.connector.catalog.CatalogV2Implicits._
     // Note: the implementation of this function is a little bit convoluted.
     // We probably shouldn't use a single FunctionRegistry to register all three kinds of functions
     // (built-in, temp, and external).
@@ -1668,7 +1667,7 @@ class SessionCatalog(
    * because the target [[SessionCatalog]] should not be published at this point. The caller must
    * synchronize on the target if this assumption does not hold.
    */
-  private[sql] def copyStateTo(target: SessionCatalog): Unit = synchronized {
+  def copyStateTo(target: SessionCatalog): Unit = synchronized {
     target.currentDb = currentDb
     // copy over temporary views
     tempViews.foreach(kv => target.tempViews.put(kv._1, kv._2))

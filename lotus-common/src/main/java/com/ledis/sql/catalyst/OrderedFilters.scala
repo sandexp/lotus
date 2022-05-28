@@ -17,9 +17,9 @@
 
 package com.ledis.sql.catalyst
 
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.sources
-import org.apache.spark.sql.types.StructType
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.sources
+import com.ledis.sql.types.StructType
 
 /**
  * An instance of the class compiles filters to predicates and sorts them in

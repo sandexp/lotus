@@ -17,10 +17,10 @@
 
 package com.ledis.sql.catalyst.util
 
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.analysis.{TypeCheckResult, TypeCoercion}
-import org.apache.spark.sql.catalyst.expressions.RowOrdering
-import org.apache.spark.sql.types._
+import com.ledis.exception.AnalysisException
+import com.ledis.sql.catalyst.analysis.{TypeCheckResult, TypeCoercion}
+import com.ledis.sql.catalyst.expressions.RowOrdering
+import com.ledis.sql.types._
 
 /**
  * Functions to help with checking for valid data types and value comparison of various types.

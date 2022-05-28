@@ -17,8 +17,8 @@
 
 package com.ledis.sql.catalyst.util
 
-import org.apache.spark.sql.catalyst.expressions.UnsafeRow
-import org.apache.spark.sql.types._
+import com.ledis.sql.catalyst.expressions.UnsafeRow
+import com.ledis.sql.types._
 
 object UnsafeRowUtils {
 

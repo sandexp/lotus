@@ -17,8 +17,8 @@
 
 package com.ledis.sql.catalyst.expressions
 
-import org.apache.spark.sql.catalyst.expressions.codegen._
-import org.apache.spark.sql.types._
+import com.ledis.sql.catalyst.expressions.codegen._
+import com.ledis.sql.types._
 
 
 /**

@@ -22,11 +22,11 @@ import java.math.{MathContext, RoundingMode}
 
 import net.jpountz.lz4.{LZ4BlockInputStream, LZ4BlockOutputStream}
 
-import org.apache.spark.sql.catalyst.catalog.CatalogColumnStat
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.plans.logical.statsEstimation.EstimationUtils
-import org.apache.spark.sql.types._
-import org.apache.spark.util.Utils
+import com.ledis.sql.catalyst.catalog.CatalogColumnStat
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.plans.logical.statsEstimation.EstimationUtils
+import com.ledis.sql.types._
+import com.ledis.util.Utils
 
 object Statistics {
   val DUMMY = Statistics(Long.MaxValue)

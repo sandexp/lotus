@@ -17,11 +17,11 @@
 
 package com.ledis.sql.catalyst.optimizer
 
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
-import org.apache.spark.sql.catalyst.rules.Rule
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types.{ArrayType, StructType}
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.plans.logical.LogicalPlan
+import com.ledis.sql.catalyst.rules.Rule
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types.{ArrayType, StructType}
 
 /**
  * Simplify redundant json related expressions.

@@ -17,14 +17,14 @@
 
 package com.ledis.sql.execution.datasources.v2
 
-import scala.collection.JavaConverters._
+import com.ledis.exception.AnalysisException
 
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.analysis.{PartitionSpec, ResolvedPartitionSpec, UnresolvedPartitionSpec}
-import org.apache.spark.sql.catalyst.expressions.{Attribute, AttributeReference}
-import org.apache.spark.sql.connector.catalog.{MetadataColumn, SupportsAtomicPartitionManagement, SupportsDelete, SupportsPartitionManagement, SupportsRead, SupportsWrite, Table, TableCapability}
-import org.apache.spark.sql.types.{MetadataBuilder, StructField, StructType}
-import org.apache.spark.sql.util.CaseInsensitiveStringMap
+import scala.collection.JavaConverters._
+import com.ledis.sql.catalyst.analysis.{PartitionSpec, ResolvedPartitionSpec, UnresolvedPartitionSpec}
+import com.ledis.sql.catalyst.expressions.{Attribute, AttributeReference}
+import com.ledis.sql.connector.catalog.{MetadataColumn, SupportsAtomicPartitionManagement, SupportsDelete, SupportsPartitionManagement, SupportsRead, SupportsWrite, Table, TableCapability}
+import com.ledis.sql.types.{MetadataBuilder, StructField, StructType}
+import com.ledis.sql.util.CaseInsensitiveStringMap
 
 object DataSourceV2Implicits {
   private val METADATA_COL_ATTR_KEY = "__metadata_col"

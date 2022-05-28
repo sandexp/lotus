@@ -17,10 +17,10 @@
 
 package com.ledis.sql.catalyst.plans
 
-import org.apache.spark.sql.catalyst.expressions.AttributeReference
-import org.apache.spark.sql.types.{MetadataBuilder, StringType}
+import com.ledis.sql.catalyst.expressions.AttributeReference
+import com.ledis.sql.types.{MetadataBuilder, StringType}
 
-private[sql] object DescribeCommandSchema {
+object DescribeCommandSchema {
   def describeTableAttributes(): Seq[AttributeReference] = Seq(
     AttributeReference("col_name", StringType, nullable = false,
       new MetadataBuilder().putString("comment", "name of the column").build())(),

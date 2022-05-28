@@ -17,11 +17,11 @@
 
 package com.ledis.sql.catalyst.expressions
 
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.types._
+import com.ledis.exception.AnalysisException
+import com.ledis.sql.types._
 
 /**
- * A Scala extractor that builds a [[org.apache.spark.sql.types.StructField]] from a Catalyst
+ * A Scala extractor that builds a [[com.ledis.sql.types.StructField]] from a Catalyst
  * complex type extractor. For example, consider a relation with the following schema:
  *
  * {{{
@@ -46,10 +46,10 @@ import org.apache.spark.sql.types._
  * StructField("name", StructType(Array(StructField("first", StringType))))
  * }}}
  *
- * by mapping each complex type extractor to a [[org.apache.spark.sql.types.StructField]] with the
+ * by mapping each complex type extractor to a [[com.ledis.sql.types.StructField]] with the
  * same name as its child (or "parent" going right to left in the select expression) and a data
  * type appropriate to the complex type extractor. In our example, the name of the child expression
- * is "name" and its data type is a [[org.apache.spark.sql.types.StructType]] with a single string
+ * is "name" and its data type is a [[com.ledis.sql.types.StructType]] with a single string
  * field named "first".
  */
 object SelectedField {

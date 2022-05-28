@@ -17,7 +17,7 @@
 
 package com.ledis.sql.catalyst.expressions
 
-import org.apache.spark.sql.types.StructField
+import com.ledis.sql.types.StructField
 
 /**
  * A Scala extractor that extracts the child expression and struct field from a [[GetStructField]].

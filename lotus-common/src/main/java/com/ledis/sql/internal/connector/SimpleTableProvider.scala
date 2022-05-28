@@ -19,10 +19,10 @@ package com.ledis.sql.internal.connector
 
 import java.util
 
-import org.apache.spark.sql.connector.catalog.{Table, TableProvider}
-import org.apache.spark.sql.connector.expressions.Transform
-import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.util.CaseInsensitiveStringMap
+import com.ledis.sql.connector.catalog.{Table, TableProvider}
+import com.ledis.sql.connector.expressions.Transform
+import com.ledis.sql.types.StructType
+import com.ledis.sql.util.CaseInsensitiveStringMap
 
 // A simple version of `TableProvider` which doesn't support specified table schema/partitioning
 // and treats table properties case-insensitively. This is private and only used in builtin sources.

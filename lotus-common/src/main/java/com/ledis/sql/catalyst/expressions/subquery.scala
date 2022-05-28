@@ -19,10 +19,10 @@ package com.ledis.sql.catalyst.expressions
 
 import scala.collection.mutable.ArrayBuffer
 
-import org.apache.spark.sql.catalyst.expressions.aggregate.AggregateExpression
-import org.apache.spark.sql.catalyst.plans.QueryPlan
-import org.apache.spark.sql.catalyst.plans.logical.{Filter, LogicalPlan}
-import org.apache.spark.sql.types._
+import com.ledis.sql.catalyst.expressions.aggregate.AggregateExpression
+import com.ledis.sql.catalyst.plans.QueryPlan
+import com.ledis.sql.catalyst.plans.logical.{Filter, LogicalPlan}
+import com.ledis.sql.types._
 
 /**
  * An interface for expressions that contain a [[QueryPlan]].
@@ -76,7 +76,7 @@ object SubqueryExpression {
   /**
    * Returns true when an expression contains a subquery that has outer reference(s). The outer
    * reference attributes are kept as children of subquery expression by
-   * [[org.apache.spark.sql.catalyst.analysis.Analyzer.ResolveSubquery]]
+   * [[com.ledis.sql.catalyst.analysis.Analyzer.ResolveSubquery]]
    */
   def hasCorrelatedSubquery(e: Expression): Boolean = {
     e.find {

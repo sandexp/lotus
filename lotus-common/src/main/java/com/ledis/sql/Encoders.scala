@@ -19,14 +19,14 @@ package com.ledis.sql
 
 import java.lang.reflect.Modifier
 
-import scala.reflect.{classTag, ClassTag}
-import scala.reflect.runtime.universe.TypeTag
+import com.ledis.sql.catalyst.analysis.GetColumnByOrdinal
+import com.ledis.sql.catalyst.encoders.ExpressionEncoder
+import com.ledis.sql.catalyst.expressions.{BoundReference, Cast}
+import com.ledis.sql.catalyst.expressions.objects.{DecodeUsingSerializer, EncodeUsingSerializer}
+import com.ledis.sql.types.{BinaryType, ObjectType}
 
-import org.apache.spark.sql.catalyst.analysis.GetColumnByOrdinal
-import org.apache.spark.sql.catalyst.encoders.{encoderFor, ExpressionEncoder}
-import org.apache.spark.sql.catalyst.expressions.{BoundReference, Cast}
-import org.apache.spark.sql.catalyst.expressions.objects.{DecodeUsingSerializer, EncodeUsingSerializer}
-import org.apache.spark.sql.types._
+import scala.reflect.{ClassTag, classTag}
+import scala.reflect.runtime.universe.TypeTag
 
 /**
  * Methods for creating an [[Encoder]].

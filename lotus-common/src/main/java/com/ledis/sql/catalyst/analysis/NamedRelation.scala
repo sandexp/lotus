@@ -17,7 +17,7 @@
 
 package com.ledis.sql.catalyst.analysis
 
-import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
+import com.ledis.sql.catalyst.plans.logical.LogicalPlan
 
 trait NamedRelation extends LogicalPlan {
   def name: String

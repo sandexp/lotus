@@ -19,16 +19,16 @@ package com.ledis.sql.catalyst.expressions
 
 import scala.collection.immutable.TreeSet
 
-import org.apache.spark.internal.Logging
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.analysis.TypeCheckResult
-import org.apache.spark.sql.catalyst.expressions.BindReferences.bindReference
-import org.apache.spark.sql.catalyst.expressions.codegen._
-import org.apache.spark.sql.catalyst.expressions.codegen.Block._
-import org.apache.spark.sql.catalyst.plans.logical.{Aggregate, LeafNode, LogicalPlan, Project}
-import org.apache.spark.sql.catalyst.util.TypeUtils
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
+import com.ledis.internal.Logging
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.analysis.TypeCheckResult
+import com.ledis.sql.catalyst.expressions.BindReferences.bindReference
+import com.ledis.sql.catalyst.expressions.codegen._
+import com.ledis.sql.catalyst.expressions.codegen.Block._
+import com.ledis.sql.catalyst.plans.logical.{Aggregate, LeafNode, LogicalPlan, Project}
+import com.ledis.sql.catalyst.util.TypeUtils
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
 
 
 /**

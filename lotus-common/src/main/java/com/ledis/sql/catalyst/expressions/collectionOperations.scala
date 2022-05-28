@@ -22,21 +22,21 @@ import java.util.Comparator
 import scala.collection.mutable
 import scala.reflect.ClassTag
 
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.analysis.{TypeCheckResult, TypeCoercion, UnresolvedAttribute}
-import org.apache.spark.sql.catalyst.expressions.ArraySortLike.NullOrder
-import org.apache.spark.sql.catalyst.expressions.codegen._
-import org.apache.spark.sql.catalyst.expressions.codegen.Block._
-import org.apache.spark.sql.catalyst.util._
-import org.apache.spark.sql.catalyst.util.DateTimeConstants._
-import org.apache.spark.sql.catalyst.util.DateTimeUtils._
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
-import org.apache.spark.sql.util.SQLOpenHashSet
-import org.apache.spark.unsafe.UTF8StringBuilder
-import org.apache.spark.unsafe.array.ByteArrayMethods
-import org.apache.spark.unsafe.array.ByteArrayMethods.MAX_ROUNDED_ARRAY_LENGTH
-import org.apache.spark.unsafe.types.{ByteArray, CalendarInterval, UTF8String}
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.analysis.{TypeCheckResult, TypeCoercion, UnresolvedAttribute}
+import com.ledis.sql.catalyst.expressions.ArraySortLike.NullOrder
+import com.ledis.sql.catalyst.expressions.codegen._
+import com.ledis.sql.catalyst.expressions.codegen.Block._
+import com.ledis.sql.catalyst.util._
+import com.ledis.sql.catalyst.util.DateTimeConstants._
+import com.ledis.sql.catalyst.util.DateTimeUtils._
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
+import com.ledis.sql.util.SQLOpenHashSet
+import com.ledis.unsafe.UTF8StringBuilder
+import com.ledis.unsafe.array.ByteArrayMethods
+import com.ledis.unsafe.array.ByteArrayMethods.MAX_ROUNDED_ARRAY_LENGTH
+import com.ledis.unsafe.types.{ByteArray, CalendarInterval, UTF8String}
 
 /**
  * Base trait for [[BinaryExpression]]s with two arrays of the same element type and implicit
@@ -2796,7 +2796,7 @@ object Sequence {
          |  while ($t < $exclusiveItem ^ $stepSign < 0) {
          |    $arr[$i] = ($elemType) ($t / ${scale}L);
          |    $i += 1;
-         |    $t = org.apache.spark.sql.catalyst.util.DateTimeUtils.timestampAddInterval(
+         |    $t = com.ledis.sql.catalyst.util.DateTimeUtils.timestampAddInterval(
          |       $startMicros, $i * $stepMonths, $i * $stepDays, $i * $stepMicros, $zid);
          |  }
          |

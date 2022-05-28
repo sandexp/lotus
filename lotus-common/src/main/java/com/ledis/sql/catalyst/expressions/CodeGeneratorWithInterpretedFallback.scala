@@ -19,9 +19,9 @@ package com.ledis.sql.catalyst.expressions
 
 import scala.util.control.NonFatal
 
-import org.apache.spark.internal.Logging
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.util.Utils
+import com.ledis.internal.Logging
+import com.ledis.sql.internal.SQLConf
+import com.ledis.util.Utils
 
 /**
  * Defines values for `SQLConf` config of fallback mode. Use for test only.

@@ -21,32 +21,31 @@ import java.net.URI
 import java.time.ZoneOffset
 import java.util.Date
 
+import com.ledis.exception.AnalysisException
+
 import scala.collection.mutable
 import scala.util.control.NonFatal
-
 import org.apache.commons.lang3.StringUtils
 import org.json4s.JsonAST.{JArray, JString}
 import org.json4s.jackson.JsonMethods._
-
-import org.apache.spark.internal.Logging
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.{FunctionIdentifier, InternalRow, SQLConfHelper, TableIdentifier}
-import org.apache.spark.sql.catalyst.analysis.MultiInstanceRelation
-import org.apache.spark.sql.catalyst.expressions.{Attribute, AttributeMap, AttributeReference, Cast, ExprId, Literal}
-import org.apache.spark.sql.catalyst.plans.logical._
-import org.apache.spark.sql.catalyst.plans.logical.statsEstimation.EstimationUtils
-import org.apache.spark.sql.catalyst.util._
-import org.apache.spark.sql.connector.catalog.CatalogManager
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
-import org.apache.spark.sql.util.CaseInsensitiveStringMap
+import com.ledis.internal.Logging
+import com.ledis.sql.catalyst.{FunctionIdentifier, InternalRow, SQLConfHelper, TableIdentifier}
+import com.ledis.sql.catalyst.analysis.MultiInstanceRelation
+import com.ledis.sql.catalyst.expressions.{Attribute, AttributeMap, AttributeReference, Cast, ExprId, Literal}
+import com.ledis.sql.catalyst.plans.logical._
+import com.ledis.sql.catalyst.plans.logical.statsEstimation.EstimationUtils
+import com.ledis.sql.catalyst.util._
+import com.ledis.sql.connector.catalog.CatalogManager
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
+import com.ledis.sql.util.CaseInsensitiveStringMap
 
 
 /**
  * A function defined in the catalog.
  *
  * @param identifier name of the function
- * @param className fully qualified class name, e.g. "org.apache.spark.util.MyFunc"
+ * @param className fully qualified class name, e.g. "com.ledis.util.MyFunc"
  * @param resources resource types and Uris used by the function
  */
 case class CatalogFunction(
@@ -409,7 +408,7 @@ case class CatalogTable(
       viewText.foreach(map.put("View Text", _))
       viewOriginalText.foreach(map.put("View Original Text", _))
       if (viewCatalogAndNamespace.nonEmpty) {
-        import org.apache.spark.sql.connector.catalog.CatalogV2Implicits._
+        import com.ledis.sql.connector.catalog.CatalogV2Implicits._
         map.put("View Catalog and Namespace", viewCatalogAndNamespace.quoted)
       }
       if (viewQueryColumnNames.nonEmpty) {

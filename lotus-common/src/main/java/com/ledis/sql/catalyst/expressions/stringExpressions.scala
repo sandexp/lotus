@@ -26,15 +26,15 @@ import scala.collection.mutable.ArrayBuffer
 
 import org.apache.commons.codec.binary.{Base64 => CommonsBase64}
 
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.analysis.{FunctionRegistry, TypeCheckResult}
-import org.apache.spark.sql.catalyst.expressions.codegen._
-import org.apache.spark.sql.catalyst.expressions.codegen.Block._
-import org.apache.spark.sql.catalyst.util.{ArrayData, GenericArrayData, TypeUtils}
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
-import org.apache.spark.unsafe.UTF8StringBuilder
-import org.apache.spark.unsafe.types.{ByteArray, UTF8String}
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.analysis.{FunctionRegistry, TypeCheckResult}
+import com.ledis.sql.catalyst.expressions.codegen._
+import com.ledis.sql.catalyst.expressions.codegen.Block._
+import com.ledis.sql.catalyst.util.{ArrayData, GenericArrayData, TypeUtils}
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
+import com.ledis.unsafe.UTF8StringBuilder
+import com.ledis.unsafe.types.{ByteArray, UTF8String}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // This file defines expressions for string operations.
@@ -620,7 +620,7 @@ case class Overlay(input: Expression, replace: Expression, pos: Expression, len:
 
   override def doGenCode(ctx: CodegenContext, ev: ExprCode): ExprCode = {
     defineCodeGen(ctx, ev, (input, replace, pos, len) =>
-      "org.apache.spark.sql.catalyst.expressions.Overlay" +
+      "com.ledis.sql.catalyst.expressions.Overlay" +
         s".calculate($input, $replace, $pos, $len);")
   }
 }
@@ -693,7 +693,7 @@ case class StringTranslate(srcExpr: Expression, matchingExpr: Expression, replac
         // Not all of them is literal or matching or replace value changed
         $termLastMatching = $matching.clone();
         $termLastReplace = $replace.clone();
-        $termDict = org.apache.spark.sql.catalyst.expressions.StringTranslate
+        $termDict = com.ledis.sql.catalyst.expressions.StringTranslate
           .buildDict($termLastMatching, $termLastReplace);
       }
       ${ev.value} = $src.translate($termDict);
@@ -2118,7 +2118,7 @@ case class Decode(bin: Expression, charset: Expression)
         try {
           ${ev.value} = UTF8String.fromString(new String($bytes, $charset.toString()));
         } catch (java.io.UnsupportedEncodingException e) {
-          org.apache.spark.unsafe.Platform.throwException(e);
+          com.ledis.unsafe.Platform.throwException(e);
         }
       """)
   }
@@ -2158,7 +2158,7 @@ case class Encode(value: Expression, charset: Expression)
         try {
           ${ev.value} = $string.toString().getBytes($charset.toString());
         } catch (java.io.UnsupportedEncodingException e) {
-          org.apache.spark.unsafe.Platform.throwException(e);
+          com.ledis.unsafe.Platform.throwException(e);
         }""")
   }
 }

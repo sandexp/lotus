@@ -19,10 +19,10 @@ package com.ledis.sql.catalyst
 
 import scala.util.Try
 
-import org.apache.spark.sql.catalyst.StructFilters._
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.sources
-import org.apache.spark.sql.types.{BooleanType, StructType}
+import com.ledis.sql.catalyst.StructFilters._
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.sources
+import com.ledis.sql.types.{BooleanType, StructType}
 
 /**
  * The class provides API for applying pushed down filters to partially or

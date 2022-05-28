@@ -19,7 +19,7 @@ package com.ledis.sql.catalyst.plans
 
 import java.util.Locale
 
-import org.apache.spark.sql.catalyst.expressions.Attribute
+import com.ledis.sql.catalyst.expressions.Attribute
 
 object JoinType {
   def apply(typ: String): JoinType = typ.toLowerCase(Locale.ROOT).replace("_", "") match {

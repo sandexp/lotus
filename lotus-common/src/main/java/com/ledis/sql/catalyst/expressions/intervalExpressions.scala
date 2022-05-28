@@ -19,12 +19,12 @@ package com.ledis.sql.catalyst.expressions
 
 import java.util.Locale
 
-import org.apache.spark.sql.catalyst.expressions.codegen.{CodegenContext, ExprCode}
-import org.apache.spark.sql.catalyst.util.IntervalUtils
-import org.apache.spark.sql.catalyst.util.IntervalUtils._
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
-import org.apache.spark.unsafe.types.CalendarInterval
+import com.ledis.sql.catalyst.expressions.codegen.{CodegenContext, ExprCode}
+import com.ledis.sql.catalyst.util.IntervalUtils
+import com.ledis.sql.catalyst.util.IntervalUtils._
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
+import com.ledis.unsafe.types.CalendarInterval
 
 abstract class ExtractIntervalPart(
     child: Expression,

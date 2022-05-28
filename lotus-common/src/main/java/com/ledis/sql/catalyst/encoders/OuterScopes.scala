@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentMap
 
 import com.google.common.collect.MapMaker
 
-import org.apache.spark.util.Utils
+import com.ledis.util.Utils
 
 object OuterScopes {
   @transient

@@ -17,17 +17,17 @@
 
 package com.ledis.sql.catalyst.plans.logical
 
-import org.apache.spark.sql.catalyst.AliasIdentifier
-import org.apache.spark.sql.catalyst.analysis.{EliminateView, MultiInstanceRelation}
-import org.apache.spark.sql.catalyst.catalog.{CatalogStorageFormat, CatalogTable}
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.aggregate.AggregateExpression
-import org.apache.spark.sql.catalyst.plans._
-import org.apache.spark.sql.catalyst.plans.physical.{HashPartitioning, Partitioning, RangePartitioning, RoundRobinPartitioning}
-import org.apache.spark.sql.catalyst.util.truncatedString
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
-import org.apache.spark.util.random.RandomSampler
+import com.ledis.sql.catalyst.AliasIdentifier
+import com.ledis.sql.catalyst.analysis.{EliminateView, MultiInstanceRelation}
+import com.ledis.sql.catalyst.catalog.{CatalogStorageFormat, CatalogTable}
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.expressions.aggregate.AggregateExpression
+import com.ledis.sql.catalyst.plans._
+import com.ledis.sql.catalyst.plans.physical.{HashPartitioning, Partitioning, RangePartitioning, RoundRobinPartitioning}
+import com.ledis.sql.catalyst.util.truncatedString
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
+import com.ledis.util.random.RandomSampler
 
 /**
  * When planning take() or collect() operations, this special node that is inserted at the top of
@@ -630,7 +630,7 @@ case class Range(
  * Note: Currently, aggregateExpressions is the project list of this Group by operator. Before
  * separating projection from grouping and aggregate, we should avoid expression-level optimization
  * on aggregateExpressions, which could reference an expression in groupingExpressions.
- * For example, see the rule [[org.apache.spark.sql.catalyst.optimizer.SimplifyExtractValueOps]]
+ * For example, see the rule [[com.ledis.sql.catalyst.optimizer.SimplifyExtractValueOps]]
  */
 case class Aggregate(
     groupingExpressions: Seq[Expression],
@@ -922,8 +922,8 @@ case class LocalLimit(limitExpr: Expression, child: LogicalPlan) extends OrderPr
  *
  * - It does not have plans for global/local separately because currently there is only single
  *   implementation which initially mimics both global/local tails. See
- *   `org.apache.spark.sql.execution.CollectTailExec` and
- *   `org.apache.spark.sql.execution.CollectLimitExec`
+ *   `com.ledis.sql.execution.CollectTailExec` and
+ *   `com.ledis.sql.execution.CollectLimitExec`
  *
  * - Currently, this plan can only be a root node.
  */
@@ -1100,7 +1100,7 @@ case class OneRowRelation() extends LeafNode {
   override def output: Seq[Attribute] = Nil
   override def computeStats(): Statistics = Statistics(sizeInBytes = 1)
 
-  /** [[org.apache.spark.sql.catalyst.trees.TreeNode.makeCopy()]] does not support 0-arg ctor. */
+  /** [[com.ledis.sql.catalyst.trees.TreeNode.makeCopy()]] does not support 0-arg ctor. */
   override def makeCopy(newArgs: Array[AnyRef]): OneRowRelation = {
     val newCopy = OneRowRelation()
     newCopy.copyTagsFrom(this)

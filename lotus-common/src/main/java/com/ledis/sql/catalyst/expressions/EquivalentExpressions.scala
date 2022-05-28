@@ -19,9 +19,9 @@ package com.ledis.sql.catalyst.expressions
 
 import scala.collection.mutable
 
-import org.apache.spark.TaskContext
-import org.apache.spark.sql.catalyst.expressions.codegen.CodegenFallback
-import org.apache.spark.sql.catalyst.expressions.objects.LambdaVariable
+import com.ledis.TaskContext
+import com.ledis.sql.catalyst.expressions.codegen.CodegenFallback
+import com.ledis.sql.catalyst.expressions.objects.LambdaVariable
 
 /**
  * This class is used to compute equality of (sub)expression trees. Expressions can be added

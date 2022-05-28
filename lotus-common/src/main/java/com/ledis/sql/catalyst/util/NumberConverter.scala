@@ -17,7 +17,7 @@
 
 package com.ledis.sql.catalyst.util
 
-import org.apache.spark.unsafe.types.UTF8String
+import com.ledis.unsafe.types.UTF8String
 
 object NumberConverter {
 

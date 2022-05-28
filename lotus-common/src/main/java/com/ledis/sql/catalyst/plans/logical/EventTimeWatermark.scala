@@ -19,13 +19,13 @@ package com.ledis.sql.catalyst.plans.logical
 
 import java.util.concurrent.TimeUnit
 
-import org.apache.spark.sql.catalyst.expressions.Attribute
-import org.apache.spark.sql.catalyst.util.IntervalUtils
-import org.apache.spark.sql.types.MetadataBuilder
-import org.apache.spark.unsafe.types.CalendarInterval
+import com.ledis.sql.catalyst.expressions.Attribute
+import com.ledis.sql.catalyst.util.IntervalUtils
+import com.ledis.sql.types.MetadataBuilder
+import com.ledis.unsafe.types.CalendarInterval
 
 object EventTimeWatermark {
-  /** The [[org.apache.spark.sql.types.Metadata]] key used to hold the eventTime watermark delay. */
+  /** The [[com.ledis.sql.types.Metadata]] key used to hold the eventTime watermark delay. */
   val delayKey = "spark.watermarkDelayMs"
 
   def getDelayMs(delay: CalendarInterval): Long = {

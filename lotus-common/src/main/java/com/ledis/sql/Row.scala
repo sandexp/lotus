@@ -21,26 +21,19 @@ import java.sql.{Date, Timestamp}
 import java.time.{Instant, LocalDate}
 import java.util.Base64
 
+import com.ledis.sql.catalyst.CatalystTypeConverters
+import com.ledis.sql.catalyst.expressions.GenericRow
+import com.ledis.sql.catalyst.util.{DateFormatter, DateTimeUtils, TimestampFormatter}
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
+
 import scala.collection.JavaConverters._
 import scala.collection.mutable
 import scala.util.hashing.MurmurHash3
-
 import org.json4s._
 import org.json4s.JsonAST.JValue
 import org.json4s.jackson.JsonMethods._
 
-import org.apache.spark.annotation.{Stable, Unstable}
-import org.apache.spark.sql.catalyst.CatalystTypeConverters
-import org.apache.spark.sql.catalyst.expressions.GenericRow
-import org.apache.spark.sql.catalyst.util.{DateFormatter, DateTimeUtils, TimestampFormatter}
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
-import org.apache.spark.unsafe.types.CalendarInterval
-
-/**
- * @since 1.3.0
- */
-@Stable
 object Row {
   /**
    * This method can be used to extract fields from a [[Row]] object in a pattern match. Example:
@@ -138,7 +131,6 @@ object Row {
  *
  * @since 1.3.0
  */
-@Stable
 trait Row extends Serializable {
   /** Number of elements in the Row. */
   def size: Int = length
@@ -530,25 +522,25 @@ trait Row extends Serializable {
    * The compact JSON representation of this row.
    * @since 3.0
    */
-  @Unstable
+  //@Unstable
   def json: String = compact(jsonValue)
 
   /**
    * The pretty (i.e. indented) JSON representation of this row.
    * @since 3.0
    */
-  @Unstable
+  // @Unstable
   def prettyJson: String = pretty(render(jsonValue))
 
   /**
    * JSON representation of the row.
    *
    * Note that this only supports the data types that are also supported by
-   * [[org.apache.spark.sql.catalyst.encoders.RowEncoder]].
+   * [[com.ledis.sql.catalyst.encoders.RowEncoder]].
    *
    * @return the JSON representation of the row.
    */
-  private[sql] def jsonValue: JValue = {
+  def jsonValue: JValue = {
     require(schema != null, "JSON serialization requires a non-null schema.")
 
     lazy val zoneId = DateTimeUtils.getZoneId(SQLConf.get.sessionLocalTimeZone)
@@ -580,7 +572,7 @@ trait Row extends Serializable {
       case (d: Date, _) => JString(dateFormatter.format(d))
       case (i: Instant, _) => JString(timestampFormatter.format(i))
       case (t: Timestamp, _) => JString(timestampFormatter.format(t))
-      case (i: CalendarInterval, _) => JString(i.toString)
+      // case (i: CalendarInterval, _) => JString(i.toString)
       case (a: Array[_], ArrayType(elementType, _)) =>
         iteratorToJsonArray(a.iterator, elementType)
       case (s: Seq[_], ArrayType(elementType, _)) =>

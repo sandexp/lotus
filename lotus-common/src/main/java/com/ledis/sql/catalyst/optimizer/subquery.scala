@@ -17,16 +17,16 @@
 
 package com.ledis.sql.catalyst.optimizer
 
-import scala.collection.mutable.ArrayBuffer
+import com.ledis.exception.AnalysisException
 
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.SubExprUtils._
-import org.apache.spark.sql.catalyst.expressions.aggregate._
-import org.apache.spark.sql.catalyst.plans._
-import org.apache.spark.sql.catalyst.plans.logical._
-import org.apache.spark.sql.catalyst.rules._
-import org.apache.spark.sql.types._
+import scala.collection.mutable.ArrayBuffer
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.expressions.SubExprUtils._
+import com.ledis.sql.catalyst.expressions.aggregate._
+import com.ledis.sql.catalyst.plans._
+import com.ledis.sql.catalyst.plans.logical._
+import com.ledis.sql.catalyst.rules._
+import com.ledis.sql.types._
 
 /*
  * This file defines optimization rules related to subqueries.
@@ -404,7 +404,7 @@ object RewriteCorrelatedScalarSubquery extends Rule[LogicalPlan] with AliasHelpe
    * Statically evaluate a scalar subquery on an empty input.
    *
    * <b>WARNING:</b> This method only covers subqueries that pass the checks under
-   * [[org.apache.spark.sql.catalyst.analysis.CheckAnalysis]]. If the checks in
+   * [[com.ledis.sql.catalyst.analysis.CheckAnalysis]]. If the checks in
    * CheckAnalysis become less restrictive, this method will need to change.
    */
   private def evalSubqueryOnZeroTups(plan: LogicalPlan) : Option[Expression] = {

@@ -17,15 +17,15 @@
 
 package com.ledis.sql.catalyst.analysis
 
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.catalog.CatalogTypes.TablePartitionSpec
-import org.apache.spark.sql.catalyst.expressions.{Cast, Literal}
-import org.apache.spark.sql.catalyst.plans.logical.{AlterTableAddPartition, AlterTableDropPartition, LogicalPlan, ShowPartitions}
-import org.apache.spark.sql.catalyst.rules.Rule
-import org.apache.spark.sql.catalyst.util.CharVarcharUtils
-import org.apache.spark.sql.connector.catalog.SupportsPartitionManagement
-import org.apache.spark.sql.types._
-import org.apache.spark.sql.util.PartitioningUtils.{normalizePartitionSpec, requireExactMatchedPartitionSpec}
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.catalog.CatalogTypes.TablePartitionSpec
+import com.ledis.sql.catalyst.expressions.{Cast, Literal}
+import com.ledis.sql.catalyst.plans.logical.{AlterTableAddPartition, AlterTableDropPartition, LogicalPlan, ShowPartitions}
+import com.ledis.sql.catalyst.rules.Rule
+import com.ledis.sql.catalyst.util.CharVarcharUtils
+import com.ledis.sql.connector.catalog.SupportsPartitionManagement
+import com.ledis.sql.types._
+import com.ledis.sql.util.PartitioningUtils.{normalizePartitionSpec, requireExactMatchedPartitionSpec}
 
 /**
  * Resolve [[UnresolvedPartitionSpec]] to [[ResolvedPartitionSpec]] in partition related commands.

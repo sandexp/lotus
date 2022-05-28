@@ -17,11 +17,11 @@
 
 package com.ledis.sql.catalyst.analysis
 
-import org.apache.spark.sql.catalyst.expressions.{Expression, Literal, SortOrder}
-import org.apache.spark.sql.catalyst.plans.logical.{Aggregate, LogicalPlan, Sort}
-import org.apache.spark.sql.catalyst.rules.Rule
-import org.apache.spark.sql.catalyst.trees.CurrentOrigin.withOrigin
-import org.apache.spark.sql.types.IntegerType
+import com.ledis.sql.catalyst.expressions.{Expression, Literal, SortOrder}
+import com.ledis.sql.catalyst.plans.logical.{Aggregate, LogicalPlan, Sort}
+import com.ledis.sql.catalyst.rules.Rule
+import com.ledis.sql.catalyst.trees.CurrentOrigin.withOrigin
+import com.ledis.sql.types.IntegerType
 
 /**
  * Replaces ordinal in 'order by' or 'group by' with UnresolvedOrdinal expression.

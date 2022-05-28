@@ -17,17 +17,16 @@
 
 package com.ledis.sql.util
 
-import scala.collection.JavaConverters._
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
 
+import scala.collection.JavaConverters._
 import org.apache.arrow.memory.RootAllocator
 import org.apache.arrow.vector.complex.MapVector
 import org.apache.arrow.vector.types.{DateUnit, FloatingPointPrecision, TimeUnit}
 import org.apache.arrow.vector.types.pojo.{ArrowType, Field, FieldType, Schema}
 
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
-
-private[sql] object ArrowUtils {
+object ArrowUtils {
 
   val rootAllocator = new RootAllocator(Long.MaxValue)
 

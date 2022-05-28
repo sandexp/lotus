@@ -19,11 +19,11 @@ package com.ledis.sql.catalyst.optimizer
 
 import scala.annotation.tailrec
 
-import org.apache.spark.sql.catalyst.SQLConfHelper
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.planning.PhysicalOperation
-import org.apache.spark.sql.catalyst.plans._
-import org.apache.spark.sql.catalyst.plans.logical._
+import com.ledis.sql.catalyst.SQLConfHelper
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.planning.PhysicalOperation
+import com.ledis.sql.catalyst.plans._
+import com.ledis.sql.catalyst.plans.logical._
 
 /**
  * Encapsulates star-schema detection logic.

@@ -21,20 +21,20 @@ import java.time.ZoneId
 import java.util.Locale
 import java.util.concurrent.TimeUnit._
 
-import org.apache.spark.SparkException
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.analysis.{TypeCheckResult, TypeCoercion}
-import org.apache.spark.sql.catalyst.expressions.Cast.{forceNullable, resolvableNullability}
-import org.apache.spark.sql.catalyst.expressions.codegen._
-import org.apache.spark.sql.catalyst.expressions.codegen.Block._
-import org.apache.spark.sql.catalyst.util._
-import org.apache.spark.sql.catalyst.util.DateTimeConstants._
-import org.apache.spark.sql.catalyst.util.DateTimeUtils._
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
-import org.apache.spark.unsafe.UTF8StringBuilder
-import org.apache.spark.unsafe.types.{CalendarInterval, UTF8String}
-import org.apache.spark.unsafe.types.UTF8String.{IntWrapper, LongWrapper}
+import com.ledis.SparkException
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.analysis.{TypeCheckResult, TypeCoercion}
+import com.ledis.sql.catalyst.expressions.Cast.{forceNullable, resolvableNullability}
+import com.ledis.sql.catalyst.expressions.codegen._
+import com.ledis.sql.catalyst.expressions.codegen.Block._
+import com.ledis.sql.catalyst.util._
+import com.ledis.sql.catalyst.util.DateTimeConstants._
+import com.ledis.sql.catalyst.util.DateTimeUtils._
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
+import com.ledis.unsafe.UTF8StringBuilder
+import com.ledis.unsafe.types.{CalendarInterval, UTF8String}
+import com.ledis.unsafe.types.UTF8String.{IntWrapper, LongWrapper}
 
 object Cast {
 
@@ -1137,7 +1137,7 @@ abstract class CastBase extends UnaryExpression with TimeZoneAwareExpression wit
         (c, evPrim, evNull) =>
           code"""
           scala.Option<Integer> $intOpt =
-            org.apache.spark.sql.catalyst.util.DateTimeUtils.stringToDate($c, $zid);
+            com.ledis.sql.catalyst.util.DateTimeUtils.stringToDate($c, $zid);
           if ($intOpt.isDefined()) {
             $evPrim = ((Integer) $intOpt.get()).intValue();
           } else {
@@ -1148,7 +1148,7 @@ abstract class CastBase extends UnaryExpression with TimeZoneAwareExpression wit
         val zid = getZoneId()
         (c, evPrim, evNull) =>
           code"""$evPrim =
-            org.apache.spark.sql.catalyst.util.DateTimeUtils.microsToDays($c, $zid);"""
+            com.ledis.sql.catalyst.util.DateTimeUtils.microsToDays($c, $zid);"""
       case _ =>
         (c, evPrim, evNull) => code"$evNull = true;"
     }
@@ -1259,12 +1259,12 @@ abstract class CastBase extends UnaryExpression with TimeZoneAwareExpression wit
         if (ansiEnabled) {
           code"""
             $evPrim =
-              org.apache.spark.sql.catalyst.util.DateTimeUtils.stringToTimestampAnsi($c, $zid);
+              com.ledis.sql.catalyst.util.DateTimeUtils.stringToTimestampAnsi($c, $zid);
            """
         } else {
           code"""
             scala.Option<Long> $longOpt =
-              org.apache.spark.sql.catalyst.util.DateTimeUtils.stringToTimestamp($c, $zid);
+              com.ledis.sql.catalyst.util.DateTimeUtils.stringToTimestamp($c, $zid);
             if ($longOpt.isDefined()) {
               $evPrim = ((Long) $longOpt.get()).longValue();
             } else {
@@ -1283,7 +1283,7 @@ abstract class CastBase extends UnaryExpression with TimeZoneAwareExpression wit
         zoneIdClass)
       (c, evPrim, evNull) =>
         code"""$evPrim =
-          org.apache.spark.sql.catalyst.util.DateTimeUtils.daysToMicros($c, $zid);"""
+          com.ledis.sql.catalyst.util.DateTimeUtils.daysToMicros($c, $zid);"""
     case DecimalType() =>
       (c, evPrim, evNull) => code"$evPrim = ${decimalToTimestampCode(c)};"
     case DoubleType =>

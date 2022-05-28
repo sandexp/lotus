@@ -17,8 +17,8 @@
 
 package com.ledis.sql.catalyst.expressions
 
-import org.apache.spark.sql.catalyst.analysis.TypeCheckResult
-import org.apache.spark.sql.types.AbstractDataType
+import com.ledis.sql.catalyst.analysis.TypeCheckResult
+import com.ledis.sql.types.AbstractDataType
 
 /**
  * A trait that gets mixin to define the expected input types of an expression.
@@ -66,7 +66,7 @@ object ExpectsInputTypes {
 
 /**
  * A mixin for the analyzer to perform implicit type casting using
- * [[org.apache.spark.sql.catalyst.analysis.TypeCoercion.ImplicitTypeCasts]].
+ * [[com.ledis.sql.catalyst.analysis.TypeCoercion.ImplicitTypeCasts]].
  */
 trait ImplicitCastInputTypes extends ExpectsInputTypes {
   // No other methods

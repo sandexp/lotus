@@ -19,15 +19,15 @@ package com.ledis.sql.catalyst.expressions
 
 import java.util.Locale
 
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.analysis.{FunctionRegistry, TypeCheckResult, TypeCoercion}
-import org.apache.spark.sql.catalyst.expressions.aggregate.DeclarativeAggregate
-import org.apache.spark.sql.catalyst.expressions.codegen._
-import org.apache.spark.sql.catalyst.expressions.codegen.Block._
-import org.apache.spark.sql.catalyst.trees.TreeNode
-import org.apache.spark.sql.catalyst.util.truncatedString
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.analysis.{FunctionRegistry, TypeCheckResult, TypeCoercion}
+import com.ledis.sql.catalyst.expressions.aggregate.DeclarativeAggregate
+import com.ledis.sql.catalyst.expressions.codegen._
+import com.ledis.sql.catalyst.expressions.codegen.Block._
+import com.ledis.sql.catalyst.trees.TreeNode
+import com.ledis.sql.catalyst.util.truncatedString
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // This file defines the basic expression abstract classes in Catalyst.
@@ -62,7 +62,7 @@ import org.apache.spark.sql.types._
  * - [[NamedExpression]]: An [[Expression]] that is named.
  * - [[TimeZoneAwareExpression]]: A common base trait for time zone aware expressions.
  * - [[SubqueryExpression]]: A base interface for expressions that contain a
- *                           [[org.apache.spark.sql.catalyst.plans.logical.LogicalPlan]].
+ *                           [[com.ledis.sql.catalyst.plans.logical.LogicalPlan]].
  *
  * - [[LeafExpression]]: an expression that has no child.
  * - [[UnaryExpression]]: an expression that has one child.
@@ -85,7 +85,7 @@ abstract class Expression extends TreeNode[Expression] {
 
   /**
    * Returns true when an expression is a candidate for static evaluation before the query is
-   * executed. A typical use case: [[org.apache.spark.sql.catalyst.optimizer.ConstantFolding]]
+   * executed. A typical use case: [[com.ledis.sql.catalyst.optimizer.ConstantFolding]]
    *
    * The following conditions are used to determine suitability for constant folding:
    *  - A [[Coalesce]] is foldable if all of its children are foldable

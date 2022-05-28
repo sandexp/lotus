@@ -21,7 +21,7 @@ import java.util.UUID
 
 import org.apache.commons.math3.random.MersenneTwister
 
-import org.apache.spark.unsafe.types.UTF8String
+import com.ledis.unsafe.types.UTF8String
 
 /**
  * This class is used to generate a UUID from Pseudo-Random Numbers.

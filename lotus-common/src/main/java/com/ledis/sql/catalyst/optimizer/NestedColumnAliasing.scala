@@ -17,10 +17,10 @@
 
 package com.ledis.sql.catalyst.optimizer
 
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.plans.logical._
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.plans.logical._
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
 
 /**
  * This aims to handle a nested column aliasing pattern inside the `ColumnPruning` optimizer rule.

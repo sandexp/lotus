@@ -22,29 +22,31 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 import java.util.zip.Deflater
 
+import com.ledis.exception.AnalysisException
+
 import scala.collection.JavaConverters._
 import scala.collection.immutable
 import scala.util.Try
 import scala.util.control.NonFatal
 import scala.util.matching.Regex
 
+// todo need to be rewrite according to requirement
 import org.apache.hadoop.fs.Path
 
-import org.apache.spark.{SparkConf, SparkContext, TaskContext}
-import org.apache.spark.internal.Logging
-import org.apache.spark.internal.config._
-import org.apache.spark.internal.config.{IGNORE_MISSING_FILES => SPARK_IGNORE_MISSING_FILES}
-import org.apache.spark.network.util.ByteUnit
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.ScalaReflection
-import org.apache.spark.sql.catalyst.analysis.{HintErrorLogger, Resolver}
-import org.apache.spark.sql.catalyst.expressions.CodegenObjectFactoryMode
-import org.apache.spark.sql.catalyst.expressions.codegen.CodeGenerator
-import org.apache.spark.sql.catalyst.plans.logical.HintErrorHandler
-import org.apache.spark.sql.catalyst.util.DateTimeUtils
-import org.apache.spark.sql.connector.catalog.CatalogManager.SESSION_CATALOG_NAME
-import org.apache.spark.unsafe.array.ByteArrayMethods
-import org.apache.spark.util.Utils
+import com.ledis.{SparkConf, SparkContext, TaskContext}
+import com.ledis.internal.Logging
+import com.ledis.internal.config._
+import com.ledis.internal.config.{IGNORE_MISSING_FILES => SPARK_IGNORE_MISSING_FILES}
+import com.ledis.network.util.ByteUnit
+import com.ledis.sql.catalyst.ScalaReflection
+import com.ledis.sql.catalyst.analysis.{HintErrorLogger, Resolver}
+import com.ledis.sql.catalyst.expressions.CodegenObjectFactoryMode
+import com.ledis.sql.catalyst.expressions.codegen.CodeGenerator
+import com.ledis.sql.catalyst.plans.logical.HintErrorHandler
+import com.ledis.sql.catalyst.util.DateTimeUtils
+import com.ledis.sql.connector.catalog.CatalogManager.SESSION_CATALOG_NAME
+import com.ledis.unsafe.array.ByteArrayMethods
+import com.ledis.util.Utils
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // This file defines the configuration options for Spark SQL.
@@ -53,7 +55,7 @@ import org.apache.spark.util.Utils
 
 object SQLConf {
 
-  private[sql] val sqlConfEntries = java.util.Collections.synchronizedMap(
+  val sqlConfEntries = java.util.Collections.synchronizedMap(
     new java.util.HashMap[String, ConfigEntry[_]]())
 
   val staticConfKeys: java.util.Set[String] =
@@ -66,7 +68,7 @@ object SQLConf {
   }
 
   // For testing only
-  private[sql] def unregister(entry: ConfigEntry[_]): Unit = sqlConfEntries.synchronized {
+  def unregister(entry: ConfigEntry[_]): Unit = sqlConfEntries.synchronized {
     sqlConfEntries.remove(entry.key)
   }
 
@@ -85,7 +87,7 @@ object SQLConf {
    * should not be set to other values. Other later created sessions should respect all static
    * configs and only be able to change non-static configs.
    */
-  private[sql] def mergeNonStaticSQLConfigs(
+  def mergeNonStaticSQLConfigs(
       sqlConf: SQLConf,
       configs: Map[String, String]): Unit = {
     for ((k, v) <- configs if !staticConfKeys.contains(k)) {
@@ -96,7 +98,7 @@ object SQLConf {
   /**
    * Extract entries from `SparkConf` and put them in the `SQLConf`
    */
-  private[sql] def mergeSparkConf(sqlConf: SQLConf, sparkConf: SparkConf): Unit = {
+  def mergeSparkConf(sqlConf: SQLConf, sparkConf: SparkConf): Unit = {
     sparkConf.getAll.foreach { case (k, v) =>
       sqlConf.setConfString(k, v)
     }
@@ -1062,7 +1064,7 @@ object SQLConf {
       .internal()
       .stringConf
       .createWithDefault(
-        "org.apache.spark.sql.execution.datasources.SQLHadoopMapReduceCommitProtocol")
+        "com.ledis.sql.execution.datasources.SQLHadoopMapReduceCommitProtocol")
 
   val PARALLEL_PARTITION_DISCOVERY_THRESHOLD =
     buildConf("spark.sql.sources.parallelPartitionDiscovery.threshold")
@@ -1317,7 +1319,7 @@ object SQLConf {
       .version("2.3.0")
       .stringConf
       .createWithDefault(
-        "org.apache.spark.sql.execution.streaming.state.HDFSBackedStateStoreProvider")
+        "com.ledis.sql.execution.streaming.state.HDFSBackedStateStoreProvider")
 
   val STATE_SCHEMA_CHECK_ENABLED =
     buildConf("spark.sql.streaming.stateStore.stateSchemaCheck")
@@ -1555,7 +1557,7 @@ object SQLConf {
       .version("2.1.0")
       .internal()
       .stringConf
-      .createWithDefault("org.apache.spark.sql.execution.streaming.ManifestFileCommitProtocol")
+      .createWithDefault("com.ledis.sql.execution.streaming.ManifestFileCommitProtocol")
 
   val STREAMING_MULTIPLE_WATERMARK_POLICY =
     buildConf("spark.sql.streaming.multipleWatermarkPolicy")
@@ -2129,7 +2131,7 @@ object SQLConf {
         "dummy value. This is currently used to redact the output of SQL explain commands. " +
         "When this conf is not set, the value from `spark.redaction.string.regex` is used.")
       .version("2.3.0")
-      .fallbackConf(org.apache.spark.internal.config.STRING_REDACTION_PATTERN)
+      .fallbackConf(com.ledis.internal.config.STRING_REDACTION_PATTERN)
 
   val CONCAT_BINARY_AS_STRING = buildConf("spark.sql.function.concatBinaryAsString")
     .doc("When this option is set to false and all inputs are binary, `functions.concat` returns " +
@@ -2538,7 +2540,7 @@ object SQLConf {
   val LEGACY_ALLOW_UNTYPED_SCALA_UDF =
     buildConf("spark.sql.legacy.allowUntypedScalaUDF")
       .internal()
-      .doc("When set to true, user is allowed to use org.apache.spark.sql.functions." +
+      .doc("When set to true, user is allowed to use com.ledis.sql.functions." +
         "udf(f: AnyRef, dataType: DataType). Otherwise, an exception will be thrown at runtime.")
       .version("3.0.0")
       .booleanConf
@@ -3379,9 +3381,9 @@ class SQLConf extends Serializable with Logging {
    */
   def resolver: Resolver = {
     if (caseSensitiveAnalysis) {
-      org.apache.spark.sql.catalyst.analysis.caseSensitiveResolution
+      com.ledis.sql.catalyst.analysis.caseSensitiveResolution
     } else {
-      org.apache.spark.sql.catalyst.analysis.caseInsensitiveResolution
+      com.ledis.sql.catalyst.analysis.caseInsensitiveResolution
     }
   }
 
@@ -3784,7 +3786,7 @@ class SQLConf extends Serializable with Logging {
 
   private var definedConfsLoaded = false
   /**
-   * Init [[StaticSQLConf]] and [[org.apache.spark.sql.hive.HiveUtils]] so that all the defined
+   * Init [[StaticSQLConf]] and [[com.ledis.sql.hive.HiveUtils]] so that all the defined
    * SQL Configurations will be registered to SQLConf
    */
   private def loadDefinedConfs(): Unit = {
@@ -3794,7 +3796,7 @@ class SQLConf extends Serializable with Logging {
       StaticSQLConf
       try {
         // Force to register SQL configurations from Hive module
-        val symbol = ScalaReflection.mirror.staticModule("org.apache.spark.sql.hive.HiveUtils")
+        val symbol = ScalaReflection.mirror.staticModule("com.ledis.sql.hive.HiveUtils")
         ScalaReflection.mirror.reflectModule(symbol).instance
       } catch {
         case NonFatal(e) =>

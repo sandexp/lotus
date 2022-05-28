@@ -22,19 +22,18 @@ import java.time.{DateTimeException, LocalDate, LocalDateTime, ZoneId}
 import java.time.format.DateTimeParseException
 import java.util.Locale
 
+import com.ledis.exception.AnalysisException
 import org.apache.commons.text.StringEscapeUtils
-
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.expressions.codegen._
-import org.apache.spark.sql.catalyst.expressions.codegen.Block._
-import org.apache.spark.sql.catalyst.util.{DateTimeUtils, LegacyDateFormats, TimestampFormatter}
-import org.apache.spark.sql.catalyst.util.DateTimeConstants._
-import org.apache.spark.sql.catalyst.util.DateTimeUtils._
-import org.apache.spark.sql.catalyst.util.LegacyDateFormats.SIMPLE_DATE_FORMAT
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
-import org.apache.spark.unsafe.types.{CalendarInterval, UTF8String}
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.expressions.codegen._
+import com.ledis.sql.catalyst.expressions.codegen.Block._
+import com.ledis.sql.catalyst.util.{DateTimeUtils, LegacyDateFormats, TimestampFormatter}
+import com.ledis.sql.catalyst.util.DateTimeConstants._
+import com.ledis.sql.catalyst.util.DateTimeUtils._
+import com.ledis.sql.catalyst.util.LegacyDateFormats.SIMPLE_DATE_FORMAT
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
+import com.ledis.unsafe.types.{CalendarInterval, UTF8String}
 
 /**
  * Common base class for time zone aware expressions.
@@ -2089,8 +2088,8 @@ case class MakeTimestamp(
       val zoneId = timezone.map(tz => s"$dtu.getZoneId(${tz}.toString())").getOrElse(zid)
       s"""
       try {
-        org.apache.spark.sql.types.Decimal secFloor = $secAndNanos.floor();
-        org.apache.spark.sql.types.Decimal nanosPerSec = $d$$.MODULE$$.apply(1000000000L, 10, 0);
+        com.ledis.sql.types.Decimal secFloor = $secAndNanos.floor();
+        com.ledis.sql.types.Decimal nanosPerSec = $d$$.MODULE$$.apply(1000000000L, 10, 0);
         int nanos = (($secAndNanos.$$minus(secFloor)).$$times(nanosPerSec)).toInt();
         int seconds = secFloor.toInt();
         java.time.LocalDateTime ldt;
@@ -2285,7 +2284,7 @@ case class SubtractTimestamps(endTimestamp: Expression, startTimestamp: Expressi
 
   override def doGenCode(ctx: CodegenContext, ev: ExprCode): ExprCode = {
     defineCodeGen(ctx, ev, (end, start) =>
-      s"new org.apache.spark.unsafe.types.CalendarInterval(0, 0, $end - $start)")
+      s"new com.ledis.unsafe.types.CalendarInterval(0, 0, $end - $start)")
   }
 }
 

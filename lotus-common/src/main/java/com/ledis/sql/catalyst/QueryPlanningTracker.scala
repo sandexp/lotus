@@ -19,7 +19,7 @@ package com.ledis.sql.catalyst
 
 import scala.collection.JavaConverters._
 
-import org.apache.spark.util.BoundedPriorityQueue
+import com.ledis.util.BoundedPriorityQueue
 
 
 /**

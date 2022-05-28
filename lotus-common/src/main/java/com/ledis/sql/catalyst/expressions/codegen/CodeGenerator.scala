@@ -31,20 +31,20 @@ import org.codehaus.commons.compiler.CompileException
 import org.codehaus.janino.{ByteArrayClassLoader, ClassBodyEvaluator, InternalCompilerException, SimpleCompiler}
 import org.codehaus.janino.util.ClassFile
 
-import org.apache.spark.{TaskContext, TaskKilledException}
-import org.apache.spark.executor.InputMetrics
-import org.apache.spark.internal.Logging
-import org.apache.spark.metrics.source.CodegenMetrics
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.codegen.Block._
-import org.apache.spark.sql.catalyst.util.{ArrayData, MapData, SQLOrderingUtil}
-import org.apache.spark.sql.catalyst.util.DateTimeConstants.NANOS_PER_MILLIS
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
-import org.apache.spark.unsafe.Platform
-import org.apache.spark.unsafe.types._
-import org.apache.spark.util.{LongAccumulator, ParentClassLoader, Utils}
+import com.ledis.{TaskContext, TaskKilledException}
+import com.ledis.executor.InputMetrics
+import com.ledis.internal.Logging
+import com.ledis.metrics.source.CodegenMetrics
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.expressions.codegen.Block._
+import com.ledis.sql.catalyst.util.{ArrayData, MapData, SQLOrderingUtil}
+import com.ledis.sql.catalyst.util.DateTimeConstants.NANOS_PER_MILLIS
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
+import com.ledis.unsafe.Platform
+import com.ledis.unsafe.types._
+import com.ledis.util.{LongAccumulator, ParentClassLoader, Utils}
 
 /**
  * Java source for evaluating an [[Expression]] given a [[InternalRow]] of input.
@@ -636,7 +636,7 @@ class CodegenContext extends Logging {
       s"$clsName.compareFloats($c1, $c2)"
     // use c1 - c2 may overflow
     case dt: DataType if isPrimitiveType(dt) => s"($c1 > $c2 ? 1 : $c1 < $c2 ? -1 : 0)"
-    case BinaryType => s"org.apache.spark.sql.catalyst.util.TypeUtils.compareBinary($c1, $c2)"
+    case BinaryType => s"com.ledis.sql.catalyst.util.TypeUtils.compareBinary($c1, $c2)"
     case NullType => "0"
     case array: ArrayType =>
       val elementType = array.elementType
@@ -1375,7 +1375,7 @@ object CodeGenerator extends Logging {
     val parentClassLoader = new ParentClassLoader(Utils.getContextOrSparkClassLoader)
     evaluator.setParentClassLoader(parentClassLoader)
     // Cannot be under package codegen, or fail with java.lang.InstantiationException
-    evaluator.setClassName("org.apache.spark.sql.catalyst.expressions.GeneratedClass")
+    evaluator.setClassName("com.ledis.sql.catalyst.expressions.GeneratedClass")
     evaluator.setDefaultImports(
       classOf[Platform].getName,
       classOf[InternalRow].getName,
@@ -1556,7 +1556,7 @@ object CodeGenerator extends Logging {
 
   /**
    * Generates code creating a [[UnsafeArrayData]] or
-   * [[org.apache.spark.sql.catalyst.util.GenericArrayData]] based on given parameters.
+   * [[com.ledis.sql.catalyst.util.GenericArrayData]] based on given parameters.
    *
    * @param arrayName name of the array to create
    * @param elementType data type of the elements in source array

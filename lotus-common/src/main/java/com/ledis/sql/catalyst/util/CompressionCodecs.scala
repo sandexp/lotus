@@ -23,7 +23,7 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.io.SequenceFile.CompressionType
 import org.apache.hadoop.io.compress._
 
-import org.apache.spark.util.Utils
+import com.ledis.util.Utils
 
 object CompressionCodecs {
   private val shortCompressionCodecNames = Map(

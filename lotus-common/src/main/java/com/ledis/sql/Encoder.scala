@@ -17,10 +17,10 @@
 
 package com.ledis.sql
 
+import com.ledis.sql.types.StructType
+
 import scala.annotation.implicitNotFound
 import scala.reflect.ClassTag
-
-import org.apache.spark.sql.types._
 
 /**
  * Used to convert a JVM object of type `T` to and from the internal Spark SQL representation.

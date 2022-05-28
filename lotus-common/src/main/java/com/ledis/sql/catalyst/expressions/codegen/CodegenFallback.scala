@@ -17,8 +17,8 @@
 
 package com.ledis.sql.catalyst.expressions.codegen
 
-import org.apache.spark.sql.catalyst.expressions.{Expression, LeafExpression, Nondeterministic}
-import org.apache.spark.sql.catalyst.expressions.codegen.Block._
+import com.ledis.sql.catalyst.expressions.{Expression, LeafExpression, Nondeterministic}
+import com.ledis.sql.catalyst.expressions.codegen.Block._
 
 /**
  * A trait that can be used to provide a fallback mode for expression code generation.

@@ -17,8 +17,6 @@
 
 package com.ledis.sql.types
 
-import org.apache.spark.annotation.Stable
-
 /**
  * The data type representing calendar intervals. The calendar interval is stored internally in
  * three components:
@@ -32,18 +30,16 @@ import org.apache.spark.annotation.Stable
  *
  * @since 1.5.0
  */
-@Stable
 class CalendarIntervalType private() extends DataType {
 
   override def defaultSize: Int = 16
 
   override def typeName: String = "interval"
 
-  private[spark] override def asNullable: CalendarIntervalType = this
+  override def asNullable: CalendarIntervalType = this
 }
 
 /**
  * @since 1.5.0
  */
-@Stable
 case object CalendarIntervalType extends CalendarIntervalType

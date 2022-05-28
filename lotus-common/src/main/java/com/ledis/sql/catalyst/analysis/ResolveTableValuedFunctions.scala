@@ -19,11 +19,11 @@ package com.ledis.sql.catalyst.analysis
 
 import java.util.Locale
 
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.expressions.{Alias, Expression}
-import org.apache.spark.sql.catalyst.plans.logical.{LogicalPlan, Project, Range}
-import org.apache.spark.sql.catalyst.rules._
-import org.apache.spark.sql.types.{DataType, IntegerType, LongType}
+import com.ledis.exception.AnalysisException
+import com.ledis.sql.catalyst.expressions.{Alias, Expression}
+import com.ledis.sql.catalyst.plans.logical.{LogicalPlan, Project, Range}
+import com.ledis.sql.catalyst.rules._
+import com.ledis.sql.types.{DataType, IntegerType, LongType}
 
 /**
  * Rule that resolves table-valued function references.

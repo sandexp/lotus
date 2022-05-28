@@ -17,15 +17,15 @@
 
 package com.ledis.sql.catalyst.plans.logical
 
-import org.apache.spark.sql.catalyst.analysis.{NamedRelation, PartitionSpec, ResolvedPartitionSpec, UnresolvedException}
-import org.apache.spark.sql.catalyst.catalog.CatalogTypes.TablePartitionSpec
-import org.apache.spark.sql.catalyst.expressions.{Attribute, AttributeReference, AttributeSet, Expression, Unevaluable}
-import org.apache.spark.sql.catalyst.plans.DescribeCommandSchema
-import org.apache.spark.sql.catalyst.util.CharVarcharUtils
-import org.apache.spark.sql.connector.catalog._
-import org.apache.spark.sql.connector.catalog.TableChange.{AddColumn, ColumnChange}
-import org.apache.spark.sql.connector.expressions.Transform
-import org.apache.spark.sql.types.{DataType, MetadataBuilder, StringType, StructType}
+import com.ledis.sql.catalyst.analysis.{NamedRelation, PartitionSpec, ResolvedPartitionSpec, UnresolvedException}
+import com.ledis.sql.catalyst.catalog.CatalogTypes.TablePartitionSpec
+import com.ledis.sql.catalyst.expressions.{Attribute, AttributeReference, AttributeSet, Expression, Unevaluable}
+import com.ledis.sql.catalyst.plans.DescribeCommandSchema
+import com.ledis.sql.catalyst.util.CharVarcharUtils
+import com.ledis.sql.connector.catalog._
+import com.ledis.sql.connector.catalog.TableChange.{AddColumn, ColumnChange}
+import com.ledis.sql.connector.expressions.Transform
+import com.ledis.sql.types.{DataType, MetadataBuilder, StringType, StructType}
 
 /**
  * Base trait for DataSourceV2 write commands

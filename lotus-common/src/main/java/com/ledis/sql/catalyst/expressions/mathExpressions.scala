@@ -20,14 +20,14 @@ package com.ledis.sql.catalyst.expressions
 import java.{lang => jl}
 import java.util.Locale
 
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.analysis.{FunctionRegistry, TypeCheckResult}
-import org.apache.spark.sql.catalyst.analysis.TypeCheckResult.{TypeCheckFailure, TypeCheckSuccess}
-import org.apache.spark.sql.catalyst.expressions.codegen._
-import org.apache.spark.sql.catalyst.expressions.codegen.Block._
-import org.apache.spark.sql.catalyst.util.NumberConverter
-import org.apache.spark.sql.types._
-import org.apache.spark.unsafe.types.UTF8String
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.analysis.{FunctionRegistry, TypeCheckResult}
+import com.ledis.sql.catalyst.analysis.TypeCheckResult.{TypeCheckFailure, TypeCheckSuccess}
+import com.ledis.sql.catalyst.expressions.codegen._
+import com.ledis.sql.catalyst.expressions.codegen.Block._
+import com.ledis.sql.catalyst.util.NumberConverter
+import com.ledis.sql.types._
+import com.ledis.unsafe.types.UTF8String
 
 /**
  * A leaf expression specifically for math constants. Math constants expect no input.
@@ -492,7 +492,7 @@ case class Factorial(child: Expression)
           ${ev.isNull} = true;
         } else {
           ${ev.value} =
-            org.apache.spark.sql.catalyst.expressions.Factorial.factorial($eval);
+            com.ledis.sql.catalyst.expressions.Factorial.factorial($eval);
         }
       """
     })
@@ -1471,10 +1471,10 @@ case class WidthBucket(
 
   override def doGenCode(ctx: CodegenContext, ev: ExprCode): ExprCode = {
     nullSafeCodeGen(ctx, ev, (input, min, max, numBucket) => {
-      s"""${ev.isNull} = org.apache.spark.sql.catalyst.expressions.WidthBucket
+      s"""${ev.isNull} = com.ledis.sql.catalyst.expressions.WidthBucket
          |  .isNull($input, $min, $max, $numBucket);
          |if (!${ev.isNull}) {
-         |  ${ev.value} = org.apache.spark.sql.catalyst.expressions.WidthBucket
+         |  ${ev.value} = com.ledis.sql.catalyst.expressions.WidthBucket
          |    .computeBucketNumberNotNull($input, $min, $max, $numBucket);
          |}""".stripMargin
     })

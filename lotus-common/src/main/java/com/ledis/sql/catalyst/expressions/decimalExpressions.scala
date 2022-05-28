@@ -17,11 +17,11 @@
 
 package com.ledis.sql.catalyst.expressions
 
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.expressions.codegen.{CodegenContext, ExprCode}
-import org.apache.spark.sql.catalyst.expressions.codegen.Block._
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.expressions.codegen.{CodegenContext, ExprCode}
+import com.ledis.sql.catalyst.expressions.codegen.Block._
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
 
 /**
  * Return the unscaled Long value of a Decimal, assuming it fits in a Long.

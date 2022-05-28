@@ -17,11 +17,11 @@
 
 package com.ledis.sql.catalyst.analysis
 
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.Literal._
-import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.expressions.Literal._
+import com.ledis.sql.catalyst.plans.logical.LogicalPlan
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
 
 
 // scalastyle:off

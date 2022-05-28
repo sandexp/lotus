@@ -17,14 +17,13 @@
 
 package com.ledis.sql.catalyst.catalog
 
+import com.ledis.exception.AnalysisException
 import javax.annotation.concurrent.GuardedBy
 
 import scala.collection.mutable
-
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.analysis.TempTableAlreadyExistsException
-import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
-import org.apache.spark.sql.catalyst.util.StringUtils
+import com.ledis.sql.catalyst.analysis.TempTableAlreadyExistsException
+import com.ledis.sql.catalyst.plans.logical.LogicalPlan
+import com.ledis.sql.catalyst.util.StringUtils
 
 
 /**

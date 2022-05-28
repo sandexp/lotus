@@ -16,13 +16,13 @@
  */
 package com.ledis.sql.catalyst.expressions
 
-import org.apache.spark.SparkException
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.expressions.codegen.{UnsafeArrayWriter, UnsafeRowWriter, UnsafeWriter}
-import org.apache.spark.sql.catalyst.util.ArrayData
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types.{UserDefinedType, _}
-import org.apache.spark.unsafe.Platform
+import com.ledis.SparkException
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.expressions.codegen.{UnsafeArrayWriter, UnsafeRowWriter, UnsafeWriter}
+import com.ledis.sql.catalyst.util.ArrayData
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types.{UserDefinedType, _}
+import com.ledis.unsafe.Platform
 
 /**
  * An interpreted unsafe projection. This class reuses the [[UnsafeRow]] it produces, a consumer

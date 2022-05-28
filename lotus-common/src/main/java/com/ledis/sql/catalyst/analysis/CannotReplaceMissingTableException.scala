@@ -18,8 +18,8 @@
 
 package com.ledis.sql.catalyst.analysis
 
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.connector.catalog.Identifier
+import com.ledis.exception.AnalysisException
+import com.ledis.sql.connector.catalog.Identifier
 
 class CannotReplaceMissingTableException(
     tableIdentifier: Identifier,

@@ -21,41 +21,41 @@ import scala.math.{Fractional, Numeric}
 import scala.reflect.runtime.universe.typeTag
 import scala.util.Try
 
-import org.apache.spark.annotation.Stable
-import org.apache.spark.sql.catalyst.util.SQLOrderingUtil
+// import com.ledis.annotation.Stable
+import com.ledis.sql.catalyst.util.SQLOrderingUtil
 
 /**
  * The data type representing `Double` values. Please use the singleton `DataTypes.DoubleType`.
  *
  * @since 1.3.0
  */
-@Stable
+// @Stable
 class DoubleType private() extends FractionalType {
   // The companion object and this class is separated so the companion object also subclasses
   // this type. Otherwise, the companion object would be of type "DoubleType$" in byte code.
   // Defined with a private constructor so the companion object is the only possible instantiation.
-  private[sql] type InternalType = Double
-  @transient private[sql] lazy val tag = typeTag[InternalType]
-  private[sql] val numeric = implicitly[Numeric[Double]]
-  private[sql] val fractional = implicitly[Fractional[Double]]
-  private[sql] val ordering =
+  type InternalType = Double
+  @transient lazy val tag = typeTag[InternalType]
+  val numeric = implicitly[Numeric[Double]]
+  val fractional = implicitly[Fractional[Double]]
+  val ordering =
     (x: Double, y: Double) => SQLOrderingUtil.compareDoubles(x, y)
-  private[sql] val asIntegral = DoubleType.DoubleAsIfIntegral
+  val asIntegral = DoubleType.DoubleAsIfIntegral
 
-  override private[sql] def exactNumeric = DoubleExactNumeric
+  override def exactNumeric = DoubleExactNumeric
 
   /**
    * The default size of a value of the DoubleType is 8 bytes.
    */
   override def defaultSize: Int = 8
 
-  private[spark] override def asNullable: DoubleType = this
+  override def asNullable: DoubleType = this
 }
 
 /**
  * @since 1.3.0
  */
-@Stable
+// @Stable
 case object DoubleType extends DoubleType {
 
   // Traits below copied from Scala 2.12; not present in 2.13

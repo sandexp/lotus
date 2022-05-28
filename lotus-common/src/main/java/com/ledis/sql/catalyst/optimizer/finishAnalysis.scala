@@ -19,14 +19,14 @@ package com.ledis.sql.catalyst.optimizer
 
 import scala.collection.mutable
 
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.aggregate._
-import org.apache.spark.sql.catalyst.plans.logical._
-import org.apache.spark.sql.catalyst.rules._
-import org.apache.spark.sql.catalyst.util.DateTimeUtils
-import org.apache.spark.sql.connector.catalog.CatalogManager
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.expressions.aggregate._
+import com.ledis.sql.catalyst.plans.logical._
+import com.ledis.sql.catalyst.rules._
+import com.ledis.sql.catalyst.util.DateTimeUtils
+import com.ledis.sql.connector.catalog.CatalogManager
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
 
 
 /**
@@ -98,7 +98,7 @@ object ComputeCurrentTime extends Rule[LogicalPlan] {
  */
 case class GetCurrentDatabaseAndCatalog(catalogManager: CatalogManager) extends Rule[LogicalPlan] {
   def apply(plan: LogicalPlan): LogicalPlan = {
-    import org.apache.spark.sql.connector.catalog.CatalogV2Implicits._
+    import com.ledis.sql.connector.catalog.CatalogV2Implicits._
     val currentNamespace = catalogManager.currentNamespace.quoted
     val currentCatalog = catalogManager.currentCatalog.name()
 

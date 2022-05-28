@@ -22,12 +22,12 @@ import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets.UTF_8
 import java.util.concurrent.atomic.AtomicBoolean
 
-import org.apache.spark.internal.Logging
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types.{NumericType, StringType}
-import org.apache.spark.unsafe.types.UTF8String
-import org.apache.spark.util.Utils
+import com.ledis.internal.Logging
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types.{NumericType, StringType}
+import com.ledis.unsafe.types.UTF8String
+import com.ledis.util.Utils
 
 package object util extends Logging {
 

@@ -17,13 +17,13 @@
 
 package com.ledis.sql.catalyst.optimizer
 
-import org.apache.spark.sql.catalyst.expressions.{And, ArrayExists, ArrayFilter, CaseWhen, Expression, If}
-import org.apache.spark.sql.catalyst.expressions.{LambdaFunction, Literal, MapFilter, Or}
-import org.apache.spark.sql.catalyst.expressions.Literal.FalseLiteral
-import org.apache.spark.sql.catalyst.plans.logical.{Filter, Join, LogicalPlan}
-import org.apache.spark.sql.catalyst.rules.Rule
-import org.apache.spark.sql.types.BooleanType
-import org.apache.spark.util.Utils
+import com.ledis.sql.catalyst.expressions.{And, ArrayExists, ArrayFilter, CaseWhen, Expression, If}
+import com.ledis.sql.catalyst.expressions.{LambdaFunction, Literal, MapFilter, Or}
+import com.ledis.sql.catalyst.expressions.Literal.FalseLiteral
+import com.ledis.sql.catalyst.plans.logical.{Filter, Join, LogicalPlan}
+import com.ledis.sql.catalyst.rules.Rule
+import com.ledis.sql.types.BooleanType
+import com.ledis.util.Utils
 
 
 /**

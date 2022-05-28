@@ -19,13 +19,13 @@ package com.ledis.sql.catalyst.expressions
 
 import java.lang.reflect.{Method, Modifier}
 
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.analysis.{FunctionRegistry, TypeCheckResult}
-import org.apache.spark.sql.catalyst.analysis.TypeCheckResult.{TypeCheckFailure, TypeCheckSuccess}
-import org.apache.spark.sql.catalyst.expressions.codegen.CodegenFallback
-import org.apache.spark.sql.types._
-import org.apache.spark.unsafe.types.UTF8String
-import org.apache.spark.util.Utils
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.analysis.{FunctionRegistry, TypeCheckResult}
+import com.ledis.sql.catalyst.analysis.TypeCheckResult.{TypeCheckFailure, TypeCheckSuccess}
+import com.ledis.sql.catalyst.expressions.codegen.CodegenFallback
+import com.ledis.sql.types._
+import com.ledis.unsafe.types.UTF8String
+import com.ledis.util.Utils
 
 /**
  * An expression that invokes a method on a class via reflection.
@@ -37,7 +37,7 @@ import org.apache.spark.util.Utils
  * (i.e. does not support calling non-static methods).
  *
  * We should also look into how to consolidate this expression with
- * [[org.apache.spark.sql.catalyst.expressions.objects.StaticInvoke]] in the future.
+ * [[com.ledis.sql.catalyst.expressions.objects.StaticInvoke]] in the future.
  *
  * @param children the first element should be a literal string for the class name,
  *                 and the second element should be a literal string for the method name,

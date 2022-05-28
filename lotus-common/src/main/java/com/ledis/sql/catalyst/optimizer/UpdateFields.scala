@@ -21,10 +21,10 @@ import java.util.Locale
 
 import scala.collection.mutable
 
-import org.apache.spark.sql.catalyst.expressions.{Expression, UpdateFields, WithField}
-import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
-import org.apache.spark.sql.catalyst.rules.Rule
-import org.apache.spark.sql.internal.SQLConf
+import com.ledis.sql.catalyst.expressions.{Expression, UpdateFields, WithField}
+import com.ledis.sql.catalyst.plans.logical.LogicalPlan
+import com.ledis.sql.catalyst.rules.Rule
+import com.ledis.sql.internal.SQLConf
 
 
 /**

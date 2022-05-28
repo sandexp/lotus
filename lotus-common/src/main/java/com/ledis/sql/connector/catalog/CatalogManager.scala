@@ -19,11 +19,11 @@ package com.ledis.sql.connector.catalog
 
 import scala.collection.mutable
 
-import org.apache.spark.internal.Logging
-import org.apache.spark.sql.catalyst.SQLConfHelper
-import org.apache.spark.sql.catalyst.analysis.NoSuchNamespaceException
-import org.apache.spark.sql.catalyst.catalog.SessionCatalog
-import org.apache.spark.sql.internal.SQLConf
+import com.ledis.internal.Logging
+import com.ledis.sql.catalyst.SQLConfHelper
+import com.ledis.sql.catalyst.analysis.NoSuchNamespaceException
+import com.ledis.sql.catalyst.catalog.SessionCatalog
+import com.ledis.sql.internal.SQLConf
 
 /**
  * A thread-safe manager for [[CatalogPlugin]]s. It tracks all the registered catalogs, and allow
@@ -36,7 +36,6 @@ import org.apache.spark.sql.internal.SQLConf
  */
 // TODO: all commands should look up table from the current catalog. The `SessionCatalog` doesn't
 //       need to track current database at all.
-private[sql]
 class CatalogManager(
     defaultSessionCatalog: CatalogPlugin,
     val v1SessionCatalog: SessionCatalog) extends SQLConfHelper with Logging {
@@ -80,7 +79,7 @@ class CatalogManager(
    * This happens when the source implementation extends the v2 TableProvider API and is not listed
    * in the fallback configuration, spark.sql.sources.useV1SourceList
    */
-  private[sql] def v2SessionCatalog: CatalogPlugin = {
+  def v2SessionCatalog: CatalogPlugin = {
     conf.getConf(SQLConf.V2_SESSION_CATALOG_IMPLEMENTATION).map { _ =>
       catalogs.getOrElseUpdate(SESSION_CATALOG_NAME, loadV2SessionCatalog())
     }.getOrElse(defaultSessionCatalog)
@@ -129,7 +128,7 @@ class CatalogManager(
   }
 
   // Clear all the registered catalogs. Only used in tests.
-  private[sql] def reset(): Unit = synchronized {
+  def reset(): Unit = synchronized {
     catalogs.clear()
     _currentNamespace = None
     _currentCatalogName = None
@@ -137,6 +136,6 @@ class CatalogManager(
   }
 }
 
-private[sql] object CatalogManager {
+object CatalogManager {
   val SESSION_CATALOG_NAME: String = "spark_catalog"
 }

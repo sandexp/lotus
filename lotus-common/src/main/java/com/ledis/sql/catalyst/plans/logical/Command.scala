@@ -17,7 +17,7 @@
 
 package com.ledis.sql.catalyst.plans.logical
 
-import org.apache.spark.sql.catalyst.expressions.{Attribute, AttributeSet}
+import com.ledis.sql.catalyst.expressions.{Attribute, AttributeSet}
 
 /**
  * A logical node that represents a non-query command to be executed by the system.  For example,

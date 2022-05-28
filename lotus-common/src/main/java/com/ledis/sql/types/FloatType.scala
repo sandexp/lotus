@@ -21,42 +21,40 @@ import scala.math.{Fractional, Numeric}
 import scala.reflect.runtime.universe.typeTag
 import scala.util.Try
 
-import org.apache.spark.annotation.Stable
-import org.apache.spark.sql.catalyst.util.SQLOrderingUtil
+import com.ledis.sql.catalyst.util.SQLOrderingUtil
 
 /**
  * The data type representing `Float` values. Please use the singleton `DataTypes.FloatType`.
  *
  * @since 1.3.0
  */
-@Stable
 class FloatType private() extends FractionalType {
   // The companion object and this class is separated so the companion object also subclasses
   // this type. Otherwise, the companion object would be of type "FloatType$" in byte code.
   // Defined with a private constructor so the companion object is the only possible instantiation.
-  private[sql] type InternalType = Float
-  @transient private[sql] lazy val tag = typeTag[InternalType]
-  private[sql] val numeric = implicitly[Numeric[Float]]
-  private[sql] val fractional = implicitly[Fractional[Float]]
-  private[sql] val ordering =
+  type InternalType = Float
+  @transient lazy val tag = typeTag[InternalType]
+  val numeric = implicitly[Numeric[Float]]
+  val fractional = implicitly[Fractional[Float]]
+  val ordering =
     (x: Float, y: Float) => SQLOrderingUtil.compareFloats(x, y)
-  private[sql] val asIntegral = FloatType.FloatAsIfIntegral
+  val asIntegral = FloatType.FloatAsIfIntegral
 
-  override private[sql] def exactNumeric = FloatExactNumeric
+  override def exactNumeric = FloatExactNumeric
 
   /**
    * The default size of a value of the FloatType is 4 bytes.
    */
   override def defaultSize: Int = 4
 
-  private[spark] override def asNullable: FloatType = this
+  override def asNullable: FloatType = this
 }
 
 
 /**
  * @since 1.3.0
  */
-@Stable
+// @Stable
 case object FloatType extends FloatType {
 
   // Traits below copied from Scala 2.12; not present in 2.13

@@ -16,18 +16,17 @@
  */
 package com.ledis.sql.catalyst.parser
 
+import com.ledis.exception.AnalysisException
 import org.antlr.v4.runtime._
 import org.antlr.v4.runtime.atn.PredictionMode
 import org.antlr.v4.runtime.misc.{Interval, ParseCancellationException}
 import org.antlr.v4.runtime.tree.TerminalNodeImpl
-
-import org.apache.spark.internal.Logging
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.{FunctionIdentifier, SQLConfHelper, TableIdentifier}
-import org.apache.spark.sql.catalyst.expressions.Expression
-import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
-import org.apache.spark.sql.catalyst.trees.Origin
-import org.apache.spark.sql.types.{DataType, StructType}
+import com.ledis.internal.Logging
+import com.ledis.sql.catalyst.{FunctionIdentifier, SQLConfHelper, TableIdentifier}
+import com.ledis.sql.catalyst.expressions.Expression
+import com.ledis.sql.catalyst.plans.logical.LogicalPlan
+import com.ledis.sql.catalyst.trees.Origin
+import com.ledis.sql.types.{DataType, StructType}
 
 /**
  * Base SQL parsing infrastructure.

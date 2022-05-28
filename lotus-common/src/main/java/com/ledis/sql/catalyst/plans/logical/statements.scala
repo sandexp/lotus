@@ -17,13 +17,13 @@
 
 package com.ledis.sql.catalyst.plans.logical
 
-import org.apache.spark.sql.catalyst.analysis.ViewType
-import org.apache.spark.sql.catalyst.catalog.{BucketSpec, FunctionResource}
-import org.apache.spark.sql.catalyst.catalog.CatalogTypes.TablePartitionSpec
-import org.apache.spark.sql.catalyst.expressions.Attribute
-import org.apache.spark.sql.connector.catalog.TableChange.ColumnPosition
-import org.apache.spark.sql.connector.expressions.Transform
-import org.apache.spark.sql.types.{DataType, StructType}
+import com.ledis.sql.catalyst.analysis.ViewType
+import com.ledis.sql.catalyst.catalog.{BucketSpec, FunctionResource}
+import com.ledis.sql.catalyst.catalog.CatalogTypes.TablePartitionSpec
+import com.ledis.sql.catalyst.expressions.Attribute
+import com.ledis.sql.connector.catalog.TableChange.ColumnPosition
+import com.ledis.sql.connector.expressions.Transform
+import com.ledis.sql.types.{DataType, StructType}
 
 /**
  * A logical plan node that contains exactly what was parsed from SQL.
@@ -37,7 +37,7 @@ import org.apache.spark.sql.types.{DataType, StructType}
  * Parsed logical plans are not resolved because they must be converted to concrete logical plans.
  *
  * Parsed logical plans are located in Catalyst so that as much SQL parsing logic as possible is be
- * kept in a [[org.apache.spark.sql.catalyst.parser.AbstractSqlParser]].
+ * kept in a [[com.ledis.sql.catalyst.parser.AbstractSqlParser]].
  */
 abstract class ParsedStatement extends LogicalPlan {
   // Redact properties and options when parsed nodes are used by generic methods like toString

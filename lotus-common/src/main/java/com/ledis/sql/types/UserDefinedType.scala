@@ -30,7 +30,7 @@ import org.json4s.JsonDSL._
  * a `DataFrame` which has class X in the schema.
  *
  * For SparkSQL to recognize UDTs, the UDT must be annotated with
- * [[SQLUserDefinedType]].
+ * `SQLUserDefinedType`
  *
  * The conversion via `serialize` occurs when instantiating a `DataFrame` from another RDD.
  * The conversion via `deserialize` occurs when reading from a `DataFrame`.
@@ -58,7 +58,7 @@ abstract class UserDefinedType[UserType >: Null] extends DataType with Serializa
   /** Convert a SQL datum to the user type */
   def deserialize(datum: Any): UserType
 
-  override private[sql] def jsonValue: JValue = {
+  override def jsonValue: JValue = {
     ("type" -> "udt") ~
       ("class" -> this.getClass.getName) ~
       ("pyClass" -> pyUDT) ~
@@ -76,9 +76,9 @@ abstract class UserDefinedType[UserType >: Null] extends DataType with Serializa
    * For UDT, asNullable will not change the nullability of its internal sqlType and just returns
    * itself.
    */
-  override private[spark] def asNullable: UserDefinedType[UserType] = this
+  override def asNullable: UserDefinedType[UserType] = this
 
-  override private[sql] def acceptsType(dataType: DataType): Boolean = dataType match {
+  override def acceptsType(dataType: DataType): Boolean = dataType match {
     case other: UserDefinedType[_] if this.userClass != null && other.userClass != null =>
       this.getClass == other.getClass ||
         this.userClass.isAssignableFrom(other.userClass)
@@ -97,7 +97,7 @@ abstract class UserDefinedType[UserType >: Null] extends DataType with Serializa
   override def catalogString: String = sqlType.simpleString
 }
 
-private[spark] object UserDefinedType {
+object UserDefinedType {
   /**
    * Get the sqlType of a (potential) [[UserDefinedType]].
    */
@@ -112,7 +112,7 @@ private[spark] object UserDefinedType {
  *
  * Note: This can only be accessed via Python UDF, or accessed as serialized object.
  */
-private[sql] class PythonUserDefinedType(
+class PythonUserDefinedType(
     val sqlType: DataType,
     override val pyUDT: String,
     override val serializedPyClass: String) extends UserDefinedType[Any] {
@@ -124,14 +124,14 @@ private[sql] class PythonUserDefinedType(
   /* There is no Java class for Python UDT */
   override def userClass: java.lang.Class[Any] = null
 
-  override private[sql] def jsonValue: JValue = {
+  override def jsonValue: JValue = {
     ("type" -> "udt") ~
       ("pyClass" -> pyUDT) ~
       ("serializedClass" -> serializedPyClass) ~
       ("sqlType" -> sqlType.jsonValue)
   }
 
-  override private[sql] def acceptsType(dataType: DataType): Boolean = dataType match {
+  override def acceptsType(dataType: DataType): Boolean = dataType match {
     case other: PythonUserDefinedType => pyUDT == other.pyUDT
     case _ => false
   }

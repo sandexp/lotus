@@ -20,19 +20,19 @@ package com.ledis.sql.connector.catalog
 import java.util
 import java.util.Collections
 
+import com.ledis.exception.AnalysisException
+
 import scala.collection.JavaConverters._
+import com.ledis.sql.catalyst.analysis.{NamedRelation, NoSuchDatabaseException, NoSuchNamespaceException, NoSuchTableException, UnresolvedV2Relation}
+import com.ledis.sql.catalyst.plans.logical.{AlterTable, CreateTableAsSelectStatement, CreateTableStatement, ReplaceTableAsSelectStatement, ReplaceTableStatement, SerdeInfo}
+import com.ledis.sql.connector.catalog.TableChange._
+import com.ledis.sql.execution.datasources.v2.DataSourceV2Relation
+import com.ledis.sql.types.{ArrayType, DataType, MapType, NullType, StructField, StructType}
+import com.ledis.sql.util.CaseInsensitiveStringMap
+import com.ledis.util.Utils
 
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.analysis.{NamedRelation, NoSuchDatabaseException, NoSuchNamespaceException, NoSuchTableException, UnresolvedV2Relation}
-import org.apache.spark.sql.catalyst.plans.logical.{AlterTable, CreateTableAsSelectStatement, CreateTableStatement, ReplaceTableAsSelectStatement, ReplaceTableStatement, SerdeInfo}
-import org.apache.spark.sql.connector.catalog.TableChange._
-import org.apache.spark.sql.execution.datasources.v2.DataSourceV2Relation
-import org.apache.spark.sql.types.{ArrayType, DataType, MapType, NullType, StructField, StructType}
-import org.apache.spark.sql.util.CaseInsensitiveStringMap
-import org.apache.spark.util.Utils
-
-private[sql] object CatalogV2Util {
-  import org.apache.spark.sql.connector.catalog.CatalogV2Implicits._
+object CatalogV2Util {
+  import com.ledis.sql.connector.catalog.CatalogV2Implicits._
 
   /**
    * The list of reserved table properties, which can not be removed or changed directly by

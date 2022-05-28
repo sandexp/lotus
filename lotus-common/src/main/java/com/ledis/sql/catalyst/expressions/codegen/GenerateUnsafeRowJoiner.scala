@@ -17,8 +17,8 @@
 
 package com.ledis.sql.catalyst.expressions.codegen
 
-import org.apache.spark.sql.catalyst.expressions.{Attribute, UnsafeRow}
-import org.apache.spark.sql.types.StructType
+import com.ledis.sql.catalyst.expressions.{Attribute, UnsafeRow}
+import com.ledis.sql.types.StructType
 
 abstract class UnsafeRowJoiner {
   def join(row1: UnsafeRow, row2: UnsafeRow): UnsafeRow

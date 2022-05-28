@@ -21,9 +21,9 @@ import java.util.IdentityHashMap
 import com.google.common.cache.{CacheBuilder, CacheLoader, LoadingCache}
 import com.google.common.util.concurrent.{ExecutionError, UncheckedExecutionException}
 
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.expressions.codegen.{CodegenContext, ExprCode}
-import org.apache.spark.sql.types.DataType
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.expressions.codegen.{CodegenContext, ExprCode}
+import com.ledis.sql.types.DataType
 
 /**
  * This class helps subexpression elimination for interpreted evaluation
@@ -37,7 +37,7 @@ class SubExprEvaluationRuntime(cacheMaxEntries: Int) {
   // won't be use by multi-threads so we don't need to consider concurrency here.
   private var proxyExpressionCurrentId = 0
 
-  private[sql] val cache: LoadingCache[ExpressionProxy, ResultProxy] = CacheBuilder.newBuilder()
+  val cache: LoadingCache[ExpressionProxy, ResultProxy] = CacheBuilder.newBuilder()
     .maximumSize(cacheMaxEntries)
     .build(
       new CacheLoader[ExpressionProxy, ResultProxy]() {

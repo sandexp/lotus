@@ -17,7 +17,7 @@
 
 package com.ledis.sql.catalyst.util
 
-import org.apache.spark.sql.types.DataType
+import com.ledis.sql.types.DataType
 
 /**
  * This is an internal data representation for map type in Spark SQL. This should not implement

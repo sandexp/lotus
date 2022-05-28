@@ -17,16 +17,16 @@
 
 package com.ledis.sql.catalyst.plans.logical
 
-import org.apache.spark.api.java.function.FilterFunction
-import org.apache.spark.broadcast.Broadcast
-import org.apache.spark.sql.{Encoder, Row}
-import org.apache.spark.sql.catalyst.analysis.UnresolvedDeserializer
-import org.apache.spark.sql.catalyst.encoders._
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.objects.Invoke
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.streaming.{GroupStateTimeout, OutputMode}
-import org.apache.spark.sql.types._
+import com.ledis.api.java.function.FilterFunction
+import com.ledis.broadcast.Broadcast
+import com.ledis.sql.{Encoder, Row}
+import com.ledis.sql.catalyst.analysis.UnresolvedDeserializer
+import com.ledis.sql.catalyst.encoders._
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.expressions.objects.Invoke
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.streaming.{GroupStateTimeout, OutputMode}
+import com.ledis.sql.types._
 
 object CatalystSerde {
   def deserialize[T : Encoder](child: LogicalPlan): DeserializeToObject = {
@@ -165,7 +165,7 @@ case class MapPartitionsInR(
  * Similar with `MapPartitionsInR` but serializes and deserializes input/output in
  * Arrow format.
  *
- * This is somewhat similar with `org.apache.spark.sql.execution.python.ArrowEvalPython`
+ * This is somewhat similar with `com.ledis.sql.execution.python.ArrowEvalPython`
  */
 case class MapPartitionsInRWithArrow(
     func: Array[Byte],

@@ -17,7 +17,7 @@
 
 package com.ledis.sql.internal.connector
 
-import org.apache.spark.sql.connector.write.WriteBuilder
+import com.ledis.sql.connector.write.WriteBuilder
 
 /**
  * An internal `WriteBuilder` mixin to support UPDATE streaming output mode. Now there's no good

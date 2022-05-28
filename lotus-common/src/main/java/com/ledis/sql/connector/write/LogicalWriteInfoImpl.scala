@@ -17,10 +17,10 @@
 
 package com.ledis.sql.connector.write
 
-import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.util.CaseInsensitiveStringMap
+import com.ledis.sql.types.StructType
+import com.ledis.sql.util.CaseInsensitiveStringMap
 
-private[sql] case class LogicalWriteInfoImpl(
+case class LogicalWriteInfoImpl(
     queryId: String,
     schema: StructType,
     options: CaseInsensitiveStringMap) extends LogicalWriteInfo

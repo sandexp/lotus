@@ -17,11 +17,11 @@
 
 package com.ledis.sql.catalyst.optimizer
 
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.aggregate._
-import org.apache.spark.sql.catalyst.plans.logical.{Aggregate, Expand, LogicalPlan}
-import org.apache.spark.sql.catalyst.rules.Rule
-import org.apache.spark.sql.types.IntegerType
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.expressions.aggregate._
+import com.ledis.sql.catalyst.plans.logical.{Aggregate, Expand, LogicalPlan}
+import com.ledis.sql.catalyst.rules.Rule
+import com.ledis.sql.types.IntegerType
 
 /**
  * This rule rewrites an aggregate query with distinct aggregations into an expanded double

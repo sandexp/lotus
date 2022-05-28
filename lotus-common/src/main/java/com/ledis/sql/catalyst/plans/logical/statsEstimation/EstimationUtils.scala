@@ -20,9 +20,9 @@ package com.ledis.sql.catalyst.plans.logical.statsEstimation
 import scala.collection.mutable.ArrayBuffer
 import scala.math.BigDecimal.RoundingMode
 
-import org.apache.spark.sql.catalyst.expressions.{Alias, Attribute, AttributeMap, Expression}
-import org.apache.spark.sql.catalyst.plans.logical._
-import org.apache.spark.sql.types.{DecimalType, _}
+import com.ledis.sql.catalyst.expressions.{Alias, Attribute, AttributeMap, Expression}
+import com.ledis.sql.catalyst.plans.logical._
+import com.ledis.sql.types.{DecimalType, _}
 
 object EstimationUtils {
 

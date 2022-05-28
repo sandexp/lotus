@@ -17,7 +17,7 @@
 
 package com.ledis.sql.catalyst.expressions.codegen
 
-import org.apache.spark.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.expressions._
 
 /**
  * Generates bytecode that evaluates a boolean [[Expression]] on a given input [[InternalRow]].

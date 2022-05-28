@@ -19,7 +19,7 @@ package com.ledis.sql.catalyst.util
 
 import java.util.Locale
 
-import org.apache.spark.internal.Logging
+import com.ledis.internal.Logging
 
 sealed trait ParseMode {
   /**

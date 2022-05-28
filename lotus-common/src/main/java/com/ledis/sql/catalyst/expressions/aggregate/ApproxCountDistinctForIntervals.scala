@@ -19,13 +19,13 @@ package com.ledis.sql.catalyst.expressions.aggregate
 
 import java.util
 
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.analysis.TypeCheckResult
-import org.apache.spark.sql.catalyst.analysis.TypeCheckResult.{TypeCheckFailure, TypeCheckSuccess}
-import org.apache.spark.sql.catalyst.expressions.{ExpectsInputTypes, Expression, GenericInternalRow}
-import org.apache.spark.sql.catalyst.util.{ArrayData, GenericArrayData, HyperLogLogPlusPlusHelper}
-import org.apache.spark.sql.types._
-import org.apache.spark.unsafe.Platform
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.analysis.TypeCheckResult
+import com.ledis.sql.catalyst.analysis.TypeCheckResult.{TypeCheckFailure, TypeCheckSuccess}
+import com.ledis.sql.catalyst.expressions.{ExpectsInputTypes, Expression, GenericInternalRow}
+import com.ledis.sql.catalyst.util.{ArrayData, GenericArrayData, HyperLogLogPlusPlusHelper}
+import com.ledis.sql.types._
+import com.ledis.unsafe.Platform
 
 /**
  * This function counts the approximate number of distinct values (ndv) in

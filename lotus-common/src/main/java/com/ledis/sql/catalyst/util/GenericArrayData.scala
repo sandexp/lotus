@@ -19,9 +19,9 @@ package com.ledis.sql.catalyst.util
 
 import scala.collection.JavaConverters._
 
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.types.{DataType, Decimal}
-import org.apache.spark.unsafe.types.{CalendarInterval, UTF8String}
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.types.{DataType, Decimal}
+import com.ledis.unsafe.types.{CalendarInterval, UTF8String}
 
 class GenericArrayData(val array: Array[Any]) extends ArrayData {
 

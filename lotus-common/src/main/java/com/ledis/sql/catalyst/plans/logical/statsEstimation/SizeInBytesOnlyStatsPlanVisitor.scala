@@ -17,9 +17,9 @@
 
 package com.ledis.sql.catalyst.plans.logical.statsEstimation
 
-import org.apache.spark.sql.catalyst.expressions.AttributeMap
-import org.apache.spark.sql.catalyst.plans.{LeftAnti, LeftSemi}
-import org.apache.spark.sql.catalyst.plans.logical._
+import com.ledis.sql.catalyst.expressions.AttributeMap
+import com.ledis.sql.catalyst.plans.{LeftAnti, LeftSemi}
+import com.ledis.sql.catalyst.plans.logical._
 
 /**
  * An [[LogicalPlanVisitor]] that computes a single dimension for plan stats: size in bytes.

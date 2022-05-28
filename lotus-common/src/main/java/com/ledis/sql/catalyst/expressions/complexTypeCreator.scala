@@ -19,16 +19,16 @@ package com.ledis.sql.catalyst.expressions
 
 import scala.collection.mutable.ArrayBuffer
 
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.analysis.{Resolver, TypeCheckResult, TypeCoercion, UnresolvedAttribute, UnresolvedExtractValue}
-import org.apache.spark.sql.catalyst.analysis.FunctionRegistry.{FUNC_ALIAS, FunctionBuilder}
-import org.apache.spark.sql.catalyst.expressions.codegen._
-import org.apache.spark.sql.catalyst.expressions.codegen.Block._
-import org.apache.spark.sql.catalyst.parser.CatalystSqlParser
-import org.apache.spark.sql.catalyst.util._
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
-import org.apache.spark.unsafe.types.UTF8String
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.analysis.{Resolver, TypeCheckResult, TypeCoercion, UnresolvedAttribute, UnresolvedExtractValue}
+import com.ledis.sql.catalyst.analysis.FunctionRegistry.{FUNC_ALIAS, FunctionBuilder}
+import com.ledis.sql.catalyst.expressions.codegen._
+import com.ledis.sql.catalyst.expressions.codegen.Block._
+import com.ledis.sql.catalyst.parser.CatalystSqlParser
+import com.ledis.sql.catalyst.util._
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
+import com.ledis.unsafe.types.UTF8String
 
 /**
  * Trait to indicate the expression does not throw an exception by itself when they are evaluated.
@@ -37,7 +37,7 @@ import org.apache.spark.unsafe.types.UTF8String
  * not ignore it.
  *
  * This trait can be used in an optimization rule such as
- * [[org.apache.spark.sql.catalyst.optimizer.ConstantFolding]] to fold the expressions that
+ * [[com.ledis.sql.catalyst.optimizer.ConstantFolding]] to fold the expressions that
  * do not need to execute, for example, `size(array(c0, c1, c2))`.
  */
 trait NoThrow

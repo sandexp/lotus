@@ -27,9 +27,9 @@ import scala.collection.mutable.AnyRefMap
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.{DefaultScalaModule, ScalaObjectMapper}
 
-import org.apache.spark.sql.catalyst.util.DateTimeConstants._
-import org.apache.spark.sql.catalyst.util.DateTimeUtils._
-import org.apache.spark.util.Utils
+import com.ledis.sql.catalyst.util.DateTimeConstants._
+import com.ledis.sql.catalyst.util.DateTimeUtils._
+import com.ledis.util.Utils
 
 /**
  * The collection of functions for rebasing days and microseconds from/to the hybrid calendar
@@ -95,7 +95,7 @@ object RebaseDateTime {
    * @param days The number of days since the epoch in Julian calendar. It can be negative.
    * @return The rebased number of days in Gregorian calendar.
    */
-  private[sql] def localRebaseJulianToGregorianDays(days: Int): Int = {
+  def localRebaseJulianToGregorianDays(days: Int): Int = {
     val utcCal = new Calendar.Builder()
       // `gregory` is a hybrid calendar that supports both
       // the Julian and Gregorian calendar systems
@@ -175,7 +175,7 @@ object RebaseDateTime {
    *             It can be negative.
    * @return The rebased number of days in Julian calendar.
    */
-  private[sql] def localRebaseGregorianToJulianDays(days: Int): Int = {
+  def localRebaseGregorianToJulianDays(days: Int): Int = {
     var localDate = LocalDate.ofEpochDay(days)
     if (localDate.isAfter(julianEndDate) && localDate.isBefore(gregorianStartDate)) {
       localDate = gregorianStartDate
@@ -235,7 +235,7 @@ object RebaseDateTime {
    *                 two calendars are changed.
    * @param diffs Differences in microseconds associated with elements of `switches`.
    */
-  private[sql] case class RebaseInfo(switches: Array[Long], diffs: Array[Long])
+  case class RebaseInfo(switches: Array[Long], diffs: Array[Long])
 
   /**
    * Rebases micros since the epoch from an original to an target calendar, for instance,
@@ -263,7 +263,7 @@ object RebaseDateTime {
   // Loads rebasing info from an JSON file. JSON records in the files should conform to
   // `JsonRebaseRecord`. AnyRefMap is used here instead of Scala's immutable map because
   // it is 2 times faster in DateTimeRebaseBenchmark.
-  private[sql] def loadRebaseRecords(fileName: String): AnyRefMap[String, RebaseInfo] = {
+  def loadRebaseRecords(fileName: String): AnyRefMap[String, RebaseInfo] = {
     val file = Utils.getSparkClassLoader.getResource(fileName)
     val mapper = new ObjectMapper() with ScalaObjectMapper
     mapper.registerModule(DefaultScalaModule)
@@ -327,7 +327,7 @@ object RebaseDateTime {
    *               in Proleptic Gregorian calendar. It can be negative.
    * @return The rebased microseconds since the epoch in Julian calendar.
    */
-  private[sql] def rebaseGregorianToJulianMicros(tz: TimeZone, micros: Long): Long = {
+  def rebaseGregorianToJulianMicros(tz: TimeZone, micros: Long): Long = {
     val instant = microsToInstant(micros)
     val zoneId = tz.toZoneId
     val zonedDateTime = instant.atZone(zoneId)
@@ -410,7 +410,7 @@ object RebaseDateTime {
    *               in the Julian calendar. It can be negative.
    * @return The rebased microseconds since the epoch in Proleptic Gregorian calendar.
    */
-  private[sql] def rebaseJulianToGregorianMicros(tz: TimeZone, micros: Long): Long = {
+  def rebaseJulianToGregorianMicros(tz: TimeZone, micros: Long): Long = {
     val cal = new Calendar.Builder()
       // `gregory` is a hybrid calendar that supports both the Julian and Gregorian calendar systems
       .setCalendarType("gregory")

@@ -19,19 +19,18 @@ package com.ledis.sql.catalyst.catalog
 
 import java.io.IOException
 
-import scala.collection.mutable
+import com.ledis.exception.AnalysisException
 
+import scala.collection.mutable
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
-
-import org.apache.spark.{SparkConf, SparkException}
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.{FunctionIdentifier, TableIdentifier}
-import org.apache.spark.sql.catalyst.analysis._
-import org.apache.spark.sql.catalyst.catalog.ExternalCatalogUtils._
-import org.apache.spark.sql.catalyst.expressions.Expression
-import org.apache.spark.sql.catalyst.util.StringUtils
-import org.apache.spark.sql.types.StructType
+import com.ledis.{SparkConf, SparkException}
+import com.ledis.sql.catalyst.{FunctionIdentifier, TableIdentifier}
+import com.ledis.sql.catalyst.analysis._
+import com.ledis.sql.catalyst.catalog.ExternalCatalogUtils._
+import com.ledis.sql.catalyst.expressions.Expression
+import com.ledis.sql.catalyst.util.StringUtils
+import com.ledis.sql.types.StructType
 
 /**
  * An in-memory (ephemeral) implementation of the system catalog.

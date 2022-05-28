@@ -19,14 +19,14 @@ package com.ledis.sql.catalyst.analysis
 
 import java.util.Locale
 
-import scala.collection.mutable
+import com.ledis.exception.AnalysisException
 
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.expressions.{Ascending, Expression, IntegerLiteral, SortOrder}
-import org.apache.spark.sql.catalyst.plans.logical._
-import org.apache.spark.sql.catalyst.rules.Rule
-import org.apache.spark.sql.catalyst.trees.CurrentOrigin
-import org.apache.spark.sql.internal.SQLConf
+import scala.collection.mutable
+import com.ledis.sql.catalyst.expressions.{Ascending, Expression, IntegerLiteral, SortOrder}
+import com.ledis.sql.catalyst.plans.logical._
+import com.ledis.sql.catalyst.rules.Rule
+import com.ledis.sql.catalyst.trees.CurrentOrigin
+import com.ledis.sql.internal.SQLConf
 
 
 /**

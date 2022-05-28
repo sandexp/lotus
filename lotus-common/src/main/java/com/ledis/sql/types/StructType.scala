@@ -17,21 +17,20 @@
 
 package com.ledis.sql.types
 
-import scala.collection.{mutable, Map}
+import com.ledis.exception.AnalysisException
+
+import scala.collection.{Map, mutable}
 import scala.util.Try
 import scala.util.control.NonFatal
-
 import org.json4s.JsonDSL._
 
-import org.apache.spark.SparkException
-import org.apache.spark.annotation.Stable
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.analysis.Resolver
-import org.apache.spark.sql.catalyst.expressions.{Attribute, AttributeReference, InterpretedOrdering}
-import org.apache.spark.sql.catalyst.parser.{CatalystSqlParser, LegacyTypeStringParser}
-import org.apache.spark.sql.catalyst.util.{truncatedString, StringUtils}
-import org.apache.spark.sql.catalyst.util.StringUtils.StringConcat
-import org.apache.spark.sql.internal.SQLConf
+// import com.ledis.SparkException
+import com.ledis.sql.catalyst.analysis.Resolver
+import com.ledis.sql.catalyst.expressions.{Attribute, AttributeReference, InterpretedOrdering}
+import com.ledis.sql.catalyst.parser.{CatalystSqlParser, LegacyTypeStringParser}
+import com.ledis.sql.catalyst.util.{truncatedString, StringUtils}
+import com.ledis.sql.catalyst.util.StringUtils.StringConcat
+import com.ledis.sql.internal.SQLConf
 
 /**
  * A [[StructType]] object can be constructed by
@@ -45,8 +44,8 @@ import org.apache.spark.sql.internal.SQLConf
  *
  * Scala Example:
  * {{{
- * import org.apache.spark.sql._
- * import org.apache.spark.sql.types._
+ * import com.ledis.sql._
+ * import com.ledis.sql.types._
  *
  * val struct =
  *   StructType(
@@ -76,12 +75,12 @@ import org.apache.spark.sql.internal.SQLConf
  * //    ...
  * }}}
  *
- * A [[org.apache.spark.sql.Row]] object is used as a value of the [[StructType]].
+ * A [[com.ledis.sql.Row]] object is used as a value of the [[StructType]].
  *
  * Scala Example:
  * {{{
- * import org.apache.spark.sql._
- * import org.apache.spark.sql.types._
+ * import com.ledis.sql._
+ * import com.ledis.sql.types._
  *
  * val innerStruct =
  *   StructType(
@@ -98,7 +97,6 @@ import org.apache.spark.sql.internal.SQLConf
  *
  * @since 1.3.0
  */
-@Stable
 case class StructType(fields: Array[StructField]) extends DataType with Seq[StructField] {
 
   /** No-arg constructor for kryo. */
@@ -306,7 +304,7 @@ case class StructType(fields: Array[StructField]) extends DataType with Seq[Stru
         s"$name does not exist. Available: ${fieldNames.mkString(", ")}"))
   }
 
-  private[sql] def getFieldIndex(name: String): Option[Int] = {
+  def getFieldIndex(name: String): Option[Int] = {
     nameToIndex.get(name)
   }
 
@@ -315,12 +313,12 @@ case class StructType(fields: Array[StructField]) extends DataType with Seq[Stru
    *
    * If includeCollections is true, this will return fields that are nested in maps and arrays.
    */
-  private[sql] def findNestedField(
+  def findNestedField(
       fieldNames: Seq[String],
       includeCollections: Boolean = false,
       resolver: Resolver = _ == _): Option[(Seq[String], StructField)] = {
     def prettyFieldName(nameParts: Seq[String]): String = {
-      import org.apache.spark.sql.connector.catalog.CatalogV2Implicits._
+      import com.ledis.sql.connector.catalog.CatalogV2Implicits._
       nameParts.quoted
     }
 
@@ -400,14 +398,14 @@ case class StructType(fields: Array[StructField]) extends DataType with Seq[Stru
   def printTreeString(): Unit = println(treeString)
   // scalastyle:on println
 
-  private[sql] def buildFormattedString(
+  def buildFormattedString(
       prefix: String,
       stringConcat: StringConcat,
       maxDepth: Int): Unit = {
     fields.foreach(field => field.buildFormattedString(prefix, stringConcat, maxDepth))
   }
 
-  override private[sql] def jsonValue =
+  override def jsonValue =
     ("type" -> typeName) ~
       ("fields" -> map(_.jsonValue))
 
@@ -457,7 +455,7 @@ case class StructType(fields: Array[StructField]) extends DataType with Seq[Stru
    */
   def toDDL: String = fields.map(_.toDDL).mkString(",")
 
-  private[sql] override def simpleString(maxNumberFields: Int): String = {
+  override def simpleString(maxNumberFields: Int): String = {
     val builder = new StringBuilder
     val fieldTypes = fields.take(maxNumberFields).map {
       f => s"${f.name}: ${f.dataType.simpleString(maxNumberFields)}"
@@ -485,10 +483,10 @@ case class StructType(fields: Array[StructField]) extends DataType with Seq[Stru
    * 4. Otherwise, `this` and `that` are considered as conflicting schemas and an exception would be
    *    thrown.
    */
-  private[sql] def merge(that: StructType): StructType =
+  def merge(that: StructType): StructType =
     StructType.merge(this, that).asInstanceOf[StructType]
 
-  override private[spark] def asNullable: StructType = {
+  override def asNullable: StructType = {
     val newFields = fields.map {
       case StructField(name, dataType, nullable, metadata) =>
         StructField(name, dataType.asNullable, nullable = true, metadata)
@@ -497,30 +495,30 @@ case class StructType(fields: Array[StructField]) extends DataType with Seq[Stru
     StructType(newFields)
   }
 
-  override private[spark] def existsRecursively(f: (DataType) => Boolean): Boolean = {
+  override def existsRecursively(f: (DataType) => Boolean): Boolean = {
     f(this) || fields.exists(field => field.dataType.existsRecursively(f))
   }
 
   @transient
-  private[sql] lazy val interpretedOrdering =
+  lazy val interpretedOrdering =
     InterpretedOrdering.forSchema(this.fields.map(_.dataType))
 }
 
 /**
  * @since 1.3.0
  */
-@Stable
+// @Stable
 object StructType extends AbstractDataType {
 
-  override private[sql] def defaultConcreteType: DataType = new StructType
+  override def defaultConcreteType: DataType = new StructType
 
-  override private[sql] def acceptsType(other: DataType): Boolean = {
+  override def acceptsType(other: DataType): Boolean = {
     other.isInstanceOf[StructType]
   }
 
-  override private[sql] def simpleString: String = "struct"
+  override def simpleString: String = "struct"
 
-  private[sql] def fromString(raw: String): StructType = {
+  def fromString(raw: String): StructType = {
     Try(DataType.fromJson(raw)).getOrElse(LegacyTypeStringParser.parseString(raw)) match {
       case t: StructType => t
       case _ => throw new RuntimeException(s"Failed parsing ${StructType.simpleString}: $raw")
@@ -542,10 +540,10 @@ object StructType extends AbstractDataType {
     StructType(fields.asScala.toSeq)
   }
 
-  private[sql] def fromAttributes(attributes: Seq[Attribute]): StructType =
+  def fromAttributes(attributes: Seq[Attribute]): StructType =
     StructType(attributes.map(a => StructField(a.name, a.dataType, a.nullable, a.metadata)))
 
-  private[sql] def removeMetadata(key: String, dt: DataType): DataType =
+  def removeMetadata(key: String, dt: DataType): DataType =
     dt match {
       case StructType(fields) =>
         val newFields = fields.map { f =>
@@ -557,7 +555,7 @@ object StructType extends AbstractDataType {
       case _ => dt
     }
 
-  private[sql] def merge(left: DataType, right: DataType): DataType =
+  def merge(left: DataType, right: DataType): DataType =
     (left, right) match {
       case (ArrayType(leftElementType, leftContainsNull),
       ArrayType(rightElementType, rightContainsNull)) =>
@@ -631,7 +629,7 @@ object StructType extends AbstractDataType {
           s" and ${right.catalogString}")
     }
 
-  private[sql] def fieldsMap(fields: Array[StructField]): Map[String, StructField] = {
+  def fieldsMap(fields: Array[StructField]): Map[String, StructField] = {
     // Mimics the optimization of breakOut, not present in Scala 2.13, while working in 2.12
     val map = mutable.Map[String, StructField]()
     map.sizeHint(fields.length)

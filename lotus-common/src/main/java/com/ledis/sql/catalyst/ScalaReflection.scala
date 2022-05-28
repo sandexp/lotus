@@ -21,19 +21,19 @@ import javax.lang.model.SourceVersion
 
 import org.apache.commons.lang3.reflect.ConstructorUtils
 
-import org.apache.spark.internal.Logging
-import org.apache.spark.sql.catalyst.DeserializerBuildHelper._
-import org.apache.spark.sql.catalyst.SerializerBuildHelper._
-import org.apache.spark.sql.catalyst.analysis.GetColumnByOrdinal
-import org.apache.spark.sql.catalyst.expressions.{Expression, _}
-import org.apache.spark.sql.catalyst.expressions.objects._
-import org.apache.spark.sql.catalyst.util.{ArrayData, MapData}
-import org.apache.spark.sql.types._
-import org.apache.spark.unsafe.types.{CalendarInterval, UTF8String}
+import com.ledis.internal.Logging
+import com.ledis.sql.catalyst.DeserializerBuildHelper._
+import com.ledis.sql.catalyst.SerializerBuildHelper._
+import com.ledis.sql.catalyst.analysis.GetColumnByOrdinal
+import com.ledis.sql.catalyst.expressions.{Expression, _}
+import com.ledis.sql.catalyst.expressions.objects._
+import com.ledis.sql.catalyst.util.{ArrayData, MapData}
+import com.ledis.sql.types._
+import com.ledis.unsafe.types.{CalendarInterval, UTF8String}
 
 
 /**
- * A helper trait to create [[org.apache.spark.sql.catalyst.encoders.ExpressionEncoder]]s
+ * A helper trait to create [[com.ledis.sql.catalyst.encoders.ExpressionEncoder]]s
  * for classes whose fields are entirely defined by constructor params but should not be
  * case classes.
  */

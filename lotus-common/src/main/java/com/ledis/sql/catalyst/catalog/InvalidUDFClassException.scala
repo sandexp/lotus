@@ -17,7 +17,7 @@
 
 package com.ledis.sql.catalyst.catalog
 
-import org.apache.spark.sql.AnalysisException
+import com.ledis.exception.AnalysisException
 
 /**
  * Thrown when a query failed for invalid function class, usually because a SQL

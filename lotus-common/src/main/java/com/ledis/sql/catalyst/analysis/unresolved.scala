@@ -17,18 +17,18 @@
 
 package com.ledis.sql.catalyst.analysis
 
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.{FunctionIdentifier, InternalRow, TableIdentifier}
-import org.apache.spark.sql.catalyst.errors.TreeNodeException
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.codegen.{CodegenContext, ExprCode}
-import org.apache.spark.sql.catalyst.parser.ParserUtils
-import org.apache.spark.sql.catalyst.plans.logical.{LeafNode, LogicalPlan, UnaryNode}
-import org.apache.spark.sql.catalyst.trees.TreeNode
-import org.apache.spark.sql.catalyst.util.quoteIdentifier
-import org.apache.spark.sql.connector.catalog.{Identifier, TableCatalog}
-import org.apache.spark.sql.types.{DataType, Metadata, StructType}
-import org.apache.spark.sql.util.CaseInsensitiveStringMap
+import com.ledis.exception.AnalysisException
+import com.ledis.sql.catalyst.{FunctionIdentifier, InternalRow, TableIdentifier}
+import com.ledis.sql.catalyst.errors.TreeNodeException
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.expressions.codegen.{CodegenContext, ExprCode}
+import com.ledis.sql.catalyst.parser.ParserUtils
+import com.ledis.sql.catalyst.plans.logical.{LeafNode, LogicalPlan, UnaryNode}
+import com.ledis.sql.catalyst.trees.TreeNode
+import com.ledis.sql.catalyst.util.quoteIdentifier
+import com.ledis.sql.connector.catalog.{Identifier, TableCatalog}
+import com.ledis.sql.types.{DataType, Metadata, StructType}
+import com.ledis.sql.util.CaseInsensitiveStringMap
 
 /**
  * Thrown when an invalid attempt is made to access a property of a tree that has yet to be fully
@@ -48,7 +48,7 @@ case class UnresolvedRelation(
     options: CaseInsensitiveStringMap = CaseInsensitiveStringMap.empty(),
     override val isStreaming: Boolean = false)
   extends LeafNode with NamedRelation {
-  import org.apache.spark.sql.connector.catalog.CatalogV2Implicits._
+  import com.ledis.sql.connector.catalog.CatalogV2Implicits._
 
   /** Returns a `.` separated name for this relation. */
   def tableName: String = multipartIdentifier.quoted
@@ -86,7 +86,7 @@ case class UnresolvedV2Relation(
     catalog: TableCatalog,
     tableName: Identifier)
   extends LeafNode with NamedRelation {
-  import org.apache.spark.sql.connector.catalog.CatalogV2Implicits._
+  import com.ledis.sql.connector.catalog.CatalogV2Implicits._
 
   override def name: String = originalNameParts.quoted
 
@@ -97,7 +97,7 @@ case class UnresolvedV2Relation(
 
 /**
  * An inline table that has not been resolved yet. Once resolved, it is turned by the analyzer into
- * a [[org.apache.spark.sql.catalyst.plans.logical.LocalRelation]].
+ * a [[com.ledis.sql.catalyst.plans.logical.LocalRelation]].
  *
  * @param names list of column names
  * @param rows expressions for the data
@@ -234,7 +234,7 @@ object UnresolvedAttribute {
 
 /**
  * Represents an unresolved generator, which will be created by the parser for
- * the [[org.apache.spark.sql.catalyst.plans.logical.Generate]] operator.
+ * the [[com.ledis.sql.catalyst.plans.logical.Generate]] operator.
  * The analyzer will resolve this generator.
  */
 case class UnresolvedGenerator(name: FunctionIdentifier, children: Seq[Expression])

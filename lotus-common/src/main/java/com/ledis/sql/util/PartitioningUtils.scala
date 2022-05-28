@@ -17,17 +17,16 @@
 
 package com.ledis.sql.util
 
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.analysis.Resolver
-import org.apache.spark.sql.catalyst.catalog.CatalogTypes.TablePartitionSpec
-import org.apache.spark.sql.catalyst.catalog.ExternalCatalogUtils.DEFAULT_PARTITION_NAME
+import com.ledis.exception.AnalysisException
+import com.ledis.sql.catalyst.analysis.Resolver
+import com.ledis.sql.catalyst.catalog.CatalogTypes.TablePartitionSpec
+import com.ledis.sql.catalyst.catalog.ExternalCatalogUtils.DEFAULT_PARTITION_NAME
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types.{CharType, StructType, VarcharType}
 import org.apache.spark.sql.catalyst.util.CharVarcharCodegenUtils
-import org.apache.spark.sql.catalyst.util.CharVarcharUtils
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types.{CharType, StructType, VarcharType}
 import org.apache.spark.unsafe.types.UTF8String
 
-private[sql] object PartitioningUtils {
+object PartitioningUtils {
   /**
    * Normalize the column names in partition specification, w.r.t. the real partition column names
    * and case sensitivity. e.g., if the partition spec has a column named `monTh`, and there is a

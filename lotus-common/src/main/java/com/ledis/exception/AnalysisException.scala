@@ -15,17 +15,15 @@
  * limitations under the License.
  */
 
-package com.ledis.sql
+package com.ledis.exception
 
-import org.apache.spark.annotation.Stable
-import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
+import com.ledis.sql.catalyst.plans.logical.LogicalPlan
 
 /**
  * Thrown when a query fails to analyze, usually because the query itself is invalid.
  *
  * @since 1.3.0
  */
-@Stable
 class AnalysisException protected[sql] (
     val message: String,
     val line: Option[Int] = None,

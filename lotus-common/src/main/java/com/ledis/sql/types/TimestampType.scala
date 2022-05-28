@@ -20,7 +20,7 @@ package com.ledis.sql.types
 import scala.math.Ordering
 import scala.reflect.runtime.universe.typeTag
 
-import org.apache.spark.annotation.Stable
+// import org.apache.spark.annotation.Stable
 
 /**
  * The timestamp type represents a time instant in microsecond precision.
@@ -31,24 +31,24 @@ import org.apache.spark.annotation.Stable
  * Please use the singleton `DataTypes.TimestampType` to refer the type.
  * @since 1.3.0
  */
-@Stable
+// @Stable
 class TimestampType private() extends AtomicType {
   /**
    * Internally, a timestamp is stored as the number of microseconds from
    * the epoch of 1970-01-01T00:00:00.000000Z (UTC+00:00)
    */
-  private[sql] type InternalType = Long
+  type InternalType = Long
 
-  @transient private[sql] lazy val tag = typeTag[InternalType]
+  @transient lazy val tag = typeTag[InternalType]
 
-  private[sql] val ordering = implicitly[Ordering[InternalType]]
+  val ordering = implicitly[Ordering[InternalType]]
 
   /**
    * The default size of a value of the TimestampType is 8 bytes.
    */
   override def defaultSize: Int = 8
 
-  private[spark] override def asNullable: TimestampType = this
+  override def asNullable: TimestampType = this
 }
 
 /**
@@ -57,7 +57,5 @@ class TimestampType private() extends AtomicType {
  * in byte code. Defined with a private constructor so the companion object is the only possible
  * instantiation.
  *
- * @since 1.3.0
  */
-@Stable
 case object TimestampType extends TimestampType

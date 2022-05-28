@@ -20,17 +20,17 @@ package com.ledis.sql.catalyst.encoders
 import scala.collection.Map
 import scala.reflect.ClassTag
 
-import org.apache.spark.SparkException
-import org.apache.spark.sql.Row
-import org.apache.spark.sql.catalyst.{ScalaReflection, WalkedTypePath}
-import org.apache.spark.sql.catalyst.DeserializerBuildHelper._
-import org.apache.spark.sql.catalyst.SerializerBuildHelper._
-import org.apache.spark.sql.catalyst.analysis.GetColumnByOrdinal
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.objects._
-import org.apache.spark.sql.catalyst.util.{ArrayBasedMapData, ArrayData}
-import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.types._
+import com.ledis.SparkException
+import com.ledis.sql.Row
+import com.ledis.sql.catalyst.{ScalaReflection, WalkedTypePath}
+import com.ledis.sql.catalyst.DeserializerBuildHelper._
+import com.ledis.sql.catalyst.SerializerBuildHelper._
+import com.ledis.sql.catalyst.analysis.GetColumnByOrdinal
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.expressions.objects._
+import com.ledis.sql.catalyst.util.{ArrayBasedMapData, ArrayData}
+import com.ledis.sql.internal.SQLConf
+import com.ledis.sql.types._
 
 /**
  * A factory for constructing encoders that convert external row to/from the Spark SQL
@@ -56,7 +56,7 @@ import org.apache.spark.sql.types._
  *   BinaryType -> byte array
  *   ArrayType -> scala.collection.Seq or Array
  *   MapType -> scala.collection.Map
- *   StructType -> org.apache.spark.sql.Row
+ *   StructType -> com.ledis.sql.Row
  * }}}
  */
 object RowEncoder {
@@ -201,7 +201,7 @@ object RowEncoder {
    * by this function can be more permissive since multiple external types may map to a single
    * internal type.  For example, for an input with DecimalType in external row, its external types
    * can be `scala.math.BigDecimal`, `java.math.BigDecimal`, or
-   * `org.apache.spark.sql.types.Decimal`.
+   * `com.ledis.sql.types.Decimal`.
    */
   def externalDataTypeForInput(dt: DataType): DataType = dt match {
     // In order to support both Decimal and java/scala BigDecimal in external row, we make this

@@ -19,8 +19,8 @@ package com.ledis.sql.catalyst.expressions
 
 import scala.reflect.internal.util.AbstractFileClassLoader
 
-import org.apache.spark.sql.catalyst.rules
-import org.apache.spark.util.Utils
+import com.ledis.sql.catalyst.rules
+import com.ledis.util.Utils
 
 /**
  * A collection of generators that build custom bytecode at runtime for performing the evaluation

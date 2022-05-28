@@ -17,7 +17,7 @@
 
 package com.ledis.sql.catalyst.analysis
 
-import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
+import com.ledis.sql.catalyst.plans.logical.LogicalPlan
 
 /**
  * A trait that should be mixed into query operators where a single instance might appear multiple

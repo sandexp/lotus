@@ -17,9 +17,9 @@
 
 package com.ledis.sql.catalyst.catalog
 
-import org.apache.spark.sql.catalyst.analysis.{FunctionAlreadyExistsException, NoSuchDatabaseException, NoSuchFunctionException, NoSuchTableException}
-import org.apache.spark.sql.catalyst.expressions.Expression
-import org.apache.spark.sql.types.StructType
+import com.ledis.sql.catalyst.analysis.{FunctionAlreadyExistsException, NoSuchDatabaseException, NoSuchFunctionException, NoSuchTableException}
+import com.ledis.sql.catalyst.expressions.Expression
+import com.ledis.sql.types.StructType
 
 /**
  * Interface for the system catalog (of functions, partitions, tables, and databases).

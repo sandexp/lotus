@@ -17,12 +17,8 @@
 
 package com.ledis.sql.connector.catalog
 
-import org.apache.spark.SparkException
-import org.apache.spark.annotation.Experimental
-
-@Experimental
 class CatalogNotFoundException(message: String, cause: Throwable)
-  extends SparkException(message, cause) {
+  extends Exception(message, cause) {
 
   def this(message: String) = this(message, null)
 }

@@ -19,7 +19,7 @@ package com.ledis.sql.catalyst.util
 
 import scala.collection.mutable.{ArrayBuffer, ListBuffer}
 
-import org.apache.spark.sql.catalyst.util.QuantileSummaries.Stats
+import com.ledis.sql.catalyst.util.QuantileSummaries.Stats
 
 /**
  * Helper class to compute approximate quantile summary.

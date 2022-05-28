@@ -17,9 +17,9 @@
 
 package com.ledis.sql.catalyst.expressions
 
-import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.expressions.codegen.{CodegenContext, ExprCode, FalseLiteral}
-import org.apache.spark.sql.types.DataType
+import com.ledis.sql.catalyst.InternalRow
+import com.ledis.sql.catalyst.expressions.codegen.{CodegenContext, ExprCode, FalseLiteral}
+import com.ledis.sql.types.DataType
 
 trait TaggingExpression extends UnaryExpression {
   override def nullable: Boolean = child.nullable

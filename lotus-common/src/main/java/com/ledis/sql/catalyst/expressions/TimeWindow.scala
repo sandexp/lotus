@@ -17,15 +17,15 @@
 
 package com.ledis.sql.catalyst.expressions
 
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.analysis.TypeCheckResult
-import org.apache.spark.sql.catalyst.analysis.TypeCheckResult.TypeCheckFailure
-import org.apache.spark.sql.catalyst.expressions.codegen.{CodegenContext, CodeGenerator, ExprCode}
-import org.apache.spark.sql.catalyst.expressions.codegen.Block._
-import org.apache.spark.sql.catalyst.util.DateTimeConstants.MICROS_PER_DAY
-import org.apache.spark.sql.catalyst.util.IntervalUtils
-import org.apache.spark.sql.types._
-import org.apache.spark.unsafe.types.UTF8String
+import com.ledis.exception.AnalysisException
+import com.ledis.sql.catalyst.analysis.TypeCheckResult
+import com.ledis.sql.catalyst.analysis.TypeCheckResult.TypeCheckFailure
+import com.ledis.sql.catalyst.expressions.codegen.{CodeGenerator, CodegenContext, ExprCode}
+import com.ledis.sql.catalyst.expressions.codegen.Block._
+import com.ledis.sql.catalyst.util.DateTimeConstants.MICROS_PER_DAY
+import com.ledis.sql.catalyst.util.IntervalUtils
+import com.ledis.sql.types._
+import com.ledis.unsafe.types.UTF8String
 
 case class TimeWindow(
     timeColumn: Expression,

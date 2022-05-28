@@ -17,16 +17,16 @@
 
 package com.ledis.sql.connector.catalog
 
-import org.apache.spark.sql.AnalysisException
-import org.apache.spark.sql.catalyst.{FunctionIdentifier, TableIdentifier}
-import org.apache.spark.sql.catalyst.catalog.BucketSpec
-import org.apache.spark.sql.catalyst.parser.CatalystSqlParser
-import org.apache.spark.sql.connector.expressions.{BucketTransform, IdentityTransform, LogicalExpressions, Transform}
+import com.ledis.exception.AnalysisException
+import com.ledis.sql.catalyst.{FunctionIdentifier, TableIdentifier}
+import com.ledis.sql.catalyst.catalog.BucketSpec
+import com.ledis.sql.catalyst.parser.CatalystSqlParser
+import com.ledis.sql.connector.expressions.{BucketTransform, IdentityTransform, LogicalExpressions, Transform}
 
 /**
  * Conversion helpers for working with v2 [[CatalogPlugin]].
  */
-private[sql] object CatalogV2Implicits {
+object CatalogV2Implicits {
   import LogicalExpressions._
 
   implicit class PartitionTypeHelper(colNames: Seq[String]) {

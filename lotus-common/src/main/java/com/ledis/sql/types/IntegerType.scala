@@ -20,24 +20,21 @@ package com.ledis.sql.types
 import scala.math.{Integral, Numeric, Ordering}
 import scala.reflect.runtime.universe.typeTag
 
-import org.apache.spark.annotation.Stable
+// import com.ledis.annotation.Stable
 
 /**
  * The data type representing `Int` values. Please use the singleton `DataTypes.IntegerType`.
- *
- * @since 1.3.0
  */
-@Stable
 class IntegerType private() extends IntegralType {
   // The companion object and this class is separated so the companion object also subclasses
   // this type. Otherwise, the companion object would be of type "IntegerType$" in byte code.
   // Defined with a private constructor so the companion object is the only possible instantiation.
-  private[sql] type InternalType = Int
-  @transient private[sql] lazy val tag = typeTag[InternalType]
-  private[sql] val numeric = implicitly[Numeric[Int]]
-  private[sql] val integral = implicitly[Integral[Int]]
-  private[sql] val ordering = implicitly[Ordering[InternalType]]
-  override private[sql] val exactNumeric = IntegerExactNumeric
+  type InternalType = Int
+  @transient lazy val tag = typeTag[InternalType]
+  val numeric = implicitly[Numeric[Int]]
+  val integral = implicitly[Integral[Int]]
+  val ordering = implicitly[Ordering[InternalType]]
+  override val exactNumeric = IntegerExactNumeric
 
   /**
    * The default size of a value of the IntegerType is 4 bytes.
@@ -46,11 +43,7 @@ class IntegerType private() extends IntegralType {
 
   override def simpleString: String = "int"
 
-  private[spark] override def asNullable: IntegerType = this
+  override def asNullable: IntegerType = this
 }
 
-/**
- * @since 1.3.0
- */
-@Stable
 case object IntegerType extends IntegerType

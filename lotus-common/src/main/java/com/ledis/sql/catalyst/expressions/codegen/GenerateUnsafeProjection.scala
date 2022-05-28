@@ -17,13 +17,13 @@
 
 package com.ledis.sql.catalyst.expressions.codegen
 
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.BindReferences.bindReferences
-import org.apache.spark.sql.catalyst.expressions.codegen.Block._
-import org.apache.spark.sql.types._
+import com.ledis.sql.catalyst.expressions._
+import com.ledis.sql.catalyst.expressions.BindReferences.bindReferences
+import com.ledis.sql.catalyst.expressions.codegen.Block._
+import com.ledis.sql.types._
 
 /**
- * Generates a [[Projection]] that returns an [[UnsafeRow]].
+ * Generates a [[Projection]] that returns an `UnsafeRow`.
  *
  * It generates the code for all the expressions, computes the total length for all the columns
  * (can be accessed via variables), and then copies the data into a scratch buffer space in the
