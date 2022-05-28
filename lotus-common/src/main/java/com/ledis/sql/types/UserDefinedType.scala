@@ -38,7 +38,6 @@ import org.json4s.JsonDSL._
  * Note: This was previously a developer API in Spark 1.x. We are making this private in Spark 2.0
  * because we will very likely create a new version of this that works better with Datasets.
  */
-private[spark]
 abstract class UserDefinedType[UserType >: Null] extends DataType with Serializable {
 
   /** Underlying storage type for this UDT */

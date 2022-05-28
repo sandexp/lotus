@@ -27,7 +27,7 @@ import com.ledis.sql.types.{DataType, IntegerType, StringType}
  * Factory methods can be used when referencing the logical expression nodes is ambiguous because
  * logical and internal expressions are used.
  */
-private[sql] object LogicalExpressions {
+object LogicalExpressions {
   def literal[T](value: T): LiteralValue[T] = {
     val internalLit = catalyst.expressions.Literal(value)
     literal(value, internalLit.dataType)
@@ -59,7 +59,7 @@ private[sql] object LogicalExpressions {
 /**
  * Allows Spark to rewrite the given references of the transform during analysis.
  */
-private[sql] sealed trait RewritableTransform extends Transform {
+sealed trait RewritableTransform extends Transform {
   /** Creates a copy of this transform with the new analyzed references. */
   def withReferences(newReferences: Seq[NamedReference]): Transform
 }
@@ -67,7 +67,7 @@ private[sql] sealed trait RewritableTransform extends Transform {
 /**
  * Base class for simple transforms of a single column.
  */
-private[sql] abstract class SingleColumnTransform(ref: NamedReference) extends RewritableTransform {
+abstract class SingleColumnTransform(ref: NamedReference) extends RewritableTransform {
 
   def reference: NamedReference = ref
 
@@ -88,7 +88,7 @@ private[sql] abstract class SingleColumnTransform(ref: NamedReference) extends R
   }
 }
 
-private[sql] final case class BucketTransform(
+final case class BucketTransform(
     numBuckets: Literal[Int],
     columns: Seq[NamedReference]) extends RewritableTransform {
 
@@ -109,7 +109,7 @@ private[sql] final case class BucketTransform(
   }
 }
 
-private[sql] object BucketTransform {
+object BucketTransform {
   def unapply(transform: Transform): Option[(Int, NamedReference)] = transform match {
     case NamedTransform("bucket", Seq(
         Lit(value: Int, IntegerType),
@@ -120,7 +120,7 @@ private[sql] object BucketTransform {
   }
 }
 
-private[sql] final case class ApplyTransform(
+final case class ApplyTransform(
     name: String,
     args: Seq[Expression]) extends Transform {
 
@@ -156,20 +156,20 @@ private object Ref {
 /**
  * Convenience extractor for any Transform.
  */
-private[sql] object NamedTransform {
+object NamedTransform {
   def unapply(transform: Transform): Some[(String, Seq[Expression])] = {
     Some((transform.name, transform.arguments))
   }
 }
 
-private[sql] final case class IdentityTransform(
+final case class IdentityTransform(
     ref: NamedReference) extends SingleColumnTransform(ref) {
   override val name: String = "identity"
   override def describe: String = ref.describe
   override protected def withNewRef(ref: NamedReference): Transform = this.copy(ref)
 }
 
-private[sql] object IdentityTransform {
+object IdentityTransform {
   def unapply(transform: Transform): Option[FieldReference] = transform match {
     case NamedTransform("identity", Seq(Ref(parts))) =>
       Some(FieldReference(parts))
@@ -178,13 +178,13 @@ private[sql] object IdentityTransform {
   }
 }
 
-private[sql] final case class YearsTransform(
+final case class YearsTransform(
     ref: NamedReference) extends SingleColumnTransform(ref) {
   override val name: String = "years"
   override protected def withNewRef(ref: NamedReference): Transform = this.copy(ref)
 }
 
-private[sql] object YearsTransform {
+object YearsTransform {
   def unapply(transform: Transform): Option[FieldReference] = transform match {
     case NamedTransform("years", Seq(Ref(parts))) =>
       Some(FieldReference(parts))
@@ -193,13 +193,13 @@ private[sql] object YearsTransform {
   }
 }
 
-private[sql] final case class MonthsTransform(
+final case class MonthsTransform(
     ref: NamedReference) extends SingleColumnTransform(ref) {
   override val name: String = "months"
   override protected def withNewRef(ref: NamedReference): Transform = this.copy(ref)
 }
 
-private[sql] object MonthsTransform {
+object MonthsTransform {
   def unapply(transform: Transform): Option[FieldReference] = transform match {
     case NamedTransform("months", Seq(Ref(parts))) =>
       Some(FieldReference(parts))
@@ -208,13 +208,13 @@ private[sql] object MonthsTransform {
   }
 }
 
-private[sql] final case class DaysTransform(
+final case class DaysTransform(
     ref: NamedReference) extends SingleColumnTransform(ref) {
   override val name: String = "days"
   override protected def withNewRef(ref: NamedReference): Transform = this.copy(ref)
 }
 
-private[sql] object DaysTransform {
+object DaysTransform {
   def unapply(transform: Transform): Option[FieldReference] = transform match {
     case NamedTransform("days", Seq(Ref(parts))) =>
       Some(FieldReference(parts))
@@ -223,13 +223,13 @@ private[sql] object DaysTransform {
   }
 }
 
-private[sql] final case class HoursTransform(
+final case class HoursTransform(
     ref: NamedReference) extends SingleColumnTransform(ref) {
   override val name: String = "hours"
   override protected def withNewRef(ref: NamedReference): Transform = this.copy(ref)
 }
 
-private[sql] object HoursTransform {
+object HoursTransform {
   def unapply(transform: Transform): Option[FieldReference] = transform match {
     case NamedTransform("hours", Seq(Ref(parts))) =>
       Some(FieldReference(parts))
@@ -238,7 +238,7 @@ private[sql] object HoursTransform {
   }
 }
 
-private[sql] final case class LiteralValue[T](value: T, dataType: DataType) extends Literal[T] {
+final case class LiteralValue[T](value: T, dataType: DataType) extends Literal[T] {
   override def describe: String = {
     if (dataType.isInstanceOf[StringType]) {
       s"'$value'"
@@ -249,14 +249,14 @@ private[sql] final case class LiteralValue[T](value: T, dataType: DataType) exte
   override def toString: String = describe
 }
 
-private[sql] final case class FieldReference(parts: Seq[String]) extends NamedReference {
+final case class FieldReference(parts: Seq[String]) extends NamedReference {
   import com.ledis.sql.connector.catalog.CatalogV2Implicits.MultipartIdentifierHelper
   override def fieldNames: Array[String] = parts.toArray
   override def describe: String = parts.quoted
   override def toString: String = describe
 }
 
-private[sql] object FieldReference {
+object FieldReference {
   def apply(column: String): NamedReference = {
     LogicalExpressions.parseReference(column)
   }

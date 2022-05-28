@@ -73,7 +73,7 @@ object JavaTypeInference {
    * @param beanType Java type
    * @return (SQL data type, nullable)
    */
-  private[sql] def inferDataType(beanType: Type): (DataType, Boolean) = {
+  def inferDataType(beanType: Type): (DataType, Boolean) = {
     inferDataType(TypeToken.of(beanType))
   }
 

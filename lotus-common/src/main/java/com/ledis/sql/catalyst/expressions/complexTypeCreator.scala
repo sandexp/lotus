@@ -108,7 +108,7 @@ object CreateArray {
   }
 }
 
-private [sql] object GenArrayData {
+object GenArrayData {
   /**
    * Return Java code pieces based on DataType and array size to allocate ArrayData class
    *
