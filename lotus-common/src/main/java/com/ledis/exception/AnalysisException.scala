@@ -17,18 +17,15 @@
 
 package com.ledis.exception
 
-import com.ledis.sql.catalyst.plans.logical.LogicalPlan
+import com.ledis.plans.logical.LogicalPlan
 
 /**
  * Thrown when a query fails to analyze, usually because the query itself is invalid.
- *
- * @since 1.3.0
  */
 class AnalysisException protected[sql] (
     val message: String,
     val line: Option[Int] = None,
     val startPosition: Option[Int] = None,
-    // Some plans fail to serialize due to bugs in scala collections.
     @transient val plan: Option[LogicalPlan] = None,
     val cause: Option[Throwable] = None)
   extends Exception(message, cause.orNull) with Serializable {

@@ -1,4 +1,4 @@
-// Generated from com/ledis/parser/SqlBase.g4 by ANTLR 4.7.1
+// Generated from org/apache/spark/sql/catalyst/parser/SqlBase.g4 by ANTLR 4.8
 package com.ledis.parser;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
@@ -87,20 +87,6 @@ public class SqlBaseBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitUseNamespace(SqlBaseParser.UseNamespaceContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitSetCatalog(SqlBaseParser.SetCatalogContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
 	@Override public T visitCreateNamespace(SqlBaseParser.CreateNamespaceContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -158,13 +144,6 @@ public class SqlBaseBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitAnalyze(SqlBaseParser.AnalyzeContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitAnalyzeTables(SqlBaseParser.AnalyzeTablesContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -339,7 +318,7 @@ public class SqlBaseBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitShowTableExtended(SqlBaseParser.ShowTableExtendedContext ctx) { return visitChildren(ctx); }
+	@Override public T visitShowTable(SqlBaseParser.ShowTableContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -389,13 +368,6 @@ public class SqlBaseBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitShowCurrentNamespace(SqlBaseParser.ShowCurrentNamespaceContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitShowCatalogs(SqlBaseParser.ShowCatalogsContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -1039,27 +1011,6 @@ public class SqlBaseBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitGroupByClause(SqlBaseParser.GroupByClauseContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitGroupingAnalytics(SqlBaseParser.GroupingAnalyticsContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitGroupingElement(SqlBaseParser.GroupingElementContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
 	@Override public T visitGroupingSet(SqlBaseParser.GroupingSetContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -1368,13 +1319,6 @@ public class SqlBaseBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitExpressionSeq(SqlBaseParser.ExpressionSeqContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
 	@Override public T visitLogicalNot(SqlBaseParser.LogicalNotContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -1459,13 +1403,6 @@ public class SqlBaseBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitCurrentLike(SqlBaseParser.CurrentLikeContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
 	@Override public T visitColumnReference(SqlBaseParser.ColumnReferenceContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -1516,6 +1453,13 @@ public class SqlBaseBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitSubstring(SqlBaseParser.SubstringContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitCurrentDatetime(SqlBaseParser.CurrentDatetimeContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -1712,20 +1656,6 @@ public class SqlBaseBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitComplexDataType(SqlBaseParser.ComplexDataTypeContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitYearMonthIntervalDataType(SqlBaseParser.YearMonthIntervalDataTypeContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitDayTimeIntervalDataType(SqlBaseParser.DayTimeIntervalDataTypeContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

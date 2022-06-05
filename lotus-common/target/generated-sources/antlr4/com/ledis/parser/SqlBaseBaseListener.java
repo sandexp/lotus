@@ -1,4 +1,4 @@
-// Generated from com/ledis/parser/SqlBase.g4 by ANTLR 4.7.1
+// Generated from org/apache/spark/sql/catalyst/parser/SqlBase.g4 by ANTLR 4.8
 package com.ledis.parser;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -136,30 +136,6 @@ public class SqlBaseBaseListener implements SqlBaseListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterUseNamespace(SqlBaseParser.UseNamespaceContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitUseNamespace(SqlBaseParser.UseNamespaceContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterSetCatalog(SqlBaseParser.SetCatalogContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitSetCatalog(SqlBaseParser.SetCatalogContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterCreateNamespace(SqlBaseParser.CreateNamespaceContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -263,18 +239,6 @@ public class SqlBaseBaseListener implements SqlBaseListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitAnalyze(SqlBaseParser.AnalyzeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterAnalyzeTables(SqlBaseParser.AnalyzeTablesContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitAnalyzeTables(SqlBaseParser.AnalyzeTablesContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -568,13 +532,13 @@ public class SqlBaseBaseListener implements SqlBaseListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterShowTableExtended(SqlBaseParser.ShowTableExtendedContext ctx) { }
+	@Override public void enterShowTable(SqlBaseParser.ShowTableContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitShowTableExtended(SqlBaseParser.ShowTableExtendedContext ctx) { }
+	@Override public void exitShowTable(SqlBaseParser.ShowTableContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -659,18 +623,6 @@ public class SqlBaseBaseListener implements SqlBaseListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitShowCurrentNamespace(SqlBaseParser.ShowCurrentNamespaceContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterShowCatalogs(SqlBaseParser.ShowCatalogsContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitShowCatalogs(SqlBaseParser.ShowCatalogsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -1768,42 +1720,6 @@ public class SqlBaseBaseListener implements SqlBaseListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGroupByClause(SqlBaseParser.GroupByClauseContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitGroupByClause(SqlBaseParser.GroupByClauseContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterGroupingAnalytics(SqlBaseParser.GroupingAnalyticsContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitGroupingAnalytics(SqlBaseParser.GroupingAnalyticsContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterGroupingElement(SqlBaseParser.GroupingElementContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitGroupingElement(SqlBaseParser.GroupingElementContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterGroupingSet(SqlBaseParser.GroupingSetContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -2332,18 +2248,6 @@ public class SqlBaseBaseListener implements SqlBaseListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExpressionSeq(SqlBaseParser.ExpressionSeqContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitExpressionSeq(SqlBaseParser.ExpressionSeqContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterLogicalNot(SqlBaseParser.LogicalNotContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -2488,18 +2392,6 @@ public class SqlBaseBaseListener implements SqlBaseListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCurrentLike(SqlBaseParser.CurrentLikeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCurrentLike(SqlBaseParser.CurrentLikeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterColumnReference(SqlBaseParser.ColumnReferenceContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -2591,6 +2483,18 @@ public class SqlBaseBaseListener implements SqlBaseListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitSubstring(SqlBaseParser.SubstringContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterCurrentDatetime(SqlBaseParser.CurrentDatetimeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCurrentDatetime(SqlBaseParser.CurrentDatetimeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -2927,30 +2831,6 @@ public class SqlBaseBaseListener implements SqlBaseListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitComplexDataType(SqlBaseParser.ComplexDataTypeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterYearMonthIntervalDataType(SqlBaseParser.YearMonthIntervalDataTypeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitYearMonthIntervalDataType(SqlBaseParser.YearMonthIntervalDataTypeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterDayTimeIntervalDataType(SqlBaseParser.DayTimeIntervalDataTypeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitDayTimeIntervalDataType(SqlBaseParser.DayTimeIntervalDataTypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

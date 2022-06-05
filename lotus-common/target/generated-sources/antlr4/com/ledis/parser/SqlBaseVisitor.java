@@ -1,4 +1,4 @@
-// Generated from com/ledis/parser/SqlBase.g4 by ANTLR 4.7.1
+// Generated from org/apache/spark/sql/catalyst/parser/SqlBase.g4 by ANTLR 4.8
 package com.ledis.parser;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -74,20 +74,6 @@ public interface SqlBaseVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitUse(SqlBaseParser.UseContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code useNamespace}
-	 * labeled alternative in {@link SqlBaseParser#statement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitUseNamespace(SqlBaseParser.UseNamespaceContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code setCatalog}
-	 * labeled alternative in {@link SqlBaseParser#statement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSetCatalog(SqlBaseParser.SetCatalogContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code createNamespace}
 	 * labeled alternative in {@link SqlBaseParser#statement}.
 	 * @param ctx the parse tree
@@ -150,13 +136,6 @@ public interface SqlBaseVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitAnalyze(SqlBaseParser.AnalyzeContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code analyzeTables}
-	 * labeled alternative in {@link SqlBaseParser#statement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAnalyzeTables(SqlBaseParser.AnalyzeTablesContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code addTableColumns}
 	 * labeled alternative in {@link SqlBaseParser#statement}.
@@ -326,12 +305,12 @@ public interface SqlBaseVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitShowTables(SqlBaseParser.ShowTablesContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code showTableExtended}
+	 * Visit a parse tree produced by the {@code showTable}
 	 * labeled alternative in {@link SqlBaseParser#statement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitShowTableExtended(SqlBaseParser.ShowTableExtendedContext ctx);
+	T visitShowTable(SqlBaseParser.ShowTableContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code showTblProperties}
 	 * labeled alternative in {@link SqlBaseParser#statement}.
@@ -381,13 +360,6 @@ public interface SqlBaseVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitShowCurrentNamespace(SqlBaseParser.ShowCurrentNamespaceContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code showCatalogs}
-	 * labeled alternative in {@link SqlBaseParser#statement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitShowCatalogs(SqlBaseParser.ShowCatalogsContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code describeFunction}
 	 * labeled alternative in {@link SqlBaseParser#statement}.
@@ -977,24 +949,6 @@ public interface SqlBaseVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAggregationClause(SqlBaseParser.AggregationClauseContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SqlBaseParser#groupByClause}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGroupByClause(SqlBaseParser.GroupByClauseContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SqlBaseParser#groupingAnalytics}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGroupingAnalytics(SqlBaseParser.GroupingAnalyticsContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SqlBaseParser#groupingElement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGroupingElement(SqlBaseParser.GroupingElementContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link SqlBaseParser#groupingSet}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -1274,12 +1228,6 @@ public interface SqlBaseVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpression(SqlBaseParser.ExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SqlBaseParser#expressionSeq}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExpressionSeq(SqlBaseParser.ExpressionSeqContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code logicalNot}
 	 * labeled alternative in {@link SqlBaseParser#booleanExpression}.
 	 * @param ctx the parse tree
@@ -1363,13 +1311,6 @@ public interface SqlBaseVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSimpleCase(SqlBaseParser.SimpleCaseContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code currentLike}
-	 * labeled alternative in {@link SqlBaseParser#primaryExpression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitCurrentLike(SqlBaseParser.CurrentLikeContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code columnReference}
 	 * labeled alternative in {@link SqlBaseParser#primaryExpression}.
 	 * @param ctx the parse tree
@@ -1425,6 +1366,13 @@ public interface SqlBaseVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitSubstring(SqlBaseParser.SubstringContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code currentDatetime}
+	 * labeled alternative in {@link SqlBaseParser#primaryExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCurrentDatetime(SqlBaseParser.CurrentDatetimeContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code cast}
 	 * labeled alternative in {@link SqlBaseParser#primaryExpression}.
@@ -1610,20 +1558,6 @@ public interface SqlBaseVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitComplexDataType(SqlBaseParser.ComplexDataTypeContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code yearMonthIntervalDataType}
-	 * labeled alternative in {@link SqlBaseParser#dataType}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitYearMonthIntervalDataType(SqlBaseParser.YearMonthIntervalDataTypeContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code dayTimeIntervalDataType}
-	 * labeled alternative in {@link SqlBaseParser#dataType}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitDayTimeIntervalDataType(SqlBaseParser.DayTimeIntervalDataTypeContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code primitiveDataType}
 	 * labeled alternative in {@link SqlBaseParser#dataType}.
