@@ -115,7 +115,7 @@ class InMemoryCatalog()
         fs.mkdirs(location)
       } catch {
         case e: IOException =>
-          throw new SparkException(s"Unable to create database ${dbDefinition.name} as failed " +
+          throw new Exception(s"Unable to create database ${dbDefinition.name} as failed " +
             s"to create its directory ${dbDefinition.locationUri}", e)
       }
       catalog.put(dbDefinition.name, new DatabaseDesc(dbDefinition))
@@ -212,7 +212,7 @@ class InMemoryCatalog()
           fs.mkdirs(defaultTableLocation)
         } catch {
           case e: IOException =>
-            throw new SparkException(s"Unable to create table $table as failed " +
+            throw new Exception(s"Unable to create table $table as failed " +
               s"to create its directory $defaultTableLocation", e)
         }
         tableDefinition.withNewStorage(locationUri = Some(defaultTableLocation.toUri))

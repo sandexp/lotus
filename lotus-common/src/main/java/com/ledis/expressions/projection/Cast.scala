@@ -293,7 +293,7 @@ abstract class CastBase extends UnaryExpression with TimeZoneAwareExpression wit
   private lazy val dateFormatter = DateFormatter(zoneId)
   private lazy val timestampFormatter = TimestampFormatter.getFractionFormatter(zoneId)
 
-  private val legacyCastToStr = SQLConf.get.getConf(SQLConf.LEGACY_COMPLEX_TYPES_TO_STRING)
+  private val legacyCastToStr = SQLConf.get.getConf(SQLConf.LEGACY_COMPLEX_TYPES_TO_STRING).asInstanceOf[Boolean]
   // The brackets that are used in casting structs and maps to strings
   private val (leftBracket, rightBracket) = if (legacyCastToStr) ("[", "]") else ("{", "}")
 

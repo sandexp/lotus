@@ -17,12 +17,12 @@
 
 package com.ledis.analysis
 
-import com.ledis.catalog.table.TableChange
-import com.ledis.catalog.{CatalogManager, LookupCatalog}
+import com.ledis.catalog.table.{TableCatalog, TableChange}
+import com.ledis.catalog.{CatalogManager, CatalogPlugin, LookupCatalog}
 import com.ledis.exception.AnalysisException
 import com.ledis.plans.logical._
 import com.ledis.rules.Rule
-
+import com.ledis.catalog.CatalogV2Implicits._
 /**
  * Resolves catalogs from the multi-part identifiers in SQL statements, and convert the statements
  * to the corresponding v2 commands if the resolved catalog is not the session catalog.

@@ -45,9 +45,6 @@ public interface DataWriterFactory extends Serializable {
    *                    Usually Spark processes many RDD partitions at the same time,
    *                    implementations should use the partition id to distinguish writers for
    *                    different partitions.
-   * @param taskId The task id returned by {@link TaskContext#taskAttemptId()}. Spark may run
-   *               multiple tasks for the same partition (due to speculation or task failures,
-   *               for example).
    */
   DataWriter<InternalRow> createWriter(int partitionId, long taskId);
 }

@@ -20,11 +20,11 @@ package com.ledis.expressions.aggregate
 import com.ledis.analysis.TypeCheckResult
 import com.ledis.config.SQLConf
 import com.ledis.expressions._
-import com.ledis.expressions.expression.Expression
+import com.ledis.expressions.expression.{AttributeReference, CheckOverflowInSum, Expression, If, KnownNotNull}
+import com.ledis.expressions.projection.Literal
 import com.ledis.types._
-import com.ledis.utils
-import com.ledis.utils.expressions
 import com.ledis.utils.util.TypeUtils
+import com.ledis.dsl.expressions._
 
 case class Sum(child: Expression) extends DeclarativeAggregate with ImplicitCastInputTypes {
 
@@ -114,7 +114,7 @@ case class Sum(child: Expression) extends DeclarativeAggregate with ImplicitCast
         Seq(
           If(
             bufferOverflow || inputOverflow,
-            expressions.Literal.create(null, resultType),
+            Literal.create(null, resultType),
             // If both the buffer and the input do not overflow, just add them, as they can't be
             // null. See the comments inside `updateExpressions`: `sum` can only be null if
             // overflow happens.
@@ -133,7 +133,7 @@ case class Sum(child: Expression) extends DeclarativeAggregate with ImplicitCast
    */
   override lazy val evaluateExpression: Expression = resultType match {
     case d: DecimalType =>
-      If(isEmpty, expressions.Literal.create(null, resultType),
+      If(isEmpty, Literal.create(null, resultType),
         CheckOverflowInSum(sum, d, !SQLConf.get.ansiEnabled))
     case _ => sum
   }

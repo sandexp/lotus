@@ -17,9 +17,12 @@
 
 package com.ledis.plans.logical
 
-import com.ledis.analysis.relation.NamedRelation
-import com.ledis.analysis.{PartitionSpec, ResolvedPartitionSpec, UnresolvedException}
+import com.ledis.analysis.{NamedRelation, PartitionSpec, ResolvedPartitionSpec, UnresolvedException}
 import com.ledis.catalog.CatalogTypes.TablePartitionSpec
+import com.ledis.catalog.{CatalogManager, Identifier}
+import com.ledis.catalog.support.SupportsNamespaces
+import com.ledis.catalog.table.TableChange.{AddColumn, ColumnChange}
+import com.ledis.catalog.table.{TableCatalog, TableChange}
 import com.ledis.expressions.collections.AttributeSet
 import com.ledis.expressions.expression.{Attribute, AttributeReference, Expression, Unevaluable}
 import com.ledis.plans.DescribeCommandSchema

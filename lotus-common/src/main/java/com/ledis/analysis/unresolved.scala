@@ -17,7 +17,6 @@
 
 package com.ledis.analysis
 
-import com.ledis.analysis.relation.NamedRelation
 import com.ledis.catalog.Identifier
 import com.ledis.catalog.table.TableCatalog
 import com.ledis.errors.TreeNodeException
@@ -33,6 +32,8 @@ import com.ledis.trees.TreeNode
 import com.ledis.utils.collections.CaseInsensitiveStringMap
 import com.ledis.utils.collections.row.InternalRow
 import com.ledis.utils.{FunctionIdentifier, TableIdentifier}
+import com.ledis.catalog.CatalogV2Implicits._
+import com.ledis.utils._
 
 /**
  * Thrown when an invalid attempt is made to access a property of a tree that has yet to be fully

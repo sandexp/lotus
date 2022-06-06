@@ -20,6 +20,7 @@ package com.ledis.plans.logical
 import com.ledis.analysis.ViewType
 import com.ledis.catalog.{BucketSpec, FunctionResource}
 import com.ledis.catalog.CatalogTypes.TablePartitionSpec
+import com.ledis.catalog.table.TableChange.ColumnPosition
 import com.ledis.expressions.expression.Attribute
 import com.ledis.types.{DataType, StructType}
 import com.ledis.utils.expressions.Transform

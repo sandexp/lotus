@@ -21,7 +21,7 @@ import java.net.URI
 import java.time.ZoneOffset
 import java.util.Date
 
-import com.ledis.analysis.relation.MultiInstanceRelation
+import com.ledis.analysis.MultiInstanceRelation
 import com.ledis.exception.AnalysisException
 
 import scala.collection.mutable
@@ -388,6 +388,7 @@ case class CatalogTable(
 
 
   def toLinkedHashMap: mutable.LinkedHashMap[String, String] = {
+    import com.ledis.catalog.CatalogV2Implicits._
     val map = new mutable.LinkedHashMap[String, String]()
     val tableProperties = properties.toSeq.sortBy(_._1)
       .map(p => p._1 + "=" + p._2).mkString("[", ", ", "]")

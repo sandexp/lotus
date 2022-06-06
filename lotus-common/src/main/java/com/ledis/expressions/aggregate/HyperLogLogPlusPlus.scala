@@ -18,8 +18,8 @@
 package com.ledis.expressions.aggregate
 
 import com.ledis.exception.AnalysisException
-import com.ledis.expressions._
-import com.ledis.expressions.expression.Expression
+import com.ledis.expressions.expression.{AttributeReference, Expression}
+import com.ledis.expressions.projection.Literal
 import com.ledis.types._
 import com.ledis.utils.collections.row.InternalRow
 import com.ledis.utils.helpers.HyperLogLogPlusPlusHelper

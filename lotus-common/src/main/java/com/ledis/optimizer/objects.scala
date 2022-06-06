@@ -28,6 +28,7 @@ import com.ledis.expressions.pruning.SchemaPruning
 import com.ledis.plans.logical._
 import com.ledis.rules._
 import com.ledis.types.{ArrayType, DataType, MapType, StructType}
+import com.ledis.utils.FilterFunction
 
 /*
  * This file defines optimization rules related to object manipulation (for the Dataset API).

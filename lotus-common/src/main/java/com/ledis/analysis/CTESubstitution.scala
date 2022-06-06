@@ -25,13 +25,14 @@ import scala.collection.mutable
 import com.ledis.expressions.SubqueryExpression
 import com.ledis.plans.logical.{LogicalPlan, SubqueryAlias, With}
 import com.ledis.rules.Rule
+import com.ledis.config.SQLConf.LEGACY_CTE_PRECEDENCE_POLICY
 
 /**
  * Analyze WITH nodes and substitute child plan with CTE definitions.
  */
 object CTESubstitution extends Rule[LogicalPlan] {
   def apply(plan: LogicalPlan): LogicalPlan = {
-    LegacyBehaviorPolicy.withName(SQLConf.get.getConf(LEGACY_CTE_PRECEDENCE_POLICY)) match {
+    LegacyBehaviorPolicy.withName(SQLConf.get.getConf(LEGACY_CTE_PRECEDENCE_POLICY).asInstanceOf[String]) match {
       case LegacyBehaviorPolicy.EXCEPTION =>
         assertNoNameConflictsInCTE(plan)
         traverseAndSubstituteCTE(plan)

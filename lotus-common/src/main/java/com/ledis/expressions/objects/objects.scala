@@ -23,7 +23,7 @@ import scala.collection.JavaConverters._
 import scala.collection.mutable.{Builder, IndexedSeq, WrappedArray}
 import scala.reflect.ClassTag
 import scala.util.{Properties, Try}
-import com.ledis.utils.ScalaReflection
+import com.ledis.utils.{ScalaReflection, Utils}
 import com.ledis.expressions._
 import com.ledis.expressions.codegen._
 import com.ledis.expressions.codegen.Block._

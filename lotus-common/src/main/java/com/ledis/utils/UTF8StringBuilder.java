@@ -73,7 +73,6 @@ public class UTF8StringBuilder {
 
   public void append(UTF8String value) {
     grow(value.numBytes());
-    value.writeToMemory(buffer, cursor);
     cursor += value.numBytes();
   }
 

@@ -17,6 +17,8 @@
 
 package com.ledis.utils
 
+import com.ledis.utils.collections.BoundedPriorityQueue
+
 import scala.collection.JavaConverters._
 
 

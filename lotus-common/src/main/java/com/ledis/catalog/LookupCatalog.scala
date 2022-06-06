@@ -57,6 +57,7 @@ trait LookupCatalog {
    * Extract session catalog and identifier from a multi-part identifier.
    */
   object SessionCatalogAndIdentifier {
+    import CatalogV2Implicits._
 
     def unapply(parts: Seq[String]): Option[(CatalogPlugin, Identifier)] = parts match {
       case CatalogAndIdentifier(catalog, ident) if CatalogV2Util.isSessionCatalog(catalog) =>
@@ -106,8 +107,9 @@ trait LookupCatalog {
    * before calling this pattern, as temp objects don't belong to any catalog.
    */
   object CatalogAndIdentifier {
-
-    private val globalTempDB = SQLConf.get.getConf(StaticSQLConf.GLOBAL_TEMP_DATABASE)
+    import CatalogV2Implicits._
+    
+    private val globalTempDB = SQLConf.get.getConf(StaticSQLConf.GLOBAL_TEMP_DATABASE).asInstanceOf[String]
 
     def unapply(nameParts: Seq[String]): Option[(CatalogPlugin, Identifier)] = {
       assert(nameParts.nonEmpty)

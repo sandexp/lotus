@@ -21,7 +21,8 @@ import com.ledis.analysis.TypeCheckResult
 import com.ledis.analysis.TypeCheckResult.TypeCheckSuccess
 import com.ledis.dsl.expressions._
 import com.ledis.expressions._
-import com.ledis.expressions.expression.Expression
+import com.ledis.expressions.expression.{AttributeReference, Expression, If}
+import com.ledis.expressions.projection.Literal
 import com.ledis.types._
 
 /**

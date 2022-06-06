@@ -137,7 +137,6 @@ object GenerateSafeProjection extends CodeGenerator[Seq[Expression], Projection]
     ExprCode(code, FalseLiteral, JavaCode.variable(output, classOf[MapData]))
   }
 
-  @tailrec
   def convertToSafe(
       ctx: CodegenContext,
       input: ExprValue,

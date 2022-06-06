@@ -29,6 +29,7 @@ import com.ledis.expressions.projection.Literal
 import com.ledis.types._
 import com.ledis.utils.collections.GenericArrayData
 import com.ledis.utils.QuantileSummaries
+import com.ledis.utils.QuantileSummaries.defaultCompressThreshold
 import com.ledis.utils.QuantileSummaries.Stats
 import com.ledis.utils.collections.row.InternalRow
 

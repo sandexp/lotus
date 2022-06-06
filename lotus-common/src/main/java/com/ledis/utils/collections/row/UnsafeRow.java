@@ -26,8 +26,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.ledis.utils.SpecializedGettersReader;
 import com.ledis.types.*;
+import com.ledis.types.DataTypes.*;
+import com.ledis.utils.SpecializedGettersReader;
 import com.ledis.utils.BitSetMethods;
 import com.ledis.utils.ByteArrayMethods;
 import com.ledis.utils.UTF8String;
@@ -37,6 +38,7 @@ import com.ledis.utils.hash.Murmur3_x86_32;
 import com.ledis.utils.unsafe.Platform;
 import com.ledis.utils.util.UnsafeDataUtils;
 
+import static com.ledis.types.DataTypes.*;
 import static com.ledis.utils.unsafe.Platform.BYTE_ARRAY_OFFSET;
 
 
@@ -101,7 +103,7 @@ public final class UnsafeRow extends InternalRow implements Externalizable, Seri
 
   public static boolean isMutable(DataType dt) {
     return mutableFieldTypes.contains(dt) || dt instanceof DecimalType ||
-      dt instanceof CalendarIntervalType;
+      dt instanceof com.ledis.types.CalendarIntervalType;
   }
 
   //////////////////////////////////////////////////////////////////////////////

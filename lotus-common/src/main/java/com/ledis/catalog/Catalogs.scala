@@ -24,6 +24,7 @@ import java.util.regex.Pattern
 
 import com.ledis.config.SQLConf
 import com.ledis.exception.CatalogNotFoundException
+import com.ledis.utils.Utils
 import com.ledis.utils.collections.CaseInsensitiveStringMap
 
 import scala.collection.mutable
@@ -86,7 +87,7 @@ object Catalogs {
    */
   private def catalogOptions(name: String, conf: SQLConf) = {
     val prefix = Pattern.compile("^spark\\.sql\\.catalog\\." + name + "\\.(.+)")
-    val options = new mutable.HashMap[String, String]
+    val options = new java.util.HashMap[String, String]
     conf.getAllConfs.foreach {
       case (key, value) =>
         val matcher = prefix.matcher(key)

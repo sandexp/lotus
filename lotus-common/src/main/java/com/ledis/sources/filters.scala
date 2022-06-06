@@ -40,9 +40,9 @@ sealed abstract class Filter {
    * List of columns that are referenced by this filter.
    *
    * @return each element is a column name as an array of string multi-identifier
-   * @since 3.0.0
    */
   def v2references: Array[Array[String]] = {
+    import com.ledis.catalog.CatalogV2Implicits._
     this.references.map(parseColumnPath(_).toArray)
   }
 
@@ -254,8 +254,6 @@ case class StringContains(attribute: String, value: String) extends Filter {
 
 /**
  * A filter that always evaluates to `true`.
- *
- * @since 3.0.0
  */
 case class AlwaysTrue() extends Filter {
   override def references: Array[String] = Array.empty

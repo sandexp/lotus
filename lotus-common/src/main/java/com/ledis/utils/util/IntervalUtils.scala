@@ -115,7 +115,7 @@ object IntervalUtils {
    * - MINUTE TO SECOND
    */
   def fromDayTimeString(input: String, from: IntervalUnit, to: IntervalUnit): CalendarInterval = {
-    if (SQLConf.get.getConf(SQLConf.LEGACY_FROM_DAYTIME_STRING)) {
+    if (SQLConf.get.getConf(SQLConf.LEGACY_FROM_DAYTIME_STRING).asInstanceOf[Boolean]) {
       parseDayTimeLegacy(input, from, to)
     } else {
       parseDayTime(input, from, to)

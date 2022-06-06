@@ -31,11 +31,12 @@ import com.ledis.expressions.projection.{Cast, Literal}
 import com.ledis.utils.util.DateTimeUtils._
 import com.ledis.types._
 import com.ledis.types.CalendarInterval
-import com.ledis.utils.{TimestampFormatter, UTF8String}
+import com.ledis.utils.{LegacyDateFormats, TimestampFormatter, UTF8String}
 import com.ledis.utils.util.DateTimeUtils
 import com.ledis.utils.DateTimeConstants._
 import org.apache.commons.lang3.StringEscapeUtils
 import com.ledis.utils.collections.row.InternalRow
+import com.ledis.utils.LegacyDateFormats.SIMPLE_DATE_FORMAT
 
 /**
  * Common base class for time zone aware expressions.

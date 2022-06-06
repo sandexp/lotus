@@ -18,7 +18,7 @@
 package com.ledis.plans.logical
 
 import com.ledis.analysis
-import com.ledis.analysis.relation.MultiInstanceRelation
+import com.ledis.analysis.MultiInstanceRelation
 import com.ledis.expressions.expression.Attribute
 import com.ledis.expressions.projection.Literal
 import com.ledis.plans.logical.statsEstimation.EstimationUtils

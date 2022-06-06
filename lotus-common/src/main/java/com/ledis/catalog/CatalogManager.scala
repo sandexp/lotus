@@ -112,7 +112,7 @@ class CatalogManager(
   private var _currentCatalogName: Option[String] = None
 
   def currentCatalog: CatalogPlugin = synchronized {
-    catalog(_currentCatalogName.getOrElse(conf.getConf(SQLConf.DEFAULT_CATALOG)))
+    catalog(_currentCatalogName.getOrElse(conf.getConf(SQLConf.DEFAULT_CATALOG)).asInstanceOf[String])
   }
 
   def setCurrentCatalog(catalogName: String): Unit = synchronized {

@@ -23,12 +23,11 @@ import com.ledis.analysis._
 import com.ledis.config.SQLConf
 import com.ledis.expressions._
 import com.ledis.expressions.aggregate._
-import com.ledis.expressions.codegen.{FalseLiteral, TrueLiteral}
 import com.ledis.expressions.collections.{AttributeSet, ExpressionSet}
 import com.ledis.expressions.expression._
 import com.ledis.expressions.objects.AssertNotNull
 import com.ledis.expressions.predicate._
-import com.ledis.expressions.projection.Literal._
+import com.ledis.expressions.projection.Literal.{FalseLiteral, TrueLiteral}
 import com.ledis.expressions.projection.{Cast, Literal}
 import com.ledis.plans._
 import com.ledis.plans.logical._

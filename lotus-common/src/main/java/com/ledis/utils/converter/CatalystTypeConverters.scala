@@ -3,6 +3,11 @@ package com.ledis.utils.converter
 import java.sql.{Date, Timestamp}
 import java.time.{Instant, LocalDate}
 
+import java.util.{Map => JavaMap}
+import java.math.{BigInteger => JavaBigInteger}
+import java.math.{BigDecimal => JavaBigDecimal}
+import java.lang.{Iterable => JavaIterable}
+
 import com.ledis.config.SQLConf
 import com.ledis.types._
 import com.ledis.utils.UTF8String

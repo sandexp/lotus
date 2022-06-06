@@ -53,7 +53,8 @@ object ExternalCatalogUtils {
       '{', '[', ']', '^')
 
     clist.foreach(bitSet.set(_))
-
+    
+    // fix me: hdfs api
     if (Shell.WINDOWS) {
       Array(' ', '<', '>', '|').foreach(bitSet.set(_))
     }

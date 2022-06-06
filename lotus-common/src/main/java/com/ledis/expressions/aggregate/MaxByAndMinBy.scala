@@ -19,8 +19,8 @@ package com.ledis.expressions.aggregate
 
 import com.ledis.analysis.TypeCheckResult
 import com.ledis.dsl.expressions._
-import com.ledis.expressions._
-import com.ledis.expressions.expression.Expression
+import com.ledis.expressions.expression.{AttributeReference, CaseWhen, Expression, If}
+import com.ledis.expressions.projection.Literal
 import com.ledis.types._
 import com.ledis.utils.util.TypeUtils
 

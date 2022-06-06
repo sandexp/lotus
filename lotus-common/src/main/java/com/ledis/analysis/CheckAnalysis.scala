@@ -23,6 +23,8 @@ import com.ledis.config.SQLConf
 import com.ledis.exception.AnalysisException
 
 import scala.collection.mutable
+
+import com.ledis.analysis._
 import com.ledis.expressions._
 import com.ledis.expressions.SubExprUtils._
 import com.ledis.expressions.aggregate.AggregateExpression
@@ -37,6 +39,7 @@ import com.ledis.plans._
 import com.ledis.plans.logical._
 import com.ledis.types._
 import com.ledis.utils.util.{CharVarcharUtils, TypeUtils}
+import com.ledis.catalog.CatalogV2Implicits._
 
 /**
  * Throws user facing errors when passed invalid queries that fail to analyze.

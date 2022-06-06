@@ -21,6 +21,7 @@ import com.ledis.expressions.expression.{Alias, Expression}
 
 import scala.reflect.internal.util.AbstractFileClassLoader
 import com.ledis.rules
+import com.ledis.utils.Utils
 
 /**
  * A collection of generators that build custom bytecode at runtime for performing the evaluation

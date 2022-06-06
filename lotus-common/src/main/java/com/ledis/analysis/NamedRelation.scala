@@ -1,4 +1,4 @@
-package com.ledis.analysis.relation
+package com.ledis.analysis
 
 import com.ledis.plans.logical.LogicalPlan
 

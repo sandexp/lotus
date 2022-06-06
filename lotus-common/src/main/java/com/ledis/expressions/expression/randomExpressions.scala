@@ -23,7 +23,7 @@ import com.ledis.expressions.codegen.{CodeGenerator, CodegenContext, ExprCode, F
 import com.ledis.expressions.codegen.Block._
 import com.ledis.expressions.projection.Literal
 import com.ledis.types._
-import com.ledis.utils.XORShiftRandom
+import com.ledis.utils.{Utils, XORShiftRandom}
 import com.ledis.utils.collections.row.InternalRow
 
 /**

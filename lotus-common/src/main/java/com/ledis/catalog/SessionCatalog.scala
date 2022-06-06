@@ -39,9 +39,10 @@ import com.ledis.parser.{CatalystSqlParser, ParserInterface}
 import com.ledis.plans.logical.{LogicalPlan, SubqueryAlias, View}
 import com.ledis.types.StructType
 import com.ledis.utils.collections.CaseInsensitiveStringMap
-import com.ledis.utils.{FunctionIdentifier, QualifiedTableName, TableIdentifier}
+import com.ledis.utils.{FunctionIdentifier, QualifiedTableName, TableIdentifier, Utils}
 import com.ledis.utils.helpers.SQLConfHelper
 import com.ledis.utils.util.{CharVarcharUtils, StringUtils}
+import com.ledis.config.StaticSQLConf.GLOBAL_TEMP_DATABASE
 
 object SessionCatalog {
   val DEFAULT_DATABASE = "default"
@@ -73,7 +74,7 @@ class SessionCatalog(
       conf: SQLConf) = {
     this(
       () => externalCatalog,
-      () => new GlobalTempViewManager(conf.getConf(GLOBAL_TEMP_DATABASE)),
+      () => new GlobalTempViewManager(conf.getConf(GLOBAL_TEMP_DATABASE).asInstanceOf[String]),
       functionRegistry,
       new Configuration(),
       new CatalystSqlParser(),
@@ -354,7 +355,6 @@ class SessionCatalog(
       val tableLocation =
         new Path(table.storage.locationUri.getOrElse(defaultTablePath(table.identifier)))
       val fs = tableLocation.getFileSystem(hadoopConf)
-
       if (fs.exists(tableLocation) && fs.listStatus(tableLocation).nonEmpty) {
         throw new AnalysisException(s"Can not create the managed table('${table.identifier}')" +
           s". The associated location('${tableLocation.toString}') already exists.")
@@ -880,6 +880,7 @@ class SessionCatalog(
   }
 
   def isTempView(nameParts: Seq[String]): Boolean = {
+    import CatalogV2Implicits._
     if (nameParts.length > 2) return false
     isTemporaryTable(nameParts.asTableIdentifier)
   }
@@ -902,6 +903,7 @@ class SessionCatalog(
   }
 
   def isView(nameParts: Seq[String]): Boolean = {
+    import CatalogV2Implicits._
     nameParts.length <= 2 && {
       val ident = nameParts.asTableIdentifier
       try {
@@ -1530,7 +1532,7 @@ class SessionCatalog(
         return functionRegistry.lookupFunction(name, children)
       }
     }
-
+    import CatalogV2Implicits._
     // Get the database from AnalysisContext if it's defined, otherwise, use current database
     val currentDatabase = AnalysisContext.get.catalogAndNamespace match {
       case Seq() => getCurrentDatabase

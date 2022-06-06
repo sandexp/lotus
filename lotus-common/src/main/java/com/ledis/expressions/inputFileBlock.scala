@@ -21,7 +21,7 @@ import com.ledis.expressions.codegen.{CodeGenerator, CodegenContext, ExprCode, F
 import com.ledis.expressions.codegen.Block._
 import com.ledis.expressions.expression.{LeafExpression, Nondeterministic}
 import com.ledis.types.{DataType, LongType, StringType}
-import com.ledis.utils.UTF8String
+import com.ledis.utils.{InputFileBlockHolder, UTF8String}
 import com.ledis.utils.collections.row.InternalRow
 
 case class InputFileName() extends LeafExpression with Nondeterministic {

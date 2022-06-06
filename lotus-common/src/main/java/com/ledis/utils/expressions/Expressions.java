@@ -17,6 +17,7 @@
 
 package com.ledis.utils.expressions;
 
+import com.ledis.connector.LogicalExpressions;
 import com.ledis.types.DataType;
 import scala.collection.JavaConverters;
 

@@ -17,15 +17,16 @@
 
 package com.ledis.utils
 
-import scala.util.Try
-import com.ledis.expressions.expression.{Contains, EndsWith, StartsWith}
+import com.ledis.expressions.expression.{Contains, EndsWith, Expression, StartsWith}
 import com.ledis.expressions.predicate._
 import com.ledis.expressions.projection.Literal
 import com.ledis.expressions.util.BoundReference
-import com.ledis.utils.StructFilters._
+import com.ledis.sources.Filter
 import com.ledis.types.{BooleanType, StructType}
-import com.ledis.sources.{And => _, Or => _, _}
+import com.ledis.utils.StructFilters._
 import com.ledis.utils.collections.row.InternalRow
+
+import scala.util.Try
 
 /**
  * The class provides API for applying pushed down filters to partially or
@@ -65,7 +66,7 @@ abstract class StructFilters(pushedFilters: Seq[Filter], schema: StructType) {
     val reducedExpr = filters
       .sortBy(_.references.length)
       .flatMap(filterToExpression(_, toRef))
-      .reduce(And)
+      .reduce(com.ledis.expressions.predicate.And)
     Predicate.create(reducedExpr)
   }
 
@@ -114,49 +115,49 @@ object StructFilters {
    */
   def filterToExpression(
       filter: Filter,
-      toRef: String => Option[BoundReference]): Option[expressions.Expression] = {
-    def zipAttributeAndValue(name: String, value: Any): Option[(BoundReference, com.ledis.expressions.Literal)] = {
+      toRef: String => Option[BoundReference]): Option[Expression] = {
+    def zipAttributeAndValue(name: String, value: Any): Option[(BoundReference, Literal)] = {
       zip(toRef(name), toLiteral(value))
     }
-    def translate(filter: Filter): Option[expressions.Expression] = filter match {
-      case And(left, right) =>
-        zip(translate(left), translate(right)).map(And.tupled)
-      case Or(left, right) =>
-        zip(translate(left), translate(right)).map(Or.tupled)
-      case Not(child) =>
-        translate(child).map(Not)
-      case EqualTo(attribute, value) =>
-        zipAttributeAndValue(attribute, value).map(EqualTo.tupled)
-      case EqualNullSafe(attribute, value) =>
-        zipAttributeAndValue(attribute, value).map(EqualNullSafe.tupled)
-      case IsNull(attribute) =>
-        toRef(attribute).map(IsNull)
-      case IsNotNull(attribute) =>
-        toRef(attribute).map(IsNotNull)
-      case In(attribute, values) =>
+    def translate(filter: Filter): Option[Expression] = filter match {
+      case com.ledis.sources.And(left, right) =>
+        zip(translate(left), translate(right)).map(com.ledis.expressions.predicate.And.tupled)
+      case com.ledis.sources.Or(left, right) =>
+        zip(translate(left), translate(right)).map(com.ledis.expressions.predicate.Or.tupled)
+      case com.ledis.sources.Not(child) =>
+        translate(child).map(com.ledis.expressions.predicate.Not)
+      case com.ledis.sources.EqualTo(attribute, value) =>
+        zipAttributeAndValue(attribute, value).map(com.ledis.expressions.predicate.EqualTo.tupled)
+      case com.ledis.sources.EqualNullSafe(attribute, value) =>
+        zipAttributeAndValue(attribute, value).map(com.ledis.expressions.predicate.EqualNullSafe.tupled)
+      case com.ledis.sources.IsNull(attribute) =>
+        toRef(attribute).map(com.ledis.expressions.expression.IsNull)
+      case com.ledis.sources.IsNotNull(attribute) =>
+        toRef(attribute).map(com.ledis.expressions.expression.IsNotNull)
+      case com.ledis.sources.In(attribute, values) =>
         val literals = values.toSeq.flatMap(toLiteral)
         if (literals.length == values.length) {
           toRef(attribute).map(In(_, literals))
         } else {
           None
         }
-      case GreaterThan(attribute, value) =>
-        zipAttributeAndValue(attribute, value).map(GreaterThan.tupled)
-      case GreaterThanOrEqual(attribute, value) =>
-        zipAttributeAndValue(attribute, value).map(GreaterThanOrEqual.tupled)
-      case LessThan(attribute, value) =>
-        zipAttributeAndValue(attribute, value).map(LessThan.tupled)
-      case LessThanOrEqual(attribute, value) =>
-        zipAttributeAndValue(attribute, value).map(LessThanOrEqual.tupled)
-      case StringContains(attribute, value) =>
+      case com.ledis.sources.GreaterThan(attribute, value) =>
+        zipAttributeAndValue(attribute, value).map(com.ledis.expressions.predicate.GreaterThan.tupled)
+      case com.ledis.sources.GreaterThanOrEqual(attribute, value) =>
+        zipAttributeAndValue(attribute, value).map(com.ledis.expressions.predicate.GreaterThanOrEqual.tupled)
+      case com.ledis.sources.LessThan(attribute, value) =>
+        zipAttributeAndValue(attribute, value).map(com.ledis.expressions.predicate.LessThan.tupled)
+      case com.ledis.sources.LessThanOrEqual(attribute, value) =>
+        zipAttributeAndValue(attribute, value).map(com.ledis.expressions.predicate.LessThanOrEqual.tupled)
+      case com.ledis.sources.StringContains(attribute, value) =>
         zipAttributeAndValue(attribute, value).map(Contains.tupled)
-      case StringStartsWith(attribute, value) =>
+      case com.ledis.sources.StringStartsWith(attribute, value) =>
         zipAttributeAndValue(attribute, value).map(StartsWith.tupled)
-      case StringEndsWith(attribute, value) =>
+      case com.ledis.sources.StringEndsWith(attribute, value) =>
         zipAttributeAndValue(attribute, value).map(EndsWith.tupled)
-      case AlwaysTrue() =>
+      case com.ledis.sources.AlwaysTrue() =>
         Some(Literal(true, BooleanType))
-      case AlwaysFalse() =>
+      case com.ledis.sources.AlwaysFalse() =>
         Some(Literal(false, BooleanType))
     }
     translate(filter)

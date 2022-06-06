@@ -18,12 +18,11 @@
 package com.ledis.expressions.aggregate
 
 import com.ledis.analysis.TypeCheckResult
-import com.ledis.expressions._
-import com.ledis.expressions.expression.Expression
+import com.ledis.expressions.expression.{AttributeReference, Expression}
+import com.ledis.expressions.projection.Literal
 import com.ledis.types._
-import com.ledis.utils
-import com.ledis.utils.expressions
 import com.ledis.utils.util.TypeUtils
+import com.ledis.dsl.expressions._
 
 case class Min(child: Expression) extends DeclarativeAggregate {
 
@@ -42,7 +41,7 @@ case class Min(child: Expression) extends DeclarativeAggregate {
   override lazy val aggBufferAttributes: Seq[AttributeReference] = min :: Nil
 
   override lazy val initialValues: Seq[Expression] = Seq(
-    /* min = */ expressions.Literal.create(null, child.dataType)
+    /* min = */ Literal.create(null, child.dataType)
   )
 
   override lazy val updateExpressions: Seq[Expression] = Seq(

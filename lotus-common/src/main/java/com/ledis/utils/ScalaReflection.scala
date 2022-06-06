@@ -25,6 +25,10 @@ import com.ledis.utils.collections.MapData
 import com.ledis.utils.collections.row.InternalRow
 import javax.lang.model.SourceVersion
 import org.apache.commons.lang3.reflect.ConstructorUtils
+import com.ledis.utils.serializer.DeserializerBuildHelper._
+import com.ledis.utils.serializer.SerializerBuildHelper._
+import com.ledis.expressions.expression.If
+import com.ledis.expressions.util.BoundReference
 
 
 trait DefinedByConstructorParams
@@ -343,9 +347,9 @@ object ScalaReflection extends ScalaReflection {
 
         val newInstance = NewInstance(cls, arguments, ObjectType(cls), propagateNull = false)
 
-        expressions.If(
+        If(
           IsNull(path),
-          expressions.Literal.create(null, ObjectType(cls)),
+          com.ledis.expressions.projection.Literal.create(null, ObjectType(cls)),
           newInstance
         )
 

@@ -21,21 +21,21 @@ import java.util
 import java.util.Locale
 import java.util.concurrent.atomic.AtomicBoolean
 
-import com.ledis.analysis.relation.{MultiInstanceRelation, NamedRelation}
 import com.ledis.exception.{AnalysisException, NoSuchFunctionException, NoSuchTableException}
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 import scala.util.Random
-import com.ledis.sql.catalyst._
+import com.ledis.utils._
 import com.ledis.catalog._
+import com.ledis.catalog.CatalogV2Implicits._
 import com.ledis.catalog.table.TableChange._
 import com.ledis.catalog.table._
 import com.ledis.catalog.util.CatalogV2Util
 import com.ledis.config.SQLConf
 import com.ledis.config.SQLConf.{PartitionOverwriteMode, StoreAssignmentPolicy}
 import com.ledis.errors.QueryCompilationErrors
-import com.ledis.sql.catalyst.encoders.OuterScopes
+import com.ledis.codec.OuterScopes
 import com.ledis.expressions._
 import com.ledis.expressions.SubExprUtils._
 import com.ledis.expressions.aggregate._
@@ -56,7 +56,7 @@ import com.ledis.sql.catalyst.analysis.Resolver
 import com.ledis.trees.TreeNodeRef
 import com.ledis.types._
 import com.ledis.utils.helpers.SQLConfHelper
-import com.ledis.utils.{FunctionIdentifier, QueryPlanningTracker, UTF8String}
+import com.ledis.utils.{DataSourceV2Relation, FunctionIdentifier, QueryPlanningTracker, UTF8String}
 import com.ledis.utils.collections.CaseInsensitiveStringMap
 import com.ledis.utils.expressions.Transform
 import com.ledis.utils.util.CharVarcharUtils
@@ -78,6 +78,7 @@ object SimpleAnalyzer extends Analyzer(
 }
 
 object FakeV2SessionCatalog extends TableCatalog {
+  
   private def fail() = throw new UnsupportedOperationException
   override def listTables(namespace: Array[String]): Array[Identifier] = fail()
   override def loadTable(ident: Identifier): Table = {
@@ -1004,7 +1005,6 @@ class Analyzer(override val catalogManager: CatalogManager)
           .map { relation =>
             val (catalog, ident) = relation match {
               case ds: DataSourceV2Relation => (ds.catalog, ds.identifier.get)
-              case s: StreamingRelationV2 => (s.catalog, s.identifier.get)
             }
             SubqueryAlias(catalog.get.name +: ident.namespace :+ ident.name, relation)
           }.getOrElse(u)
@@ -1057,12 +1057,7 @@ class Analyzer(override val catalogManager: CatalogManager)
         case NonSessionCatalogAndIdentifier(catalog, ident) =>
           CatalogV2Util.loadTable(catalog, ident) match {
             case Some(table) =>
-              if (isStreaming) {
-                Some(StreamingRelationV2(None, table.name, table, options,
-                  table.schema.toAttributes, Some(catalog), Some(ident), None))
-              } else {
                 Some(DataSourceV2Relation.create(table, Some(catalog), Some(ident), options))
-              }
             case None => None
           }
         case _ => None

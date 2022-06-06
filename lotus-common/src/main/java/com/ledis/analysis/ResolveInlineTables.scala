@@ -20,7 +20,7 @@ package com.ledis.analysis
 import scala.util.control.NonFatal
 import com.ledis.plans.logical.{LocalRelation, LogicalPlan}
 import com.ledis.rules.Rule
-import com.ledis.types.{StructField, StructType}
+import com.ledis.types.{DataType, StructField, StructType}
 import com.ledis.utils.collections.row.InternalRow
 
 /**
@@ -83,7 +83,7 @@ object ResolveInlineTables extends Rule[LogicalPlan] with CastSupport {
       val inputTypes = column.map(_.dataType)
       val tpe = TypeCoercion.findWiderTypeWithoutStringPromotion(inputTypes).getOrElse {
         table.failAnalysis(s"incompatible types found in column $name for inline table")
-      }
+      }.asInstanceOf[DataType]
       StructField(name, tpe, nullable = column.exists(_.nullable))
     }
     val attributes = StructType(fields).toAttributes

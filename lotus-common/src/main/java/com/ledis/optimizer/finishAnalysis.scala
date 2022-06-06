@@ -17,6 +17,7 @@
 
 package com.ledis.optimizer
 
+import com.ledis.catalog.CatalogManager
 import com.ledis.config.SQLConf
 
 import scala.collection.mutable
@@ -28,7 +29,6 @@ import com.ledis.plans.logical._
 import com.ledis.rules._
 import com.ledis.types._
 import com.ledis.utils.util.DateTimeUtils
-import com.sun.org.apache.xml.internal.resolver.CatalogManager
 
 
 /**
@@ -100,6 +100,7 @@ object ComputeCurrentTime extends Rule[LogicalPlan] {
  */
 case class GetCurrentDatabaseAndCatalog(catalogManager: CatalogManager) extends Rule[LogicalPlan] {
   def apply(plan: LogicalPlan): LogicalPlan = {
+    import com.ledis.catalog.CatalogV2Implicits._
     val currentNamespace = catalogManager.currentNamespace.quoted
     val currentCatalog = catalogManager.currentCatalog.name()
 

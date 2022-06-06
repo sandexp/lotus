@@ -18,6 +18,7 @@
 package com.ledis.exception
 
 import com.ledis.catalog.CatalogTypes.TablePartitionSpec
+import com.ledis.catalog.Identifier
 import com.ledis.types.StructType
 import com.ledis.utils.collections.row.InternalRow
 

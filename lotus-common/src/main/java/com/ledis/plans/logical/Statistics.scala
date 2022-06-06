@@ -24,6 +24,7 @@ import com.ledis.catalog.CatalogColumnStat
 import com.ledis.expressions._
 import com.ledis.plans.logical.statsEstimation.EstimationUtils
 import com.ledis.types._
+import com.ledis.utils.Utils
 import com.ledis.utils.collections.AttributeMap
 
 object Statistics {

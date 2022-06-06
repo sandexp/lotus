@@ -30,6 +30,7 @@ import com.ledis.expressions.projection.Canonicalize
 import com.ledis.trees.TreeNode
 import com.ledis.types._
 import com.ledis.utils.collections.row.InternalRow
+import com.ledis.utils._
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // This file defines the basic expression abstract classes in Catalyst.

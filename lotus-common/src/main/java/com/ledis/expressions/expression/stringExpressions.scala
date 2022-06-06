@@ -19,24 +19,24 @@ package com.ledis.expressions.expression
 
 import java.net.{URI, URISyntaxException}
 import java.text.{BreakIterator, DecimalFormat, DecimalFormatSymbols}
-import java.util.{HashMap, Locale, Map => JMap}
 import java.util.regex.Pattern
+import java.util.{HashMap, Locale, Map => JMap}
 
-import scala.collection.mutable.ArrayBuffer
-import org.apache.commons.codec.binary.{Base64 => CommonsBase64}
 import com.ledis.analysis.{FunctionRegistry, TypeCheckResult}
 import com.ledis.config.SQLConf
-import com.ledis.expressions.{ExpectsInputTypes, ImplicitCastInputTypes, UnaryMinus}
-import com.ledis.expressions.codegen._
 import com.ledis.expressions.codegen.Block._
-import com.ledis.expressions.predicate.LessThanOrEqual
+import com.ledis.expressions.codegen._
+import com.ledis.expressions.predicate.{LessThanOrEqual, Predicate}
 import com.ledis.expressions.projection.Literal
-import com.ledis.sql.catalyst.expressions.NullIntolerant
+import com.ledis.expressions.{ExpectsInputTypes, ImplicitCastInputTypes, UnaryMinus}
 import com.ledis.types._
+import com.ledis.utils.collections.row.InternalRow
 import com.ledis.utils.collections.{ByteArray, GenericArrayData}
 import com.ledis.utils.util.TypeUtils
-import com.ledis.utils.UTF8String
-import com.ledis.utils.collections.row.InternalRow
+import com.ledis.utils.{UTF8String, UTF8StringBuilder}
+import org.apache.commons.codec.binary.{Base64 => CommonsBase64}
+
+import scala.collection.mutable.ArrayBuffer
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // This file defines expressions for string operations.

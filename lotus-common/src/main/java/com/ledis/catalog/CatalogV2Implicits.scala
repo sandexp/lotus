@@ -19,6 +19,7 @@ package com.ledis.catalog
 
 import com.ledis.catalog.support.SupportsNamespaces
 import com.ledis.catalog.table.TableCatalog
+import com.ledis.connector.{BucketTransform, IdentityTransform}
 import com.ledis.exception.AnalysisException
 import com.ledis.parser.CatalystSqlParser
 import com.ledis.utils.expressions.Transform
@@ -28,7 +29,7 @@ import com.ledis.utils.{FunctionIdentifier, TableIdentifier}
  * Conversion helpers for working with v2 [[CatalogPlugin]].
  */
 private[sql] object CatalogV2Implicits {
-  import LogicalExpressions._
+  import com.ledis.connector.LogicalExpressions._
 
   implicit class PartitionTypeHelper(colNames: Seq[String]) {
     def asTransforms: Array[Transform] = {

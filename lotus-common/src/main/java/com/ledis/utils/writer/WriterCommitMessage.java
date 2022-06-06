@@ -26,7 +26,5 @@ import java.io.Serializable;
  *
  * This is an empty interface, data sources should define their own message class and use it when
  * generating messages at executor side and handling the messages at driver side.
- *
- * @since 3.0.0
  */
 public interface WriterCommitMessage extends Serializable {}

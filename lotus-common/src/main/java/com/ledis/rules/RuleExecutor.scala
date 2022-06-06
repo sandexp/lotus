@@ -21,7 +21,7 @@ import com.ledis.config.SQLConf
 import com.ledis.errors.TreeNodeException
 import com.ledis.utils.DateTimeConstants.NANOS_PER_SECOND
 import com.ledis.trees.TreeNode
-import com.ledis.utils.QueryPlanningTracker
+import com.ledis.utils.{QueryPlanningTracker, Utils}
 
 object RuleExecutor {
   protected val queryExecutionMeter = QueryExecutionMetering()

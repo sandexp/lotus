@@ -28,7 +28,7 @@ import com.ledis.optimizer.{CombineUnions, OptimizeUpdateFields}
 import com.ledis.plans.logical.{LogicalPlan, Project, Union}
 import com.ledis.rules.Rule
 import com.ledis.types._
-import com.ledis.utils.UTF8String
+import com.ledis.utils.{SchemaUtils, UTF8String}
 
 /**
  * Resolves different children of Union to a common set of columns.

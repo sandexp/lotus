@@ -38,7 +38,7 @@ abstract class CodeGeneratorWithInterpretedFallback[IN, OUT]{
   def createObject(in: IN): OUT = {
     // We are allowed to choose codegen-only or no-codegen modes if under tests.
     val config = SQLConf.get.getConf(SQLConf.CODEGEN_FACTORY_MODE)
-    val fallbackMode = CodegenObjectFactoryMode.withName(config)
+    val fallbackMode = CodegenObjectFactoryMode.withName(config.asInstanceOf[String])
 
     fallbackMode match {
       case CodegenObjectFactoryMode.CODEGEN_ONLY  =>

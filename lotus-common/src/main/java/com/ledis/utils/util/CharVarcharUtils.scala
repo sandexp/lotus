@@ -213,10 +213,9 @@ object CharVarcharUtils {
     }
   }
 
-  private def padCharToTargetLength(
-										   expr: expressions.Expression,
-										   rawType: DataType,
-										   typeWithTargetCharLength: DataType): Option[expressions.Expression] = {
+  private def padCharToTargetLength(expr: expressions.Expression,
+                                  rawType: DataType,
+                                  typeWithTargetCharLength: DataType): Option[expressions.Expression] = {
     (rawType, typeWithTargetCharLength) match {
       case (CharType(len), CharType(target)) if target > len =>
         Some(StringRPad(expr, Literal(target)))

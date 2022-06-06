@@ -21,7 +21,7 @@ import com.ledis.exception.AnalysisException
 
 import scala.collection.mutable
 import com.ledis.analysis._
-import com.ledis.catalog.{InMemoryCatalog, SessionCatalog}
+import com.ledis.catalog.{CatalogManager, InMemoryCatalog, SessionCatalog}
 import com.ledis.config.SQLConf
 import com.ledis.expressions._
 import com.ledis.expressions.aggregate._
@@ -488,21 +488,7 @@ object RemoveRedundantAliases extends Rule[LogicalPlan] {
 object RemoveNoopOperators extends Rule[LogicalPlan] {
   def apply(plan: LogicalPlan): LogicalPlan = plan transform {
     // Eliminate no-op Projects
-    case p @ Project(projectList, child) if child.sameOutput(p) =>
-      val newChild = child match {
-        case p: Project =>
-          p.copy(projectList = restoreOriginalOutputNames(p.projectList, projectList.map(_.name)))
-        case agg: Aggregate =>
-          agg.copy(aggregateExpressions =
-            restoreOriginalOutputNames(agg.aggregateExpressions, projectList.map(_.name)))
-        case _ =>
-          child
-      }
-      if (newChild.output.zip(projectList).forall { case (a1, a2) => a1.name == a2.name }) {
-        newChild
-      } else {
-        p
-      }
+    case p @ Project(_, child) if child.sameOutput(p) => child
 
     // Eliminate no-op Window
     case w: Window if w.windowExpressions.isEmpty => w.child
@@ -630,7 +616,7 @@ object PushProjectionThroughUnion extends Rule[LogicalPlan] with PredicateHelper
  * p2 is usually inserted by this rule and useless, p1 could prune the columns anyway.
  */
 object ColumnPruning extends Rule[LogicalPlan] {
-
+  
   def apply(plan: LogicalPlan): LogicalPlan = removeProjectBeforeFilter(plan transform {
     // Prunes the unused columns from project list of Project/Aggregate/Expand
     case p @ Project(_, p2: Project) if !p2.outputSet.subsetOf(p.references) =>
@@ -1275,22 +1261,6 @@ object PushPredicateThroughNonJoin extends Rule[LogicalPlan] with PredicateHelpe
       } else {
         filter
       }
-
-    case filter @ Filter(condition, watermark: EventTimeWatermark) =>
-      val (pushDown, stayUp) = splitConjunctivePredicates(condition).partition { p =>
-        p.deterministic && !p.references.contains(watermark.eventTime)
-      }
-
-      if (pushDown.nonEmpty) {
-        val pushDownPredicate = pushDown.reduceLeft(And)
-        val newWatermark = watermark.copy(child = Filter(pushDownPredicate, watermark.child))
-        // If there is no more filter to stay up, just eliminate the filter.
-        // Otherwise, create "Filter(stayUp) <- watermark <- Filter(pushDownPredicate)".
-        if (stayUp.isEmpty) newWatermark else Filter(stayUp.reduceLeft(And), newWatermark)
-      } else {
-        filter
-      }
-
     case filter @ Filter(_, u: UnaryNode)
         if canPushThrough(u) && u.expressions.forall(_.deterministic) =>
       pushDownPredicate(filter, u.child) { predicate =>
@@ -1646,11 +1616,6 @@ object ReplaceDeduplicateWithAggregate extends Rule[LogicalPlan] {
           Alias(new First(attr).toAggregateExpression(), attr.name)()
         }
       }
-      // SPARK-22951: Physical aggregate operators distinguishes global aggregation and grouping
-      // aggregations by checking the number of grouping keys. The key difference here is that a
-      // global aggregation always returns at least one row even if there are no input rows. Here
-      // we append a literal when the grouping key list is empty so that the result aggregate
-      // operator is properly treated as a grouping aggregation.
       val nonemptyKeys = if (keys.isEmpty) Literal(1) :: Nil else keys
       val newAgg = Aggregate(nonemptyKeys, aggCols, child)
       val attrMapping = d.output.zip(newAgg.output)

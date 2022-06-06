@@ -20,6 +20,7 @@ package com.ledis.catalog.table
 import java.util._
 
 import com.ledis.catalog.CatalogTable
+import com.ledis.connector.LogicalExpressions
 import com.ledis.types.StructType
 import com.ledis.utils.TableIdentifier
 import com.ledis.utils.expressions.Transform
@@ -31,7 +32,8 @@ import scala.collection.mutable
 /**
  * An implementation of catalog v2 `Table` to expose v1 table metadata.
  */
-private[sql] case class V1Table(v1Table: CatalogTable) extends Table {
+case class V1Table(v1Table: CatalogTable) extends Table {
+  import com.ledis.catalog.CatalogV2Implicits._
   implicit class IdentifierHelper(identifier: TableIdentifier) {
     def quoted: String = {
       identifier.database match {
@@ -49,9 +51,9 @@ private[sql] case class V1Table(v1Table: CatalogTable) extends Table {
   lazy val options: Map[String, String] = {
     v1Table.storage.locationUri match {
       case Some(uri) =>
-        v1Table.storage.properties + ("path" -> uri.toString)
+        (v1Table.storage.properties + ("path" -> uri.toString)).asInstanceOf[java.util.Map[String,String]]
       case _ =>
-        v1Table.storage.properties
+        v1Table.storage.properties.asInstanceOf[java.util.Map[String,String]]
     }
   }
 
@@ -85,6 +87,6 @@ private[sql] case class V1Table(v1Table: CatalogTable) extends Table {
  * A V2 table with V1 fallback support. This is used to fallback to V1 table when the V2 one
  * doesn't implement specific capabilities but V1 already has.
  */
-private[sql] trait V2TableWithV1Fallback extends Table {
+trait V2TableWithV1Fallback extends Table {
   def v1Table: CatalogTable
 }

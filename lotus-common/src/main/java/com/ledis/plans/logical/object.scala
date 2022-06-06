@@ -20,7 +20,7 @@ package com.ledis.plans.logical
 import com.ledis.analysis.UnresolvedDeserializer
 import com.ledis.config.SQLConf
 import com.ledis.expressions.collections.AttributeSet
-import com.ledis.expressions.expression.{Attribute, Expression, NamedExpression}
+import com.ledis.expressions.expression.{Attribute, AttributeReference, Expression, NamedExpression}
 import com.ledis.expressions.objects.Invoke
 import com.ledis.expressions.projection.Literal
 import com.ledis.types._

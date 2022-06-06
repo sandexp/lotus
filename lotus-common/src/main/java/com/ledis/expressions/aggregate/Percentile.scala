@@ -24,11 +24,10 @@ import com.ledis.analysis.TypeCheckResult
 import com.ledis.analysis.TypeCheckResult.{TypeCheckFailure, TypeCheckSuccess}
 import com.ledis.expressions._
 import com.ledis.expressions.expression.Expression
-import com.ledis.expressions.projection.UnsafeProjection
-import com.ledis.utils.util._
+import com.ledis.expressions.projection.{Literal, UnsafeProjection}
 import com.ledis.types._
-import com.ledis.utils.collections.GenericArrayData
 import com.ledis.utils.collections.row.{InternalRow, UnsafeRow}
+import com.ledis.utils.collections.{GenericArrayData, OpenHashMap}
 
 /**
  * The Percentile aggregate function returns the exact percentile(s) of numeric column `expr` at

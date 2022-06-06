@@ -3,11 +3,23 @@ package com.ledis.utils
 import java.beans.{Introspector, PropertyDescriptor}
 import java.lang.reflect.Type
 
+import com.google.common.reflect.TypeToken
 import com.ledis.analysis.GetColumnByOrdinal
-import com.ledis.expressions._
 import com.ledis.expressions.objects._
-import com.ledis.sql.catalyst.expressions
 import com.ledis.types._
+
+import scala.language.existentials
+import java.lang.{Iterable => JIterable}
+import java.util.{Iterator => JIterator, List => JList, Map => JMap}
+
+import com.ledis.expressions.{MapKeys, MapValues}
+import javax.annotation.Nonnull
+import com.ledis.expressions.expression.{Expression, If, IsNull}
+import com.ledis.expressions.projection.Literal
+import com.ledis.expressions.util.BoundReference
+import com.ledis.utils.collections.ArrayBasedMapData
+import com.ledis.utils.serializer.DeserializerBuildHelper._
+import com.ledis.utils.serializer.SerializerBuildHelper._
 
 /**
  * Type-inference utilities for POJOs and Java collections.
@@ -108,7 +120,6 @@ object JavaTypeInference {
               s"of class $other")
         }
 
-        // TODO: we should only collect properties that have getter and setter. However, some tests
         // pass in scala case class as java bean class which doesn't have getter and setter.
         val properties = getJavaBeanReadableProperties(other)
         val fields = properties.map { property =>
@@ -174,7 +185,7 @@ object JavaTypeInference {
    * 0 of a row, i.e., `GetColumnByOrdinal(0, _)`. Nested classes will have their fields accessed
    * using `UnresolvedExtractValue`.
    */
-  def deserializerFor(beanClass: Class[_]): expressions.Expression = {
+  def deserializerFor(beanClass: Class[_]): Expression = {
     val typeToken = TypeToken.of(beanClass)
     val walkedTypePath = new WalkedTypePath().recordRoot(beanClass.getCanonicalName)
     val (dataType, nullable) = inferDataType(typeToken)
@@ -186,10 +197,9 @@ object JavaTypeInference {
       })
   }
 
-  private def deserializerFor(
-									 typeToken: TypeToken[_],
-									 path: expressions.Expression,
-									 walkedTypePath: WalkedTypePath): expressions.Expression = {
+  private def deserializerFor(typeToken: TypeToken[_],
+							path: Expression,
+							walkedTypePath: WalkedTypePath): Expression = {
     typeToken.getRawType match {
       case c if !inferExternalType(c).isInstanceOf[ObjectType] => path
 
@@ -227,7 +237,7 @@ object JavaTypeInference {
         val elementType = c.getComponentType
         val newTypePath = walkedTypePath.recordArray(elementType.getCanonicalName)
         val (dataType, elementNullable) = inferDataType(elementType)
-        val mapFunction: expressions.Expression => expressions.Expression = element => {
+        val mapFunction: Expression => Expression = element => {
           // upcast the array element to the data type the encoder expected.
           deserializerForWithNullSafetyAndUpcast(
             element,
@@ -256,7 +266,7 @@ object JavaTypeInference {
         val et = elementType(typeToken)
         val newTypePath = walkedTypePath.recordArray(et.getType.getTypeName)
         val (dataType, elementNullable) = inferDataType(et)
-        val mapFunction: expressions.Expression => expressions.Expression = element => {
+        val mapFunction: Expression => Expression = element => {
           // upcast the array element to the data type the encoder expected.
           deserializerForWithNullSafetyAndUpcast(
             element,
@@ -321,9 +331,9 @@ object JavaTypeInference {
         val newInstance = NewInstance(other, Nil, ObjectType(other), propagateNull = false)
         val result = InitializeJavaBean(newInstance, setters)
 
-        expressions.If(
+        If(
           IsNull(path),
-          expressions.Literal.create(null, ObjectType(other)),
+          Literal.create(null, ObjectType(other)),
           result
         )
     }
@@ -334,15 +344,15 @@ object JavaTypeInference {
    * representation. The input object is located at ordinal 0 of a row, i.e.,
    * `BoundReference(0, _)`.
    */
-  def serializerFor(beanClass: Class[_]): expressions.Expression = {
+  def serializerFor(beanClass: Class[_]): Expression = {
     val inputObject = BoundReference(0, ObjectType(beanClass), nullable = true)
     val nullSafeInput = AssertNotNull(inputObject, Seq("top level input bean"))
     serializerFor(nullSafeInput, TypeToken.of(beanClass))
   }
 
-  private def serializerFor(inputObject: expressions.Expression, typeToken: TypeToken[_]): expressions.Expression = {
+  private def serializerFor(inputObject: Expression, typeToken: TypeToken[_]): Expression = {
 
-    def toCatalystArray(input: expressions.Expression, elementType: TypeToken[_]): expressions.Expression = {
+    def toCatalystArray(input: Expression, elementType: TypeToken[_]): Expression = {
       val (dataType, nullable) = inferDataType(elementType)
       if (ScalaReflection.isNativeType(dataType)) {
         val cls = input.dataType.asInstanceOf[ObjectType].cls

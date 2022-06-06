@@ -37,7 +37,7 @@ import com.ledis.types.CalendarInterval
 import com.ledis.utils.collections.MapData
 import com.ledis.utils.UTF8String
 import com.ledis.utils.collections.row.InternalRow
-import com.ledis.utils.hash.{Murmur3_x86_32, XXH64}
+import com.ledis.utils.hash.{HiveHasher, Murmur3_x86_32, XXH64}
 import com.ledis.utils.unsafe.Platform
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -228,7 +228,7 @@ abstract class HashExpression[E] extends Expression {
       TypeCheckResult.TypeCheckFailure(
         s"input to function $prettyName requires at least one argument")
     } else if (children.exists(child => hasMapType(child.dataType)) &&
-        !SQLConf.get.getConf(SQLConf.LEGACY_ALLOW_HASH_ON_MAPTYPE)) {
+        !SQLConf.get.getConf(SQLConf.LEGACY_ALLOW_HASH_ON_MAPTYPE).asInstanceOf[Boolean]) {
       TypeCheckResult.TypeCheckFailure(
         s"input to function $prettyName cannot contain elements of MapType. In Spark, same maps " +
           "may have different hashcode, thus hash expressions are prohibited on MapType elements." +
@@ -412,7 +412,6 @@ abstract class HashExpression[E] extends Expression {
      """.stripMargin
   }
 
-  @tailrec
   private def computeHashWithTailRec(
       input: String,
       dataType: DataType,

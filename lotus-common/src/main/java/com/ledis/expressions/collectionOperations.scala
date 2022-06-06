@@ -28,16 +28,17 @@ import com.ledis.expressions.codegen._
 import com.ledis.expressions.codegen.Block._
 import com.ledis.expressions.expression._
 import com.ledis.expressions.order.RowOrdering
-import com.ledis.expressions.projection.Literal
+import com.ledis.expressions.projection.{Cast, Literal}
 import com.ledis.sql.catalyst.expressions.NullIntolerant
 import com.ledis.utils._
 import com.ledis.utils.DateTimeConstants._
 import com.ledis.utils.util.DateTimeUtils._
 import com.ledis.types._
-import com.ledis.utils.collections.{GenericArrayData, MapData, UnsafeArrayData}
+import com.ledis.utils.collections._
 import com.ledis.utils.util.TypeUtils
 import com.ledis.utils.collections.row.{GenericInternalRow, InternalRow, UnsafeRow}
 import com.ledis.utils.random.RandomIndicesGenerator
+import com.ledis.utils.ByteArrayMethods.MAX_ROUNDED_ARRAY_LENGTH
 
 /**
  * Base trait for [[BinaryExpression]]s with two arrays of the same element type and implicit

@@ -3,8 +3,7 @@ package com.ledis.catalog.util
 import java.util
 import java.util.Collections
 
-import com.ledis.analysis.UnresolvedV2Relation
-import com.ledis.analysis.relation.NamedRelation
+import com.ledis.analysis.{NamedRelation, UnresolvedV2Relation}
 import com.ledis.catalog.support.{SupportsCatalogOptions, SupportsNamespaces}
 import com.ledis.catalog.{CatalogManager, CatalogPlugin, Identifier, NamespaceChange}
 import com.ledis.catalog.table.{Table, TableCatalog, TableChange}
@@ -12,11 +11,14 @@ import com.ledis.catalog.table.TableChange._
 import com.ledis.exception.{AnalysisException, NoSuchDatabaseException, NoSuchNamespaceException, NoSuchTableException}
 import com.ledis.plans.logical._
 import com.ledis.types._
+import com.ledis.utils.{DataSourceV2Relation, Utils}
 import com.ledis.utils.collections.CaseInsensitiveStringMap
 
+import scala.collection.JavaConverters._
 
 object CatalogV2Util {
   
+  import com.ledis.catalog.CatalogV2Implicits._
   /**
    * The list of reserved table properties, which can not be removed or changed directly by
    * the syntax:

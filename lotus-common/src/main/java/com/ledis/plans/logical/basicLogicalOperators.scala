@@ -17,8 +17,7 @@
 
 package com.ledis.plans.logical
 
-import com.ledis.analysis.EliminateView
-import com.ledis.analysis.relation.MultiInstanceRelation
+import com.ledis.analysis.{EliminateView, MultiInstanceRelation}
 import com.ledis.catalog.{CatalogStorageFormat, CatalogTable}
 import com.ledis.config.SQLConf
 import com.ledis.expressions._
@@ -34,6 +33,7 @@ import com.ledis.plans.physical.{HashPartitioning, Partitioning, RangePartitioni
 import com.ledis.types._
 import com.ledis.utils.AliasIdentifier
 import com.ledis.utils.collections.AttributeMap
+import com.ledis.utils.random.RandomSampler
 
 /**
  * When planning take() or collect() operations, this special node that is inserted at the top of
