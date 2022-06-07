@@ -16,17 +16,13 @@
  */
 package com.ledis.analysis
 
+import com.ledis.catalog.CatalogV2Implicits._
 import com.ledis.catalog.support.{SupportsAtomicPartitionManagement, SupportsPartitionManagement}
 import com.ledis.catalog.table.Table
 import com.ledis.catalog.table.TableChange._
 import com.ledis.config.SQLConf
-import com.ledis.exception.AnalysisException
-
-import scala.collection.mutable
-
-import com.ledis.analysis._
-import com.ledis.expressions._
 import com.ledis.expressions.SubExprUtils._
+import com.ledis.expressions._
 import com.ledis.expressions.aggregate.AggregateExpression
 import com.ledis.expressions.collections.AttributeSet
 import com.ledis.expressions.expression._
@@ -39,7 +35,8 @@ import com.ledis.plans._
 import com.ledis.plans.logical._
 import com.ledis.types._
 import com.ledis.utils.util.{CharVarcharUtils, TypeUtils}
-import com.ledis.catalog.CatalogV2Implicits._
+
+import scala.collection.mutable
 
 /**
  * Throws user facing errors when passed invalid queries that fail to analyze.
@@ -55,7 +52,7 @@ trait CheckAnalysis extends PredicateHelper {
   val extendedCheckRules: Seq[LogicalPlan => Unit] = Nil
 
   protected def failAnalysis(msg: String): Nothing = {
-    throw new AnalysisException(msg)
+    failAnalysis(msg)
   }
 
   protected def containsMultipleGenerators(exprs: Seq[Expression]): Boolean = {
@@ -128,7 +125,7 @@ trait CheckAnalysis extends PredicateHelper {
 
       case write: V2WriteCommand if write.table.isInstanceOf[UnresolvedRelation] =>
         val tblName = write.table.asInstanceOf[UnresolvedRelation].multipartIdentifier
-        write.table.failAnalysis(s"Table or view not found: ${tblName.quoted}")
+        failAnalysis(s"Table or view not found: ${tblName.quoted}")
 
       case u: UnresolvedV2Relation if isView(u.originalNameParts) =>
         u.failAnalysis(
@@ -138,7 +135,7 @@ trait CheckAnalysis extends PredicateHelper {
         u.failAnalysis(s"Table not found: ${u.originalNameParts.quoted}")
 
       case AlterTable(_, _, u: UnresolvedV2Relation, _) if isView(u.originalNameParts) =>
-        u.failAnalysis(
+        failAnalysis(
           s"Invalid command: '${u.originalNameParts.quoted}' is a view not a table.")
 
       case AlterTable(_, _, u: UnresolvedV2Relation, _) =>
@@ -154,7 +151,7 @@ trait CheckAnalysis extends PredicateHelper {
               if hof.argumentsResolved && hof.checkArgumentDataTypes().isFailure =>
             hof.checkArgumentDataTypes() match {
               case TypeCheckResult.TypeCheckFailure(message) =>
-                hof.failAnalysis(
+                failAnalysis(
                   s"cannot resolve '${hof.sql}' due to argument data type mismatch: $message")
             }
         }
@@ -162,12 +159,12 @@ trait CheckAnalysis extends PredicateHelper {
         operator transformExpressionsUp {
           case a: Attribute if !a.resolved =>
             val from = operator.inputSet.toSeq.map(_.qualifiedName).mkString(", ")
-            a.failAnalysis(s"cannot resolve '${a.sql}' given input columns: [$from]")
+            failAnalysis(s"cannot resolve '${a.sql}' given input columns: [$from]")
 
           case e: Expression if e.checkInputDataTypes().isFailure =>
             e.checkInputDataTypes() match {
               case TypeCheckResult.TypeCheckFailure(message) =>
-                e.failAnalysis(
+                failAnalysis(
                   s"cannot resolve '${e.sql}' due to data type mismatch: $message")
             }
 
@@ -297,7 +294,7 @@ trait CheckAnalysis extends PredicateHelper {
 
           case CollectMetrics(name, metrics, _) =>
             if (name == null || name.isEmpty) {
-              operator.failAnalysis(s"observed metrics should be named: $operator")
+              failAnalysis(s"observed metrics should be named: $operator")
             }
             // Check if an expression is a valid metric. A metric must meet the following criteria:
             // - Is not a window function;
@@ -308,22 +305,22 @@ trait CheckAnalysis extends PredicateHelper {
             def checkMetric(s: Expression, e: Expression, seenAggregate: Boolean = false): Unit = {
               e match {
                 case _: WindowExpression =>
-                  e.failAnalysis(
+                  failAnalysis(
                     "window expressions are not allowed in observed metrics, but found: " + s.sql)
                 case _ if !e.deterministic && !seenAggregate =>
-                  e.failAnalysis(s"non-deterministic expression ${s.sql} can only be used " +
+                  failAnalysis(s"non-deterministic expression ${s.sql} can only be used " +
                     "as an argument to an aggregate function.")
                 case a: AggregateExpression if seenAggregate =>
-                  e.failAnalysis(
+                  failAnalysis(
                     "nested aggregates are not allowed in observed metrics, but found: " + s.sql)
                 case a: AggregateExpression if a.isDistinct =>
-                  e.failAnalysis(
+                  failAnalysis(
                     "distinct aggregates are not allowed in observed metrics, but found: " + s.sql)
                 case a: AggregateExpression if a.filter.isDefined =>
-                  e.failAnalysis("aggregates with filter predicate are not allowed in " +
+                  failAnalysis("aggregates with filter predicate are not allowed in " +
                     "observed metrics, but found: " + s.sql)
                 case _: Attribute if !seenAggregate =>
-                  e.failAnalysis (s"attribute ${s.sql} can only be used as an argument to an " +
+                  failAnalysis(s"attribute ${s.sql} can only be used as an argument to an " +
                     "aggregate function.")
                 case _: AggregateExpression =>
                   e.children.foreach(checkMetric (s, _, seenAggregate = true))
@@ -410,7 +407,7 @@ trait CheckAnalysis extends PredicateHelper {
               if (output.length != queryColumnNames.length) {
                 // If the view output doesn't have the same number of columns with the query column
                 // names, throw an AnalysisException.
-                throw new AnalysisException(
+                failAnalysis(
                   s"The view output ${output.mkString("[", ",", "]")} doesn't have the same" +
                     "number of columns with the query column names " +
                     s"${queryColumnNames.mkString("[", ",", "]")}")
@@ -419,7 +416,7 @@ trait CheckAnalysis extends PredicateHelper {
               queryColumnNames.map { colName =>
                 child.output.find { attr =>
                   resolver(attr.name, colName)
-                }.getOrElse(throw new AnalysisException(
+                }.getOrElse(failAnalysis(
                   s"Attribute with name '$colName' is not found in " +
                     s"'${child.output.map(_.name).mkString("(", ",", ")")}'"))
               }
@@ -433,7 +430,7 @@ trait CheckAnalysis extends PredicateHelper {
                 // output, so we should cast the attribute to the dataType of the view output
                 // attribute. Will throw an AnalysisException if the cast is not a up-cast.
                 if (!Cast.canUpCast(originAttr.dataType, attr.dataType)) {
-                  throw new AnalysisException(s"Cannot up cast ${originAttr.sql} from " +
+                  failAnalysis(s"Cannot up cast ${originAttr.sql} from " +
                     s"${originAttr.dataType.catalogString} to ${attr.dataType.catalogString} " +
                     "as it may truncate\n")
                 }
@@ -446,7 +443,7 @@ trait CheckAnalysis extends PredicateHelper {
               // include collections because structs nested in maps and arrays may be altered
               val field = table.schema.findNestedField(fieldName, includeCollections = true)
               if (field.isEmpty) {
-                alter.failAnalysis(
+                failAnalysis(
                   s"Cannot $operation missing field ${fieldName.quoted} in ${table.name} schema: " +
                   table.schema.treeString)
               }
@@ -460,7 +457,7 @@ trait CheckAnalysis extends PredicateHelper {
                 case after: After =>
                   val allFields = struct.fieldNames ++ fieldsAdded
                   if (!allFields.contains(after.column())) {
-                    alter.failAnalysis(s"Couldn't resolve positional argument $position amongst " +
+                    failAnalysis(s"Couldn't resolve positional argument $position amongst " +
                       s"${allFields.mkString("[", ", ", "]")}")
                   }
                 case _ =>
@@ -475,7 +472,7 @@ trait CheckAnalysis extends PredicateHelper {
               }
               field match {
                 case s: StructType => s
-                case o => alter.failAnalysis(s"Cannot $operation ${fieldNames.quoted}, because " +
+                case o => failAnalysis(s"Cannot $operation ${fieldNames.quoted}, because " +
                   s"its parent is not a StructType. Found $o")
               }
             }
@@ -484,7 +481,7 @@ trait CheckAnalysis extends PredicateHelper {
                 fieldNames: Array[String],
                 struct: StructType): Unit = {
               if (struct.findNestedField(fieldNames, includeCollections = true).isDefined) {
-                alter.failAnalysis(s"Cannot $operation column, because ${fieldNames.quoted} " +
+                failAnalysis(s"Cannot $operation column, because ${fieldNames.quoted} " +
                   s"already exists in ${struct.treeString}")
               }
             }
@@ -519,16 +516,16 @@ trait CheckAnalysis extends PredicateHelper {
                 val fieldName = update.fieldNames.quoted
                 update.newDataType match {
                   case _: StructType =>
-                    alter.failAnalysis(s"Cannot update ${table.name} field $fieldName type: " +
+                    failAnalysis(s"Cannot update ${table.name} field $fieldName type: " +
                       s"update a struct by updating its fields")
                   case _: MapType =>
-                    alter.failAnalysis(s"Cannot update ${table.name} field $fieldName type: " +
+                    failAnalysis(s"Cannot update ${table.name} field $fieldName type: " +
                       s"update a map by updating $fieldName.key or $fieldName.value")
                   case _: ArrayType =>
-                    alter.failAnalysis(s"Cannot update ${table.name} field $fieldName type: " +
+                    failAnalysis(s"Cannot update ${table.name} field $fieldName type: " +
                       s"update the element by updating $fieldName.element")
                   case _: CalendarIntervalType =>
-                    alter.failAnalysis(s"Cannot update ${table.name} field $fieldName to " +
+                    failAnalysis(s"Cannot update ${table.name} field $fieldName to " +
                       s"interval type")
                   case _ =>
                     // update is okay
@@ -543,7 +540,7 @@ trait CheckAnalysis extends PredicateHelper {
                 }
 
                 if (!canAlterColumnType(field.dataType, update.newDataType)) {
-                  alter.failAnalysis(
+                  failAnalysis(
                     s"Cannot update ${table.name} field $fieldName: " +
                         s"${field.dataType.simpleString} cannot be cast to " +
                         s"${update.newDataType.simpleString}")
@@ -552,7 +549,7 @@ trait CheckAnalysis extends PredicateHelper {
                 val field = findField("update", update.fieldNames)
                 val fieldName = update.fieldNames.quoted
                 if (!update.nullable && field.nullable) {
-                  alter.failAnalysis(
+                  failAnalysis(
                     s"Cannot change nullable column to non-nullable: $fieldName")
                 }
               case updatePos: UpdateColumnPosition =>
@@ -715,7 +712,6 @@ trait CheckAnalysis extends PredicateHelper {
         failAnalysis("The output of a correlated scalar subquery must be aggregated")
       }
 
-      // SPARK-18504/SPARK-18814: Block cases where GROUP BY columns
       // are not part of the correlated columns.
       val groupByCols = AttributeSet(agg.groupingExpressions.flatMap(_.references))
       // Collect the local references from the correlated predicate in the subquery.

@@ -22,7 +22,7 @@ import com.ledis.plans.logical.LogicalPlan
 /**
  * Thrown when a query fails to analyze, usually because the query itself is invalid.
  */
-class AnalysisException protected[sql] (
+class AnalysisException (
     val message: String,
     val line: Option[Int] = None,
     val startPosition: Option[Int] = None,

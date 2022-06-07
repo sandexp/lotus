@@ -35,6 +35,7 @@ import com.ledis.plans._
 import com.ledis.plans.logical._
 import com.ledis.rules._
 import com.ledis.types._
+import com.ledis.utils.Utils
 import com.ledis.utils.collections.AttributeMap
 import com.ledis.utils.collections.row.SpecificInternalRow
 

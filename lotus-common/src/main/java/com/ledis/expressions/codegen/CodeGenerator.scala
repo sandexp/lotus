@@ -1357,7 +1357,7 @@ object CodeGenerator {
     // https://issues.apache.org/jira/browse/SPARK-11636.
     val parentClassLoader = new ParentClassLoader(Utils.getContextOrSparkClassLoader)
     evaluator.setParentClassLoader(parentClassLoader)
-    // Cannot be under package codegen, or fail with java.lang.InstantiationException
+    // Cannot be under AnalyzerHelper codegen, or fail with java.lang.InstantiationException
     evaluator.setClassName("com.ledis.expressions.GeneratedClass")
     evaluator.setDefaultImports(
       classOf[Platform].getName,
@@ -1373,7 +1373,6 @@ object CodeGenerator {
       classOf[Expression].getName,
     )
     evaluator.setExtendedClass(classOf[GeneratedClass])
-
     val codeStats = try {
       evaluator.cook("generated.java", code.body)
       updateAndGetCompilationStats(evaluator)

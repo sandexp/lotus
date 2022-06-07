@@ -25,6 +25,7 @@ import com.ledis.rules.Rule
 import com.ledis.types._
 import com.ledis.utils.collections.row.InternalRow
 import com.ledis.utils.util.CharVarcharUtils
+import com.ledis.utils.PartitioningUtils._
 
 /**
  * Resolve [[UnresolvedPartitionSpec]] to [[ResolvedPartitionSpec]] in partition related commands.

@@ -26,7 +26,6 @@ import com.ledis.expressions.codegen.{CodegenContext, ExprCode}
 import com.ledis.expressions.expression._
 import com.ledis.parser.ParserUtils
 import com.ledis.plans.logical.{LeafNode, LogicalPlan, UnaryNode}
-import com.ledis.sql.catalyst.analysis.Resolver
 import com.ledis.types.{DataType, Metadata, StructType}
 import com.ledis.trees.TreeNode
 import com.ledis.utils.collections.CaseInsensitiveStringMap

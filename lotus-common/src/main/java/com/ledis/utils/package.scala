@@ -23,7 +23,7 @@ import java.nio.charset.StandardCharsets.UTF_8
 import java.util.concurrent.atomic.AtomicBoolean
 
 import com.ledis.expressions._
-import com.ledis.expressions.expression.{Attribute, PrettyAttribute, RuntimeReplaceable}
+import com.ledis.expressions.expression.{Attribute, Expression, PrettyAttribute, RuntimeReplaceable}
 import com.ledis.expressions.projection.Literal
 import com.ledis.types.{NumericType, StringType}
 
@@ -123,7 +123,7 @@ package object utils {
 
   // Replaces attributes, string literals, complex type extractors with their pretty form so that
   // generated column names don't contain back-ticks or double-quotes.
-  def usePrettyExpression(e: utils.expressions.Expression): utils.expressions.Expression = e transform {
+  def usePrettyExpression(e: Expression): utils.expressions.Expression = e transform {
     case a: Attribute => new PrettyAttribute(a)
     case Literal(s: UTF8String, StringType) => PrettyAttribute(s.toString, StringType)
     case Literal(v, t: NumericType) if v != null => PrettyAttribute(v.toString, t)
@@ -142,7 +142,7 @@ package object utils {
     "`" + name.replace("`", "``") + "`"
   }
 
-  def toPrettySQL(e: utils.expressions.Expression): String = usePrettyExpression(e).sql
+  def toPrettySQL(e: Expression): String = usePrettyExpression(e).sql
 
   def escapeSingleQuotedString(str: String): String = {
     val builder = StringBuilder.newBuilder

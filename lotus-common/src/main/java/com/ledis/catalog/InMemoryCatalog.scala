@@ -94,6 +94,7 @@ class InMemoryCatalog()
   }
   private def toCatalogPartitionSpec(
       parts: Seq[CatalogTablePartition]): Seq[CatalogTablePartition] = {
+    
     parts.map(part => part.copy(spec = toCatalogPartitionSpec(part.spec)))
   }
 

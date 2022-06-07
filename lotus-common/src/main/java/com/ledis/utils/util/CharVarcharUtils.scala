@@ -9,8 +9,6 @@ import com.ledis.expressions.order.{ArrayTransform, LambdaFunction, NamedLambdaV
 import com.ledis.expressions.projection.Literal
 import com.ledis.parser.CatalystSqlParser
 import com.ledis.types._
-import com.ledis.utils
-import com.ledis.utils.expressions
 
 import scala.collection.mutable
 
@@ -128,13 +126,13 @@ object CharVarcharUtils {
    * string value can not exceed N characters if it's written into a CHAR(N)/VARCHAR(N)
    * column/field.
    */
-  def stringLengthCheck(expr: expressions.Expression, targetAttr: Attribute): expressions.Expression = {
+  def stringLengthCheck(expr: Expression, targetAttr: Attribute): Expression = {
     getRawType(targetAttr.metadata).map { rawType =>
       stringLengthCheck(expr, rawType)
     }.getOrElse(expr)
   }
 
-  private def stringLengthCheck(expr: expressions.Expression, dt: DataType): expressions.Expression = {
+  private def stringLengthCheck(expr: Expression, dt: DataType): Expression = {
     dt match {
       case CharType(length) =>
         StaticInvoke(
@@ -175,7 +173,7 @@ object CharVarcharUtils {
   }
 
   private def stringLengthCheckInArray(
-											  arr: expressions.Expression, et: DataType, containsNull: Boolean): expressions.Expression = {
+											  arr: Expression, et: DataType, containsNull: Boolean): Expression = {
     val param = NamedLambdaVariable("x", replaceCharVarcharWithString(et), containsNull)
     val func = LambdaFunction(stringLengthCheck(param, et), Seq(param))
     ArrayTransform(arr, func)
@@ -186,7 +184,7 @@ object CharVarcharUtils {
    * attributes. When comparing two char type columns/fields, we need to pad the shorter one to
    * the longer length.
    */
-  def addPaddingInStringComparison(attrs: Seq[Attribute]): Seq[expressions.Expression] = {
+  def addPaddingInStringComparison(attrs: Seq[Attribute]): Seq[Expression] = {
     val rawTypes = attrs.map(attr => getRawType(attr.metadata))
     if (rawTypes.exists(_.isEmpty)) {
       attrs
@@ -213,9 +211,9 @@ object CharVarcharUtils {
     }
   }
 
-  private def padCharToTargetLength(expr: expressions.Expression,
+  private def padCharToTargetLength(expr: Expression,
                                   rawType: DataType,
-                                  typeWithTargetCharLength: DataType): Option[expressions.Expression] = {
+                                  typeWithTargetCharLength: DataType): Option[Expression] = {
     (rawType, typeWithTargetCharLength) match {
       case (CharType(len), CharType(target)) if target > len =>
         Some(StringRPad(expr, Literal(target)))
@@ -224,7 +222,7 @@ object CharVarcharUtils {
         assert(fields.length == targets.length)
         var i = 0
         var needPadding = false
-        val createStructExprs = mutable.ArrayBuffer.empty[expressions.Expression]
+        val createStructExprs = mutable.ArrayBuffer.empty[Expression]
         while (i < fields.length) {
           val field = fields(i)
           val fieldExpr = GetStructField(expr, i, Some(field.name))

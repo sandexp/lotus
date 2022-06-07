@@ -23,6 +23,7 @@ import java.util.{Date, Locale}
 
 import com.ledis.config.SQLConf
 import com.ledis.utils.helpers.DateTimeFormatterHelper
+import com.ledis.utils.util.DateTimeUtils
 import org.apache.commons.lang3.time.FastDateFormat
 
 sealed trait DateFormatter extends Serializable {

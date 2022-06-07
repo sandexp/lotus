@@ -32,10 +32,9 @@ import com.ledis.expressions.projection.{Cast, Literal}
 import com.ledis.expressions.util.BoundReference
 import com.ledis.plans.{Inner, JoinType}
 import com.ledis.plans.logical._
-import com.ledis.sql.catalyst.analysis
 import com.ledis.types._
 import com.ledis.utils
-import com.ledis.utils.UTF8String
+import com.ledis.utils.{FilterFunction, UTF8String}
 
 /**
  * A collection of implicit conversions that create a DSL for constructing catalyst data structures.

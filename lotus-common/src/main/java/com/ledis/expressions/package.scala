@@ -22,10 +22,9 @@ import java.util.Locale
 import com.google.common.collect.Maps
 import com.ledis.exception.AnalysisException
 import com.ledis.expressions._
-import com.ledis.analysis.UnresolvedAttribute
+import com.ledis.analysis.{Resolver, UnresolvedAttribute}
 import com.ledis.expressions.expression._
 import com.ledis.expressions.projection.Literal
-import com.ledis.sql.catalyst.analysis.Resolver
 import com.ledis.types.{StructField, StructType}
 import com.ledis.utils.collections.row.InternalRow
 

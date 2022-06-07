@@ -18,6 +18,7 @@
 package com.ledis.analysis
 
 import com.ledis.catalog.SessionCatalog
+import com.ledis.exception.AnalysisException
 import com.ledis.expressions.ExtractValue
 import com.ledis.expressions.expression.{Expression, NamedExpression}
 import com.ledis.expressions.order.{HigherOrderFunction, LambdaFunction, NamedLambdaVariable, UnresolvedNamedLambdaVariable}
@@ -40,10 +41,10 @@ case class ResolveHigherOrderFunctions(catalog: SessionCatalog) extends Rule[Log
       withPosition(u) {
         catalog.lookupFunction(fn, children) match {
           case func: HigherOrderFunction =>
-            filter.foreach(_.failAnalysis("FILTER predicate specified, " +
+            filter.foreach(throw new AnalysisException("FILTER predicate specified, " +
               s"but ${func.prettyName} is not an aggregate function"))
             func
-          case other => other.failAnalysis(
+          case other => throw new AnalysisException(
             "A lambda function should only be used in a higher order function. However, " +
               s"its class is ${other.getClass.getCanonicalName}, which is not a " +
               s"higher order function.")
@@ -107,14 +108,14 @@ object ResolveLambdaVariables extends Rule[LogicalPlan] {
 
     case LambdaFunction(function, names, _) =>
       if (names.size != argInfo.size) {
-        e.failAnalysis(
+        throw new AnalysisException(
           s"The number of lambda function arguments '${names.size}' does not " +
             "match the number of arguments expected by the higher order function " +
             s"'${argInfo.size}'.")
       }
 
       if (names.map(a => canonicalizer(a.name)).distinct.size < names.size) {
-        e.failAnalysis(
+        throw new AnalysisException(
           "Lambda function arguments should not have names that are semantically the same.")
       }
 

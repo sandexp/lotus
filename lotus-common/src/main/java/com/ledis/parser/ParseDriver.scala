@@ -32,7 +32,6 @@ import org.antlr.v4.runtime.tree.TerminalNodeImpl
  * Base SQL parsing infrastructure.
  */
 abstract class AbstractSqlParser extends ParserInterface with SQLConfHelper {
-
   /** Creates/Resolves DataType for a given SQL string. */
   override def parseDataType(sqlText: String): DataType = parse(sqlText) { parser =>
     astBuilder.visitSingleDataType(parser.singleDataType())

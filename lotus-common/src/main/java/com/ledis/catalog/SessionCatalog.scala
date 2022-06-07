@@ -39,7 +39,7 @@ import com.ledis.parser.{CatalystSqlParser, ParserInterface}
 import com.ledis.plans.logical.{LogicalPlan, SubqueryAlias, View}
 import com.ledis.types.StructType
 import com.ledis.utils.collections.CaseInsensitiveStringMap
-import com.ledis.utils.{FunctionIdentifier, QualifiedTableName, TableIdentifier, Utils}
+import com.ledis.utils._
 import com.ledis.utils.helpers.SQLConfHelper
 import com.ledis.utils.util.{CharVarcharUtils, StringUtils}
 import com.ledis.config.StaticSQLConf.GLOBAL_TEMP_DATABASE
@@ -115,6 +115,7 @@ class SessionCatalog(
    * org.apache.hadoop.hive.metastore.MetaStoreUtils.validateName.
    */
   private def validateName(name: String): Unit = {
+    
     if (!validNameFormat.pattern.matcher(name).matches()) {
       throw new AnalysisException(s"`$name` is not a valid name for tables/databases. " +
         "Valid names only contain alphabet characters, numbers and _.")

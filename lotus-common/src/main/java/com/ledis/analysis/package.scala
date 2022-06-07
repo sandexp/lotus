@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.ledis.sql.catalyst
+package com.ledis
 
 import com.ledis.exception.AnalysisException
 import com.ledis.trees.TreeNode

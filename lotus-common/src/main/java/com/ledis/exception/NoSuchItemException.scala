@@ -20,7 +20,8 @@ package com.ledis.exception
 import com.ledis.catalog.CatalogTypes.TablePartitionSpec
 import com.ledis.types.StructType
 import com.ledis.utils.collections.row.InternalRow
-
+import com.ledis.catalog.CatalogV2Implicits._
+import com.ledis.catalog.Identifier
 
 /**
  * Thrown by a catalog when an item cannot be found. The analyzer will rethrow the exception

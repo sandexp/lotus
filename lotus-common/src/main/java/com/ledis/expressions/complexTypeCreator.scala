@@ -18,7 +18,7 @@
 package com.ledis.expressions
 
 import scala.collection.mutable.ArrayBuffer
-import com.ledis.analysis.{TypeCheckResult, TypeCoercion, UnresolvedAttribute, UnresolvedExtractValue}
+import com.ledis.analysis.{Resolver, TypeCheckResult, TypeCoercion, UnresolvedAttribute, UnresolvedExtractValue}
 import com.ledis.analysis.FunctionRegistry.{FUNC_ALIAS, FunctionBuilder}
 import com.ledis.config.SQLConf
 import com.ledis.expressions.codegen._
@@ -27,7 +27,6 @@ import com.ledis.expressions.expression._
 import com.ledis.expressions.projection.Literal
 import com.ledis.sql.catalyst.expressions.NullIntolerant
 import com.ledis.parser.CatalystSqlParser
-import com.ledis.sql.catalyst.analysis.Resolver
 import com.ledis.utils._
 import com.ledis.types._
 import com.ledis.utils.collections.{ArrayBasedMapBuilder, GenericArrayData}

@@ -117,7 +117,7 @@ public final class Platform {
   }
 
   /**
-   * @return true when running JVM is having sun's Unsafe package available in it and underlying
+   * @return true when running JVM is having sun's Unsafe AnalyzerHelper available in it and underlying
    *         system having unaligned-access capability.
    */
   public static boolean unaligned() {

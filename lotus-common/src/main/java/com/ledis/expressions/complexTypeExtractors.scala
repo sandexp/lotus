@@ -23,7 +23,6 @@ import com.ledis.config.SQLConf
 import com.ledis.expressions.codegen.{CodeGenerator, CodegenContext, ExprCode}
 import com.ledis.expressions.expression.{BinaryExpression, Expression, UnaryExpression}
 import com.ledis.expressions.projection.NonNullLiteral
-import com.ledis.sql.catalyst.analysis.Resolver
 import com.ledis.sql.catalyst.expressions.NullIntolerant
 import com.ledis.types._
 import com.ledis.utils.collections.row.InternalRow

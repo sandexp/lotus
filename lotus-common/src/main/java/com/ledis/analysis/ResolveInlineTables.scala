@@ -23,6 +23,7 @@ import com.ledis.rules.Rule
 import com.ledis.types.{DataType, StructField, StructType}
 import com.ledis.utils.collections.row.InternalRow
 
+
 /**
  * An analyzer rule that replaces [[UnresolvedInlineTable]] with [[LocalRelation]].
  */
@@ -39,7 +40,7 @@ object ResolveInlineTables extends Rule[LogicalPlan] with CastSupport {
    * 1. All rows have the same cardinality.
    * 2. The number of column aliases defined is consistent with the number of columns in data.
    *
-   * This is package visible for unit testing.
+   * This is AnalyzerHelper visible for unit testing.
    */
   private[analysis] def validateInputDimension(table: UnresolvedInlineTable): Unit = {
     if (table.rows.nonEmpty) {
@@ -56,7 +57,7 @@ object ResolveInlineTables extends Rule[LogicalPlan] with CastSupport {
    * Validates that all inline table data are valid expressions that can be evaluated
    * (in this they must be foldable).
    *
-   * This is package visible for unit testing.
+   * This is AnalyzerHelper visible for unit testing.
    */
   private[analysis] def validateInputEvaluable(table: UnresolvedInlineTable): Unit = {
     table.rows.foreach { row =>
@@ -75,7 +76,7 @@ object ResolveInlineTables extends Rule[LogicalPlan] with CastSupport {
    *
    * This function attempts to coerce inputs into consistent types.
    *
-   * This is package visible for unit testing.
+   * This is AnalyzerHelper visible for unit testing.
    */
   private[analysis] def convert(table: UnresolvedInlineTable): LocalRelation = {
     // For each column, traverse all the values and find a common data type and nullability.

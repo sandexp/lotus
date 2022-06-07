@@ -22,8 +22,16 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 import java.util.zip.Deflater
 
+import com.ledis.analysis.Resolver
+import com.ledis.exception.AnalysisException
+import com.ledis.expressions.CodegenObjectFactoryMode
+import com.ledis.expressions.codegen.CodeGenerator
 import com.ledis.plans.logical.HintErrorHandler
-import com.ledis.sql.catalyst.analysis.Resolver
+import com.ledis.utils.{ByteArrayMethods, ScalaReflection, Utils}
+import com.ledis.utils.collections.ByteUnit
+import com.ledis.utils.util.DateTimeUtils
+import com.ledis.analysis.caseInsensitiveResolution
+import com.ledis.analysis.caseSensitiveResolution
 
 import scala.collection.JavaConverters._
 import scala.collection.immutable
@@ -38,7 +46,7 @@ import scala.util.matching.Regex
 
 object SQLConf {
 
-  private[sql] val sqlConfEntries = java.util.Collections.synchronizedMap(
+  val sqlConfEntries = java.util.Collections.synchronizedMap(
     new java.util.HashMap[String, ConfigEntry[_]]())
 
   val staticConfKeys: java.util.Set[String] =
@@ -51,7 +59,7 @@ object SQLConf {
   }
 
   // For testing only
-  private[sql] def unregister(entry: ConfigEntry[_]): Unit = sqlConfEntries.synchronized {
+  def unregister(entry: ConfigEntry[_]): Unit = sqlConfEntries.synchronized {
     sqlConfEntries.remove(entry.key)
   }
 
@@ -63,26 +71,11 @@ object SQLConf {
       SQLConf.register(entry)
     }
   }
-
-  /**
-   * Merge all non-static configs to the SQLConf. For example, when the 1st [[SparkSession]] and
-   * the global [[SharedState]] have been initialized, all static configs have taken affect and
-   * should not be set to other values. Other later created sessions should respect all static
-   * configs and only be able to change non-static configs.
-   */
-  private[sql] def mergeNonStaticSQLConfigs(
+	
+  def mergeNonStaticSQLConfigs(
       sqlConf: SQLConf,
       configs: Map[String, String]): Unit = {
     for ((k, v) <- configs if !staticConfKeys.contains(k)) {
-      sqlConf.setConfString(k, v)
-    }
-  }
-
-  /**
-   * Extract entries from `SparkConf` and put them in the `SQLConf`
-   */
-  private[sql] def mergeSparkConf(sqlConf: SQLConf, sparkConf: SparkConf): Unit = {
-    sparkConf.getAll.foreach { case (k, v) =>
       sqlConf.setConfString(k, v)
     }
   }
@@ -149,39 +142,7 @@ object SQLConf {
    * run unit tests (that does not involve SparkSession) in serial order.
    */
   def get: SQLConf = {
-    if (TaskContext.get != null) {
-      val conf = existingConf.get()
-      if (conf != null) {
-        conf
-      } else {
-        new ReadOnlySQLConf(TaskContext.get())
-      }
-    } else {
-      val isSchedulerEventLoopThread = SparkContext.getActive
-        .flatMap { sc => Option(sc.dagScheduler) }
-        .map(_.eventProcessLoop.eventThread)
-        .exists(_.getId == Thread.currentThread().getId)
-      if (isSchedulerEventLoopThread) {
-        // DAGScheduler event loop thread does not have an active SparkSession, the `confGetter`
-        // will return `fallbackConf` which is unexpected. Here we require the caller to get the
-        // conf within `withExistingConf`, otherwise fail the query.
-        val conf = existingConf.get()
-        if (conf != null) {
-          conf
-        } else if (Utils.isTesting) {
-          throw new RuntimeException("Cannot get SQLConf inside scheduler event loop thread.")
-        } else {
-          confGetter.get()()
-        }
-      } else {
-        val conf = existingConf.get()
-        if (conf != null) {
-          conf
-        } else {
-          confGetter.get()()
-        }
-      }
-    }
+	existingConf.get()
   }
 
   val ANALYZER_MAX_ITERATIONS = buildConf("spark.sql.analyzer.maxIterations")
@@ -3125,115 +3086,115 @@ class SQLConf extends Serializable {
   import SQLConf._
 
   /** Only low degree of contention is expected for conf, thus NOT using ConcurrentHashMap. */
-  @transient protected[spark] val settings = java.util.Collections.synchronizedMap(
+  @transient val settings = java.util.Collections.synchronizedMap(
     new java.util.HashMap[String, String]())
 
   @transient protected val reader = new ConfigReader(settings)
 
   /** ************************ Spark SQL Params/Hints ******************* */
 
-  def analyzerMaxIterations: Int = getConf(ANALYZER_MAX_ITERATIONS)
+  def analyzerMaxIterations: Int = getConf(ANALYZER_MAX_ITERATIONS).asInstanceOf[Int]
 
   def optimizerExcludedRules: Option[String] = getConf(OPTIMIZER_EXCLUDED_RULES)
 
-  def optimizerMaxIterations: Int = getConf(OPTIMIZER_MAX_ITERATIONS)
+  def optimizerMaxIterations: Int = getConf(OPTIMIZER_MAX_ITERATIONS).asInstanceOf[Int]
 
-  def optimizerInSetConversionThreshold: Int = getConf(OPTIMIZER_INSET_CONVERSION_THRESHOLD)
+  def optimizerInSetConversionThreshold: Int = getConf(OPTIMIZER_INSET_CONVERSION_THRESHOLD).asInstanceOf[Int]
 
-  def optimizerInSetSwitchThreshold: Int = getConf(OPTIMIZER_INSET_SWITCH_THRESHOLD)
+  def optimizerInSetSwitchThreshold: Int = getConf(OPTIMIZER_INSET_SWITCH_THRESHOLD).asInstanceOf[Int]
 
-  def planChangeLogLevel: String = getConf(PLAN_CHANGE_LOG_LEVEL)
+  def planChangeLogLevel: String = getConf(PLAN_CHANGE_LOG_LEVEL).asInstanceOf[String]
 
   def planChangeRules: Option[String] = getConf(PLAN_CHANGE_LOG_RULES)
 
   def planChangeBatches: Option[String] = getConf(PLAN_CHANGE_LOG_BATCHES)
 
-  def dynamicPartitionPruningEnabled: Boolean = getConf(DYNAMIC_PARTITION_PRUNING_ENABLED)
+  def dynamicPartitionPruningEnabled: Boolean = getConf(DYNAMIC_PARTITION_PRUNING_ENABLED).asInstanceOf[Boolean]
 
-  def dynamicPartitionPruningUseStats: Boolean = getConf(DYNAMIC_PARTITION_PRUNING_USE_STATS)
+  def dynamicPartitionPruningUseStats: Boolean = getConf(DYNAMIC_PARTITION_PRUNING_USE_STATS).asInstanceOf[Boolean]
 
   def dynamicPartitionPruningFallbackFilterRatio: Double =
-    getConf(DYNAMIC_PARTITION_PRUNING_FALLBACK_FILTER_RATIO)
+    getConf(DYNAMIC_PARTITION_PRUNING_FALLBACK_FILTER_RATIO).asInstanceOf[Double]
 
   def dynamicPartitionPruningReuseBroadcastOnly: Boolean =
-    getConf(DYNAMIC_PARTITION_PRUNING_REUSE_BROADCAST_ONLY)
+    getConf(DYNAMIC_PARTITION_PRUNING_REUSE_BROADCAST_ONLY).asInstanceOf[Boolean]
 
-  def stateStoreProviderClass: String = getConf(STATE_STORE_PROVIDER_CLASS)
+  def stateStoreProviderClass: String = getConf(STATE_STORE_PROVIDER_CLASS).asInstanceOf[String]
+ 
+  def isStateSchemaCheckEnabled: Boolean = getConf(STATE_SCHEMA_CHECK_ENABLED).asInstanceOf[Boolean]
 
-  def isStateSchemaCheckEnabled: Boolean = getConf(STATE_SCHEMA_CHECK_ENABLED)
+  def stateStoreMinDeltasForSnapshot: Int = getConf(STATE_STORE_MIN_DELTAS_FOR_SNAPSHOT).asInstanceOf[Int]
 
-  def stateStoreMinDeltasForSnapshot: Int = getConf(STATE_STORE_MIN_DELTAS_FOR_SNAPSHOT)
-
-  def stateStoreFormatValidationEnabled: Boolean = getConf(STATE_STORE_FORMAT_VALIDATION_ENABLED)
+  def stateStoreFormatValidationEnabled: Boolean = getConf(STATE_STORE_FORMAT_VALIDATION_ENABLED).asInstanceOf[Boolean]
 
   def checkpointLocation: Option[String] = getConf(CHECKPOINT_LOCATION)
 
-  def isUnsupportedOperationCheckEnabled: Boolean = getConf(UNSUPPORTED_OPERATION_CHECK_ENABLED)
+  def isUnsupportedOperationCheckEnabled: Boolean = getConf(UNSUPPORTED_OPERATION_CHECK_ENABLED).asInstanceOf[Boolean]
 
-  def useDeprecatedKafkaOffsetFetching: Boolean = getConf(USE_DEPRECATED_KAFKA_OFFSET_FETCHING)
+  def useDeprecatedKafkaOffsetFetching: Boolean = getConf(USE_DEPRECATED_KAFKA_OFFSET_FETCHING).asInstanceOf[Boolean]
 
   def statefulOperatorCorrectnessCheckEnabled: Boolean =
-    getConf(STATEFUL_OPERATOR_CHECK_CORRECTNESS_ENABLED)
+    getConf(STATEFUL_OPERATOR_CHECK_CORRECTNESS_ENABLED).asInstanceOf[Boolean]
 
-  def streamingFileCommitProtocolClass: String = getConf(STREAMING_FILE_COMMIT_PROTOCOL_CLASS)
+  def streamingFileCommitProtocolClass: String = getConf(STREAMING_FILE_COMMIT_PROTOCOL_CLASS).asInstanceOf[String]
 
-  def fileSinkLogDeletion: Boolean = getConf(FILE_SINK_LOG_DELETION)
+  def fileSinkLogDeletion: Boolean = getConf(FILE_SINK_LOG_DELETION).asInstanceOf[Boolean]
 
-  def fileSinkLogCompactInterval: Int = getConf(FILE_SINK_LOG_COMPACT_INTERVAL)
+  def fileSinkLogCompactInterval: Int = getConf(FILE_SINK_LOG_COMPACT_INTERVAL).asInstanceOf[Int]
 
-  def fileSinkLogCleanupDelay: Long = getConf(FILE_SINK_LOG_CLEANUP_DELAY)
+  def fileSinkLogCleanupDelay: Long = getConf(FILE_SINK_LOG_CLEANUP_DELAY).asInstanceOf[Long]
 
-  def fileSourceLogDeletion: Boolean = getConf(FILE_SOURCE_LOG_DELETION)
+  def fileSourceLogDeletion: Boolean = getConf(FILE_SOURCE_LOG_DELETION).asInstanceOf[Boolean]
 
-  def fileSourceLogCompactInterval: Int = getConf(FILE_SOURCE_LOG_COMPACT_INTERVAL)
+  def fileSourceLogCompactInterval: Int = getConf(FILE_SOURCE_LOG_COMPACT_INTERVAL).asInstanceOf[Int]
 
-  def fileSourceLogCleanupDelay: Long = getConf(FILE_SOURCE_LOG_CLEANUP_DELAY)
+  def fileSourceLogCleanupDelay: Long = getConf(FILE_SOURCE_LOG_CLEANUP_DELAY).asInstanceOf[Long]
 
-  def streamingSchemaInference: Boolean = getConf(STREAMING_SCHEMA_INFERENCE)
+  def streamingSchemaInference: Boolean = getConf(STREAMING_SCHEMA_INFERENCE).asInstanceOf[Boolean]
 
-  def streamingPollingDelay: Long = getConf(STREAMING_POLLING_DELAY)
+  def streamingPollingDelay: Long = getConf(STREAMING_POLLING_DELAY).asInstanceOf[Long]
 
   def streamingNoDataProgressEventInterval: Long =
-    getConf(STREAMING_NO_DATA_PROGRESS_EVENT_INTERVAL)
+    getConf(STREAMING_NO_DATA_PROGRESS_EVENT_INTERVAL).asInstanceOf[Long]
 
   def streamingNoDataMicroBatchesEnabled: Boolean =
-    getConf(STREAMING_NO_DATA_MICRO_BATCHES_ENABLED)
+    getConf(STREAMING_NO_DATA_MICRO_BATCHES_ENABLED).asInstanceOf[Boolean]
 
-  def streamingMetricsEnabled: Boolean = getConf(STREAMING_METRICS_ENABLED)
+  def streamingMetricsEnabled: Boolean = getConf(STREAMING_METRICS_ENABLED).asInstanceOf[Boolean]
 
-  def streamingProgressRetention: Int = getConf(STREAMING_PROGRESS_RETENTION)
+  def streamingProgressRetention: Int = getConf(STREAMING_PROGRESS_RETENTION).asInstanceOf[Int]
 
-  def filesMaxPartitionBytes: Long = getConf(FILES_MAX_PARTITION_BYTES)
+  def filesMaxPartitionBytes: Long = getConf(FILES_MAX_PARTITION_BYTES).asInstanceOf[Long]
 
-  def filesOpenCostInBytes: Long = getConf(FILES_OPEN_COST_IN_BYTES)
+  def filesOpenCostInBytes: Long = getConf(FILES_OPEN_COST_IN_BYTES).asInstanceOf[Long]
 
   def filesMinPartitionNum: Option[Int] = getConf(FILES_MIN_PARTITION_NUM)
 
-  def ignoreCorruptFiles: Boolean = getConf(IGNORE_CORRUPT_FILES)
+  def ignoreCorruptFiles: Boolean = getConf(IGNORE_CORRUPT_FILES).asInstanceOf[Boolean]
 
-  def ignoreMissingFiles: Boolean = getConf(IGNORE_MISSING_FILES)
+  def ignoreMissingFiles: Boolean = getConf(IGNORE_MISSING_FILES).asInstanceOf[Boolean]
 
-  def maxRecordsPerFile: Long = getConf(MAX_RECORDS_PER_FILE)
+  def maxRecordsPerFile: Long = getConf(MAX_RECORDS_PER_FILE).asInstanceOf[Long]
 
-  def useCompression: Boolean = getConf(COMPRESS_CACHED)
+  def useCompression: Boolean = getConf(COMPRESS_CACHED).asInstanceOf[Boolean]
 
-  def orcCompressionCodec: String = getConf(ORC_COMPRESSION)
+  def orcCompressionCodec: String = getConf(ORC_COMPRESSION).asInstanceOf[String]
 
-  def orcVectorizedReaderEnabled: Boolean = getConf(ORC_VECTORIZED_READER_ENABLED)
+  def orcVectorizedReaderEnabled: Boolean = getConf(ORC_VECTORIZED_READER_ENABLED).asInstanceOf[Boolean]
 
-  def orcVectorizedReaderBatchSize: Int = getConf(ORC_VECTORIZED_READER_BATCH_SIZE)
+  def orcVectorizedReaderBatchSize: Int = getConf(ORC_VECTORIZED_READER_BATCH_SIZE).asInstanceOf[Int]
 
-  def parquetCompressionCodec: String = getConf(PARQUET_COMPRESSION)
+  def parquetCompressionCodec: String = getConf(PARQUET_COMPRESSION).asInstanceOf[String]
 
-  def parquetVectorizedReaderEnabled: Boolean = getConf(PARQUET_VECTORIZED_READER_ENABLED)
+  def parquetVectorizedReaderEnabled: Boolean = getConf(PARQUET_VECTORIZED_READER_ENABLED).asInstanceOf[Boolean]
 
-  def parquetVectorizedReaderBatchSize: Int = getConf(PARQUET_VECTORIZED_READER_BATCH_SIZE)
+  def parquetVectorizedReaderBatchSize: Int = getConf(PARQUET_VECTORIZED_READER_BATCH_SIZE).asInstanceOf[Int]
 
-  def columnBatchSize: Int = getConf(COLUMN_BATCH_SIZE)
+  def columnBatchSize: Int = getConf(COLUMN_BATCH_SIZE).asInstanceOf[Int]
 
-  def cacheVectorizedReaderEnabled: Boolean = getConf(CACHE_VECTORIZED_READER_ENABLED)
+  def cacheVectorizedReaderEnabled: Boolean = getConf(CACHE_VECTORIZED_READER_ENABLED).asInstanceOf[Boolean]
 
-  def defaultNumShufflePartitions: Int = getConf(SHUFFLE_PARTITIONS)
+  def defaultNumShufflePartitions: Int = getConf(SHUFFLE_PARTITIONS).asInstanceOf[Int]
 
   def numShufflePartitions: Int = {
     if (adaptiveExecutionEnabled && coalesceShufflePartitionsEnabled) {
@@ -3243,120 +3204,120 @@ class SQLConf extends Serializable {
     }
   }
 
-  def adaptiveExecutionEnabled: Boolean = getConf(ADAPTIVE_EXECUTION_ENABLED)
+  def adaptiveExecutionEnabled: Boolean = getConf(ADAPTIVE_EXECUTION_ENABLED).asInstanceOf[Boolean]
 
-  def adaptiveExecutionLogLevel: String = getConf(ADAPTIVE_EXECUTION_LOG_LEVEL)
+  def adaptiveExecutionLogLevel: String = getConf(ADAPTIVE_EXECUTION_LOG_LEVEL).asInstanceOf[String]
 
-  def fetchShuffleBlocksInBatch: Boolean = getConf(FETCH_SHUFFLE_BLOCKS_IN_BATCH)
+  def fetchShuffleBlocksInBatch: Boolean = getConf(FETCH_SHUFFLE_BLOCKS_IN_BATCH).asInstanceOf[Boolean]
 
   def nonEmptyPartitionRatioForBroadcastJoin: Double =
-    getConf(NON_EMPTY_PARTITION_RATIO_FOR_BROADCAST_JOIN)
+    getConf(NON_EMPTY_PARTITION_RATIO_FOR_BROADCAST_JOIN).asInstanceOf[Double]
 
-  def coalesceShufflePartitionsEnabled: Boolean = getConf(COALESCE_PARTITIONS_ENABLED)
+  def coalesceShufflePartitionsEnabled: Boolean = getConf(COALESCE_PARTITIONS_ENABLED).asInstanceOf[Boolean]
 
-  def minBatchesToRetain: Int = getConf(MIN_BATCHES_TO_RETAIN)
+  def minBatchesToRetain: Int = getConf(MIN_BATCHES_TO_RETAIN).asInstanceOf[Int]
 
-  def maxBatchesToRetainInMemory: Int = getConf(MAX_BATCHES_TO_RETAIN_IN_MEMORY)
+  def maxBatchesToRetainInMemory: Int = getConf(MAX_BATCHES_TO_RETAIN_IN_MEMORY).asInstanceOf[Int]
 
-  def streamingMaintenanceInterval: Long = getConf(STREAMING_MAINTENANCE_INTERVAL)
+  def streamingMaintenanceInterval: Long = getConf(STREAMING_MAINTENANCE_INTERVAL).asInstanceOf[Long]
 
-  def stateStoreCompressionCodec: String = getConf(STATE_STORE_COMPRESSION_CODEC)
+  def stateStoreCompressionCodec: String = getConf(STATE_STORE_COMPRESSION_CODEC).asInstanceOf[String]
 
-  def parquetFilterPushDown: Boolean = getConf(PARQUET_FILTER_PUSHDOWN_ENABLED)
+  def parquetFilterPushDown: Boolean = getConf(PARQUET_FILTER_PUSHDOWN_ENABLED).asInstanceOf[Boolean]
 
-  def parquetFilterPushDownDate: Boolean = getConf(PARQUET_FILTER_PUSHDOWN_DATE_ENABLED)
+  def parquetFilterPushDownDate: Boolean = getConf(PARQUET_FILTER_PUSHDOWN_DATE_ENABLED).asInstanceOf[Boolean]
 
-  def parquetFilterPushDownTimestamp: Boolean = getConf(PARQUET_FILTER_PUSHDOWN_TIMESTAMP_ENABLED)
+  def parquetFilterPushDownTimestamp: Boolean = getConf(PARQUET_FILTER_PUSHDOWN_TIMESTAMP_ENABLED).asInstanceOf[Boolean]
 
-  def parquetFilterPushDownDecimal: Boolean = getConf(PARQUET_FILTER_PUSHDOWN_DECIMAL_ENABLED)
+  def parquetFilterPushDownDecimal: Boolean = getConf(PARQUET_FILTER_PUSHDOWN_DECIMAL_ENABLED).asInstanceOf[Boolean]
 
   def parquetFilterPushDownStringStartWith: Boolean =
-    getConf(PARQUET_FILTER_PUSHDOWN_STRING_STARTSWITH_ENABLED)
+    getConf(PARQUET_FILTER_PUSHDOWN_STRING_STARTSWITH_ENABLED).asInstanceOf[Boolean]
 
   def parquetFilterPushDownInFilterThreshold: Int =
-    getConf(PARQUET_FILTER_PUSHDOWN_INFILTERTHRESHOLD)
+    getConf(PARQUET_FILTER_PUSHDOWN_INFILTERTHRESHOLD).asInstanceOf[Int]
 
-  def orcFilterPushDown: Boolean = getConf(ORC_FILTER_PUSHDOWN_ENABLED)
+  def orcFilterPushDown: Boolean = getConf(ORC_FILTER_PUSHDOWN_ENABLED).asInstanceOf[Boolean]
 
-  def isOrcSchemaMergingEnabled: Boolean = getConf(ORC_SCHEMA_MERGING_ENABLED)
+  def isOrcSchemaMergingEnabled: Boolean = getConf(ORC_SCHEMA_MERGING_ENABLED).asInstanceOf[Boolean]
 
-  def verifyPartitionPath: Boolean = getConf(HIVE_VERIFY_PARTITION_PATH)
+  def verifyPartitionPath: Boolean = getConf(HIVE_VERIFY_PARTITION_PATH).asInstanceOf[Boolean]
 
-  def metastorePartitionPruning: Boolean = getConf(HIVE_METASTORE_PARTITION_PRUNING)
+  def metastorePartitionPruning: Boolean = getConf(HIVE_METASTORE_PARTITION_PRUNING).asInstanceOf[Boolean]
 
   def metastorePartitionPruningInSetThreshold: Int =
-    getConf(HIVE_METASTORE_PARTITION_PRUNING_INSET_THRESHOLD)
+    getConf(HIVE_METASTORE_PARTITION_PRUNING_INSET_THRESHOLD).asInstanceOf[Int]
 
-  def manageFilesourcePartitions: Boolean = getConf(HIVE_MANAGE_FILESOURCE_PARTITIONS)
+  def manageFilesourcePartitions: Boolean = getConf(HIVE_MANAGE_FILESOURCE_PARTITIONS).asInstanceOf[Boolean]
 
-  def filesourcePartitionFileCacheSize: Long = getConf(HIVE_FILESOURCE_PARTITION_FILE_CACHE_SIZE)
+  def filesourcePartitionFileCacheSize: Long = getConf(HIVE_FILESOURCE_PARTITION_FILE_CACHE_SIZE).asInstanceOf[Long]
 
   def caseSensitiveInferenceMode: HiveCaseSensitiveInferenceMode.Value =
-    HiveCaseSensitiveInferenceMode.withName(getConf(HIVE_CASE_SENSITIVE_INFERENCE))
+    HiveCaseSensitiveInferenceMode.withName(getConf(HIVE_CASE_SENSITIVE_INFERENCE).asInstanceOf[String])
 
-  def gatherFastStats: Boolean = getConf(GATHER_FASTSTAT)
+  def gatherFastStats: Boolean = getConf(GATHER_FASTSTAT).asInstanceOf[Boolean]
 
-  def optimizerMetadataOnly: Boolean = getConf(OPTIMIZER_METADATA_ONLY)
+  def optimizerMetadataOnly: Boolean = getConf(OPTIMIZER_METADATA_ONLY).asInstanceOf[Boolean]
 
-  def wholeStageEnabled: Boolean = getConf(WHOLESTAGE_CODEGEN_ENABLED)
+  def wholeStageEnabled: Boolean = getConf(WHOLESTAGE_CODEGEN_ENABLED).asInstanceOf[Boolean]
 
-  def wholeStageUseIdInClassName: Boolean = getConf(WHOLESTAGE_CODEGEN_USE_ID_IN_CLASS_NAME)
+  def wholeStageUseIdInClassName: Boolean = getConf(WHOLESTAGE_CODEGEN_USE_ID_IN_CLASS_NAME).asInstanceOf[Boolean]
 
-  def wholeStageMaxNumFields: Int = getConf(WHOLESTAGE_MAX_NUM_FIELDS)
+  def wholeStageMaxNumFields: Int = getConf(WHOLESTAGE_MAX_NUM_FIELDS).asInstanceOf[Int]
 
-  def codegenFallback: Boolean = getConf(CODEGEN_FALLBACK)
+  def codegenFallback: Boolean = getConf(CODEGEN_FALLBACK).asInstanceOf[Boolean]
 
-  def codegenComments: Boolean = getConf(StaticSQLConf.CODEGEN_COMMENTS)
+  def codegenComments: Boolean = getConf(StaticSQLConf.CODEGEN_COMMENTS).asInstanceOf[Boolean]
 
-  def loggingMaxLinesForCodegen: Int = getConf(CODEGEN_LOGGING_MAX_LINES)
+  def loggingMaxLinesForCodegen: Int = getConf(CODEGEN_LOGGING_MAX_LINES).asInstanceOf[Int]
 
-  def hugeMethodLimit: Int = getConf(WHOLESTAGE_HUGE_METHOD_LIMIT)
+  def hugeMethodLimit: Int = getConf(WHOLESTAGE_HUGE_METHOD_LIMIT).asInstanceOf[Int]
 
-  def methodSplitThreshold: Int = getConf(CODEGEN_METHOD_SPLIT_THRESHOLD)
+  def methodSplitThreshold: Int = getConf(CODEGEN_METHOD_SPLIT_THRESHOLD).asInstanceOf[Int]
 
   def wholeStageSplitConsumeFuncByOperator: Boolean =
-    getConf(WHOLESTAGE_SPLIT_CONSUME_FUNC_BY_OPERATOR)
+    getConf(WHOLESTAGE_SPLIT_CONSUME_FUNC_BY_OPERATOR).asInstanceOf[Boolean]
 
   def tableRelationCacheSize: Int =
-    getConf(StaticSQLConf.FILESOURCE_TABLE_RELATION_CACHE_SIZE)
+    getConf(StaticSQLConf.FILESOURCE_TABLE_RELATION_CACHE_SIZE).asInstanceOf[Int]
 
-  def codegenCacheMaxEntries: Int = getConf(StaticSQLConf.CODEGEN_CACHE_MAX_ENTRIES)
+  def codegenCacheMaxEntries: Int = getConf(StaticSQLConf.CODEGEN_CACHE_MAX_ENTRIES).asInstanceOf[Int]
 
-  def exchangeReuseEnabled: Boolean = getConf(EXCHANGE_REUSE_ENABLED)
+  def exchangeReuseEnabled: Boolean = getConf(EXCHANGE_REUSE_ENABLED).asInstanceOf[Boolean]
 
-  def subqueryReuseEnabled: Boolean = getConf(SUBQUERY_REUSE_ENABLED)
+  def subqueryReuseEnabled: Boolean = getConf(SUBQUERY_REUSE_ENABLED).asInstanceOf[Boolean]
 
-  def caseSensitiveAnalysis: Boolean = getConf(SQLConf.CASE_SENSITIVE)
+  def caseSensitiveAnalysis: Boolean = getConf(SQLConf.CASE_SENSITIVE).asInstanceOf[Boolean]
 
-  def constraintPropagationEnabled: Boolean = getConf(CONSTRAINT_PROPAGATION_ENABLED)
+  def constraintPropagationEnabled: Boolean = getConf(CONSTRAINT_PROPAGATION_ENABLED).asInstanceOf[Boolean]
 
-  def escapedStringLiterals: Boolean = getConf(ESCAPED_STRING_LITERALS)
+  def escapedStringLiterals: Boolean = getConf(ESCAPED_STRING_LITERALS).asInstanceOf[Boolean]
 
-  def fileCompressionFactor: Double = getConf(FILE_COMPRESSION_FACTOR)
+  def fileCompressionFactor: Double = getConf(FILE_COMPRESSION_FACTOR).asInstanceOf[Double]
 
   def stringRedactionPattern: Option[Regex] = getConf(SQL_STRING_REDACTION_PATTERN)
 
-  def sortBeforeRepartition: Boolean = getConf(SORT_BEFORE_REPARTITION)
+  def sortBeforeRepartition: Boolean = getConf(SORT_BEFORE_REPARTITION).asInstanceOf[Boolean]
 
-  def topKSortFallbackThreshold: Int = getConf(TOP_K_SORT_FALLBACK_THRESHOLD)
+  def topKSortFallbackThreshold: Int = getConf(TOP_K_SORT_FALLBACK_THRESHOLD).asInstanceOf[Int]
 
-  def fastHashAggregateRowMaxCapacityBit: Int = getConf(FAST_HASH_AGGREGATE_MAX_ROWS_CAPACITY_BIT)
+  def fastHashAggregateRowMaxCapacityBit: Int = getConf(FAST_HASH_AGGREGATE_MAX_ROWS_CAPACITY_BIT).asInstanceOf[Int]
 
-  def datetimeJava8ApiEnabled: Boolean = getConf(DATETIME_JAVA8API_ENABLED)
+  def datetimeJava8ApiEnabled: Boolean = getConf(DATETIME_JAVA8API_ENABLED).asInstanceOf[Boolean]
 
-  def uiExplainMode: String = getConf(UI_EXPLAIN_MODE)
+  def uiExplainMode: String = getConf(UI_EXPLAIN_MODE).asInstanceOf[String]
 
-  def addSingleFileInAddFile: Boolean = getConf(LEGACY_ADD_SINGLE_FILE_IN_ADD_FILE)
+  def addSingleFileInAddFile: Boolean = getConf(LEGACY_ADD_SINGLE_FILE_IN_ADD_FILE).asInstanceOf[Boolean]
 
   def legacyMsSqlServerNumericMappingEnabled: Boolean =
-    getConf(LEGACY_MSSQLSERVER_NUMERIC_MAPPING_ENABLED)
+    getConf(LEGACY_MSSQLSERVER_NUMERIC_MAPPING_ENABLED).asInstanceOf[Boolean]
 
   def legacyTimeParserPolicy: LegacyBehaviorPolicy.Value = {
-    LegacyBehaviorPolicy.withName(getConf(SQLConf.LEGACY_TIME_PARSER_POLICY))
+    LegacyBehaviorPolicy.withName(getConf(SQLConf.LEGACY_TIME_PARSER_POLICY).asInstanceOf[String])
   }
 
   def broadcastHashJoinOutputPartitioningExpandLimit: Int =
-    getConf(BROADCAST_HASH_JOIN_OUTPUT_PARTITIONING_EXPAND_LIMIT)
+    getConf(BROADCAST_HASH_JOIN_OUTPUT_PARTITIONING_EXPAND_LIMIT).asInstanceOf[Int]
 
   /**
    * Returns the [[Resolver]] for the current configuration, which can be used to determine if two
@@ -3376,308 +3337,308 @@ class SQLConf extends Serializable {
   def hintErrorHandler: HintErrorHandler = null
 
   def subexpressionEliminationEnabled: Boolean =
-    getConf(SUBEXPRESSION_ELIMINATION_ENABLED)
+    getConf(SUBEXPRESSION_ELIMINATION_ENABLED).asInstanceOf[Boolean]
 
   def subexpressionEliminationCacheMaxEntries: Int =
-    getConf(SUBEXPRESSION_ELIMINATION_CACHE_MAX_ENTRIES)
+    getConf(SUBEXPRESSION_ELIMINATION_CACHE_MAX_ENTRIES).asInstanceOf[Int]
 
-  def autoBroadcastJoinThreshold: Long = getConf(AUTO_BROADCASTJOIN_THRESHOLD)
+  def autoBroadcastJoinThreshold: Long = getConf(AUTO_BROADCASTJOIN_THRESHOLD).asInstanceOf[Long]
 
-  def limitScaleUpFactor: Int = getConf(LIMIT_SCALE_UP_FACTOR)
+  def limitScaleUpFactor: Int = getConf(LIMIT_SCALE_UP_FACTOR).asInstanceOf[Int]
 
   def advancedPartitionPredicatePushdownEnabled: Boolean =
-    getConf(ADVANCED_PARTITION_PREDICATE_PUSHDOWN)
+    getConf(ADVANCED_PARTITION_PREDICATE_PUSHDOWN).asInstanceOf[Boolean]
 
-  def preferSortMergeJoin: Boolean = getConf(PREFER_SORTMERGEJOIN)
+  def preferSortMergeJoin: Boolean = getConf(PREFER_SORTMERGEJOIN).asInstanceOf[Boolean]
 
-  def enableRadixSort: Boolean = getConf(RADIX_SORT_ENABLED)
+  def enableRadixSort: Boolean = getConf(RADIX_SORT_ENABLED).asInstanceOf[Boolean]
 
-  def isParquetSchemaMergingEnabled: Boolean = getConf(PARQUET_SCHEMA_MERGING_ENABLED)
+  def isParquetSchemaMergingEnabled: Boolean = getConf(PARQUET_SCHEMA_MERGING_ENABLED).asInstanceOf[Boolean]
 
-  def isParquetSchemaRespectSummaries: Boolean = getConf(PARQUET_SCHEMA_RESPECT_SUMMARIES)
+  def isParquetSchemaRespectSummaries: Boolean = getConf(PARQUET_SCHEMA_RESPECT_SUMMARIES).asInstanceOf[Boolean]
 
-  def parquetOutputCommitterClass: String = getConf(PARQUET_OUTPUT_COMMITTER_CLASS)
+  def parquetOutputCommitterClass: String = getConf(PARQUET_OUTPUT_COMMITTER_CLASS).asInstanceOf[String]
 
-  def isParquetBinaryAsString: Boolean = getConf(PARQUET_BINARY_AS_STRING)
+  def isParquetBinaryAsString: Boolean = getConf(PARQUET_BINARY_AS_STRING).asInstanceOf[Boolean]
 
-  def isParquetINT96AsTimestamp: Boolean = getConf(PARQUET_INT96_AS_TIMESTAMP)
+  def isParquetINT96AsTimestamp: Boolean = getConf(PARQUET_INT96_AS_TIMESTAMP).asInstanceOf[Boolean]
 
-  def isParquetINT96TimestampConversion: Boolean = getConf(PARQUET_INT96_TIMESTAMP_CONVERSION)
+  def isParquetINT96TimestampConversion: Boolean = getConf(PARQUET_INT96_TIMESTAMP_CONVERSION).asInstanceOf[Boolean]
 
   def parquetOutputTimestampType: ParquetOutputTimestampType.Value = {
-    ParquetOutputTimestampType.withName(getConf(PARQUET_OUTPUT_TIMESTAMP_TYPE))
+    ParquetOutputTimestampType.withName(getConf(PARQUET_OUTPUT_TIMESTAMP_TYPE).asInstanceOf[String])
   }
 
-  def writeLegacyParquetFormat: Boolean = getConf(PARQUET_WRITE_LEGACY_FORMAT)
+  def writeLegacyParquetFormat: Boolean = getConf(PARQUET_WRITE_LEGACY_FORMAT).asInstanceOf[Boolean]
 
-  def parquetRecordFilterEnabled: Boolean = getConf(PARQUET_RECORD_FILTER_ENABLED)
+  def parquetRecordFilterEnabled: Boolean = getConf(PARQUET_RECORD_FILTER_ENABLED).asInstanceOf[Boolean]
 
-  def inMemoryPartitionPruning: Boolean = getConf(IN_MEMORY_PARTITION_PRUNING)
+  def inMemoryPartitionPruning: Boolean = getConf(IN_MEMORY_PARTITION_PRUNING).asInstanceOf[Boolean]
 
-  def inMemoryTableScanStatisticsEnabled: Boolean = getConf(IN_MEMORY_TABLE_SCAN_STATISTICS_ENABLED)
+  def inMemoryTableScanStatisticsEnabled: Boolean = getConf(IN_MEMORY_TABLE_SCAN_STATISTICS_ENABLED).asInstanceOf[Boolean]
 
-  def offHeapColumnVectorEnabled: Boolean = getConf(COLUMN_VECTOR_OFFHEAP_ENABLED)
+  def offHeapColumnVectorEnabled: Boolean = getConf(COLUMN_VECTOR_OFFHEAP_ENABLED).asInstanceOf[Boolean]
 
-  def columnNameOfCorruptRecord: String = getConf(COLUMN_NAME_OF_CORRUPT_RECORD)
+  def columnNameOfCorruptRecord: String = getConf(COLUMN_NAME_OF_CORRUPT_RECORD).asInstanceOf[String]
 
   def broadcastTimeout: Long = {
-    val timeoutValue = getConf(BROADCAST_TIMEOUT)
+    val timeoutValue = getConf(BROADCAST_TIMEOUT).asInstanceOf[Long]
     if (timeoutValue < 0) Long.MaxValue else timeoutValue
   }
 
-  def defaultDataSourceName: String = getConf(DEFAULT_DATA_SOURCE_NAME)
+  def defaultDataSourceName: String = getConf(DEFAULT_DATA_SOURCE_NAME).asInstanceOf[String]
 
-  def convertCTAS: Boolean = getConf(CONVERT_CTAS)
+  def convertCTAS: Boolean = getConf(CONVERT_CTAS).asInstanceOf[Boolean]
 
   def partitionColumnTypeInferenceEnabled: Boolean =
-    getConf(SQLConf.PARTITION_COLUMN_TYPE_INFERENCE)
+    getConf(SQLConf.PARTITION_COLUMN_TYPE_INFERENCE).asInstanceOf[Boolean]
 
-  def fileCommitProtocolClass: String = getConf(SQLConf.FILE_COMMIT_PROTOCOL_CLASS)
+  def fileCommitProtocolClass: String = getConf(SQLConf.FILE_COMMIT_PROTOCOL_CLASS).asInstanceOf[String]
 
   def parallelPartitionDiscoveryThreshold: Int =
-    getConf(SQLConf.PARALLEL_PARTITION_DISCOVERY_THRESHOLD)
+    getConf(SQLConf.PARALLEL_PARTITION_DISCOVERY_THRESHOLD).asInstanceOf[Int]
 
   def parallelPartitionDiscoveryParallelism: Int =
-    getConf(SQLConf.PARALLEL_PARTITION_DISCOVERY_PARALLELISM)
+    getConf(SQLConf.PARALLEL_PARTITION_DISCOVERY_PARALLELISM).asInstanceOf[Int]
 
-  def bucketingEnabled: Boolean = getConf(SQLConf.BUCKETING_ENABLED)
+  def bucketingEnabled: Boolean = getConf(SQLConf.BUCKETING_ENABLED).asInstanceOf[Boolean]
 
-  def bucketingMaxBuckets: Int = getConf(SQLConf.BUCKETING_MAX_BUCKETS)
+  def bucketingMaxBuckets: Int = getConf(SQLConf.BUCKETING_MAX_BUCKETS).asInstanceOf[Int]
 
-  def autoBucketedScanEnabled: Boolean = getConf(SQLConf.AUTO_BUCKETED_SCAN_ENABLED)
+  def autoBucketedScanEnabled: Boolean = getConf(SQLConf.AUTO_BUCKETED_SCAN_ENABLED).asInstanceOf[Boolean]
 
   def dataFrameSelfJoinAutoResolveAmbiguity: Boolean =
-    getConf(DATAFRAME_SELF_JOIN_AUTO_RESOLVE_AMBIGUITY)
+    getConf(DATAFRAME_SELF_JOIN_AUTO_RESOLVE_AMBIGUITY).asInstanceOf[Boolean]
 
-  def dataFrameRetainGroupColumns: Boolean = getConf(DATAFRAME_RETAIN_GROUP_COLUMNS)
+  def dataFrameRetainGroupColumns: Boolean = getConf(DATAFRAME_RETAIN_GROUP_COLUMNS).asInstanceOf[Boolean]
 
-  def dataFramePivotMaxValues: Int = getConf(DATAFRAME_PIVOT_MAX_VALUES)
+  def dataFramePivotMaxValues: Int = getConf(DATAFRAME_PIVOT_MAX_VALUES).asInstanceOf[Int]
 
-  def runSQLonFile: Boolean = getConf(RUN_SQL_ON_FILES)
+  def runSQLonFile: Boolean = getConf(RUN_SQL_ON_FILES).asInstanceOf[Boolean]
 
-  def enableTwoLevelAggMap: Boolean = getConf(ENABLE_TWOLEVEL_AGG_MAP)
+  def enableTwoLevelAggMap: Boolean = getConf(ENABLE_TWOLEVEL_AGG_MAP).asInstanceOf[Boolean]
 
-  def enableVectorizedHashMap: Boolean = getConf(ENABLE_VECTORIZED_HASH_MAP)
+  def enableVectorizedHashMap: Boolean = getConf(ENABLE_VECTORIZED_HASH_MAP).asInstanceOf[Boolean]
 
-  def useObjectHashAggregation: Boolean = getConf(USE_OBJECT_HASH_AGG)
+  def useObjectHashAggregation: Boolean = getConf(USE_OBJECT_HASH_AGG).asInstanceOf[Boolean]
 
-  def objectAggSortBasedFallbackThreshold: Int = getConf(OBJECT_AGG_SORT_BASED_FALLBACK_THRESHOLD)
+  def objectAggSortBasedFallbackThreshold: Int = getConf(OBJECT_AGG_SORT_BASED_FALLBACK_THRESHOLD).asInstanceOf[Int]
 
-  def variableSubstituteEnabled: Boolean = getConf(VARIABLE_SUBSTITUTE_ENABLED)
+  def variableSubstituteEnabled: Boolean = getConf(VARIABLE_SUBSTITUTE_ENABLED).asInstanceOf[Boolean]
 
   def warehousePath: String = new Path(getConf(StaticSQLConf.WAREHOUSE_PATH)).toString
 
   def hiveThriftServerSingleSession: Boolean =
-    getConf(StaticSQLConf.HIVE_THRIFT_SERVER_SINGLESESSION)
+    getConf(StaticSQLConf.HIVE_THRIFT_SERVER_SINGLESESSION).asInstanceOf[Boolean]
 
-  def orderByOrdinal: Boolean = getConf(ORDER_BY_ORDINAL)
+  def orderByOrdinal: Boolean = getConf(ORDER_BY_ORDINAL).asInstanceOf[Boolean]
 
-  def groupByOrdinal: Boolean = getConf(GROUP_BY_ORDINAL)
+  def groupByOrdinal: Boolean = getConf(GROUP_BY_ORDINAL).asInstanceOf[Boolean]
 
-  def groupByAliases: Boolean = getConf(GROUP_BY_ALIASES)
+  def groupByAliases: Boolean = getConf(GROUP_BY_ALIASES).asInstanceOf[Boolean]
 
-  def crossJoinEnabled: Boolean = getConf(SQLConf.CROSS_JOINS_ENABLED)
+  def crossJoinEnabled: Boolean = getConf(SQLConf.CROSS_JOINS_ENABLED).asInstanceOf[Boolean]
 
-  def sessionLocalTimeZone: String = getConf(SQLConf.SESSION_LOCAL_TIMEZONE)
+  def sessionLocalTimeZone: String = getConf(SQLConf.SESSION_LOCAL_TIMEZONE).asInstanceOf[String]
 
-  def jsonGeneratorIgnoreNullFields: Boolean = getConf(SQLConf.JSON_GENERATOR_IGNORE_NULL_FIELDS)
+  def jsonGeneratorIgnoreNullFields: Boolean = getConf(SQLConf.JSON_GENERATOR_IGNORE_NULL_FIELDS).asInstanceOf[Boolean]
 
-  def jsonExpressionOptimization: Boolean = getConf(SQLConf.JSON_EXPRESSION_OPTIMIZATION)
+  def jsonExpressionOptimization: Boolean = getConf(SQLConf.JSON_EXPRESSION_OPTIMIZATION).asInstanceOf[Boolean]
 
   def parallelFileListingInStatsComputation: Boolean =
-    getConf(SQLConf.PARALLEL_FILE_LISTING_IN_STATS_COMPUTATION)
+    getConf(SQLConf.PARALLEL_FILE_LISTING_IN_STATS_COMPUTATION).asInstanceOf[Boolean]
 
-  def fallBackToHdfsForStatsEnabled: Boolean = getConf(ENABLE_FALL_BACK_TO_HDFS_FOR_STATS)
+  def fallBackToHdfsForStatsEnabled: Boolean = getConf(ENABLE_FALL_BACK_TO_HDFS_FOR_STATS).asInstanceOf[Boolean]
 
-  def defaultSizeInBytes: Long = getConf(DEFAULT_SIZE_IN_BYTES)
+  def defaultSizeInBytes: Long = getConf(DEFAULT_SIZE_IN_BYTES).asInstanceOf[Long]
 
-  def ndvMaxError: Double = getConf(NDV_MAX_ERROR)
+  def ndvMaxError: Double = getConf(NDV_MAX_ERROR).asInstanceOf[Double]
 
-  def histogramEnabled: Boolean = getConf(HISTOGRAM_ENABLED)
+  def histogramEnabled: Boolean = getConf(HISTOGRAM_ENABLED).asInstanceOf[Boolean]
 
-  def histogramNumBins: Int = getConf(HISTOGRAM_NUM_BINS)
+  def histogramNumBins: Int = getConf(HISTOGRAM_NUM_BINS).asInstanceOf[Int]
 
-  def percentileAccuracy: Int = getConf(PERCENTILE_ACCURACY)
+  def percentileAccuracy: Int = getConf(PERCENTILE_ACCURACY).asInstanceOf[Int]
 
-  def cboEnabled: Boolean = getConf(SQLConf.CBO_ENABLED)
+  def cboEnabled: Boolean = getConf(SQLConf.CBO_ENABLED).asInstanceOf[Boolean]
 
-  def planStatsEnabled: Boolean = getConf(SQLConf.PLAN_STATS_ENABLED)
+  def planStatsEnabled: Boolean = getConf(SQLConf.PLAN_STATS_ENABLED).asInstanceOf[Boolean]
 
-  def autoSizeUpdateEnabled: Boolean = getConf(SQLConf.AUTO_SIZE_UPDATE_ENABLED)
+  def autoSizeUpdateEnabled: Boolean = getConf(SQLConf.AUTO_SIZE_UPDATE_ENABLED).asInstanceOf[Boolean]
 
-  def joinReorderEnabled: Boolean = getConf(SQLConf.JOIN_REORDER_ENABLED)
+  def joinReorderEnabled: Boolean = getConf(SQLConf.JOIN_REORDER_ENABLED).asInstanceOf[Boolean]
 
-  def joinReorderDPThreshold: Int = getConf(SQLConf.JOIN_REORDER_DP_THRESHOLD)
+  def joinReorderDPThreshold: Int = getConf(SQLConf.JOIN_REORDER_DP_THRESHOLD).asInstanceOf[Int]
 
-  def joinReorderCardWeight: Double = getConf(SQLConf.JOIN_REORDER_CARD_WEIGHT)
+  def joinReorderCardWeight: Double = getConf(SQLConf.JOIN_REORDER_CARD_WEIGHT).asInstanceOf[Double]
 
-  def joinReorderDPStarFilter: Boolean = getConf(SQLConf.JOIN_REORDER_DP_STAR_FILTER)
+  def joinReorderDPStarFilter: Boolean = getConf(SQLConf.JOIN_REORDER_DP_STAR_FILTER).asInstanceOf[Boolean]
 
-  def windowExecBufferInMemoryThreshold: Int = getConf(WINDOW_EXEC_BUFFER_IN_MEMORY_THRESHOLD)
+  def windowExecBufferInMemoryThreshold: Int = getConf(WINDOW_EXEC_BUFFER_IN_MEMORY_THRESHOLD).asInstanceOf[Int]
 
-  def windowExecBufferSpillThreshold: Int = getConf(WINDOW_EXEC_BUFFER_SPILL_THRESHOLD)
+  def windowExecBufferSpillThreshold: Int = getConf(WINDOW_EXEC_BUFFER_SPILL_THRESHOLD).asInstanceOf[Int]
 
   def sortMergeJoinExecBufferInMemoryThreshold: Int =
-    getConf(SORT_MERGE_JOIN_EXEC_BUFFER_IN_MEMORY_THRESHOLD)
+    getConf(SORT_MERGE_JOIN_EXEC_BUFFER_IN_MEMORY_THRESHOLD).asInstanceOf[Int]
 
   def sortMergeJoinExecBufferSpillThreshold: Int =
-    getConf(SORT_MERGE_JOIN_EXEC_BUFFER_SPILL_THRESHOLD)
+    getConf(SORT_MERGE_JOIN_EXEC_BUFFER_SPILL_THRESHOLD).asInstanceOf[Int]
 
   def cartesianProductExecBufferInMemoryThreshold: Int =
-    getConf(CARTESIAN_PRODUCT_EXEC_BUFFER_IN_MEMORY_THRESHOLD)
+    getConf(CARTESIAN_PRODUCT_EXEC_BUFFER_IN_MEMORY_THRESHOLD).asInstanceOf[Int]
 
   def cartesianProductExecBufferSpillThreshold: Int =
-    getConf(CARTESIAN_PRODUCT_EXEC_BUFFER_SPILL_THRESHOLD)
+    getConf(CARTESIAN_PRODUCT_EXEC_BUFFER_SPILL_THRESHOLD).asInstanceOf[Int]
 
-  def codegenSplitAggregateFunc: Boolean = getConf(SQLConf.CODEGEN_SPLIT_AGGREGATE_FUNC)
+  def codegenSplitAggregateFunc: Boolean = getConf(SQLConf.CODEGEN_SPLIT_AGGREGATE_FUNC).asInstanceOf[Boolean]
 
-  def maxNestedViewDepth: Int = getConf(SQLConf.MAX_NESTED_VIEW_DEPTH)
+  def maxNestedViewDepth: Int = getConf(SQLConf.MAX_NESTED_VIEW_DEPTH).asInstanceOf[Int]
 
-  def useCurrentSQLConfigsForView: Boolean = getConf(SQLConf.USE_CURRENT_SQL_CONFIGS_FOR_VIEW)
+  def useCurrentSQLConfigsForView: Boolean = getConf(SQLConf.USE_CURRENT_SQL_CONFIGS_FOR_VIEW).asInstanceOf[Boolean]
 
-  def storeAnalyzedPlanForView: Boolean = getConf(SQLConf.STORE_ANALYZED_PLAN_FOR_VIEW)
+  def storeAnalyzedPlanForView: Boolean = getConf(SQLConf.STORE_ANALYZED_PLAN_FOR_VIEW).asInstanceOf[Boolean]
 
-  def starSchemaDetection: Boolean = getConf(STARSCHEMA_DETECTION)
+  def starSchemaDetection: Boolean = getConf(STARSCHEMA_DETECTION).asInstanceOf[Boolean]
 
-  def starSchemaFTRatio: Double = getConf(STARSCHEMA_FACT_TABLE_RATIO)
+  def starSchemaFTRatio: Double = getConf(STARSCHEMA_FACT_TABLE_RATIO).asInstanceOf[Double]
 
-  def supportQuotedRegexColumnName: Boolean = getConf(SUPPORT_QUOTED_REGEX_COLUMN_NAME)
+  def supportQuotedRegexColumnName: Boolean = getConf(SUPPORT_QUOTED_REGEX_COLUMN_NAME).asInstanceOf[Boolean]
 
-  def rangeExchangeSampleSizePerPartition: Int = getConf(RANGE_EXCHANGE_SAMPLE_SIZE_PER_PARTITION)
+  def rangeExchangeSampleSizePerPartition: Int = getConf(RANGE_EXCHANGE_SAMPLE_SIZE_PER_PARTITION).asInstanceOf[Int]
 
-  def arrowPySparkEnabled: Boolean = getConf(ARROW_PYSPARK_EXECUTION_ENABLED)
+  def arrowPySparkEnabled: Boolean = getConf(ARROW_PYSPARK_EXECUTION_ENABLED).asInstanceOf[Boolean]
 
-  def pysparkJVMStacktraceEnabled: Boolean = getConf(PYSPARK_JVM_STACKTRACE_ENABLED)
+  def pysparkJVMStacktraceEnabled: Boolean = getConf(PYSPARK_JVM_STACKTRACE_ENABLED).asInstanceOf[Boolean]
 
-  def arrowSparkREnabled: Boolean = getConf(ARROW_SPARKR_EXECUTION_ENABLED)
+  def arrowSparkREnabled: Boolean = getConf(ARROW_SPARKR_EXECUTION_ENABLED).asInstanceOf[Boolean]
 
-  def arrowPySparkFallbackEnabled: Boolean = getConf(ARROW_PYSPARK_FALLBACK_ENABLED)
+  def arrowPySparkFallbackEnabled: Boolean = getConf(ARROW_PYSPARK_FALLBACK_ENABLED).asInstanceOf[Boolean]
 
-  def arrowMaxRecordsPerBatch: Int = getConf(ARROW_EXECUTION_MAX_RECORDS_PER_BATCH)
+  def arrowMaxRecordsPerBatch: Int = getConf(ARROW_EXECUTION_MAX_RECORDS_PER_BATCH).asInstanceOf[Int]
 
-  def pandasUDFBufferSize: Int = getConf(PANDAS_UDF_BUFFER_SIZE)
+  def pandasUDFBufferSize: Int = getConf(PANDAS_UDF_BUFFER_SIZE).asInstanceOf[Int]
 
-  def pysparkSimplifiedTraceback: Boolean = getConf(PYSPARK_SIMPLIFIEID_TRACEBACK)
+  def pysparkSimplifiedTraceback: Boolean = getConf(PYSPARK_SIMPLIFIEID_TRACEBACK).asInstanceOf[Boolean]
 
   def pandasGroupedMapAssignColumnsByName: Boolean =
-    getConf(SQLConf.PANDAS_GROUPED_MAP_ASSIGN_COLUMNS_BY_NAME)
+    getConf(SQLConf.PANDAS_GROUPED_MAP_ASSIGN_COLUMNS_BY_NAME).asInstanceOf[Boolean]
 
-  def arrowSafeTypeConversion: Boolean = getConf(SQLConf.PANDAS_ARROW_SAFE_TYPE_CONVERSION)
+  def arrowSafeTypeConversion: Boolean = getConf(SQLConf.PANDAS_ARROW_SAFE_TYPE_CONVERSION).asInstanceOf[Boolean]
 
-  def replaceExceptWithFilter: Boolean = getConf(REPLACE_EXCEPT_WITH_FILTER)
+  def replaceExceptWithFilter: Boolean = getConf(REPLACE_EXCEPT_WITH_FILTER).asInstanceOf[Boolean]
 
-  def decimalOperationsAllowPrecisionLoss: Boolean = getConf(DECIMAL_OPERATIONS_ALLOW_PREC_LOSS)
+  def decimalOperationsAllowPrecisionLoss: Boolean = getConf(DECIMAL_OPERATIONS_ALLOW_PREC_LOSS).asInstanceOf[Boolean]
 
-  def literalPickMinimumPrecision: Boolean = getConf(LITERAL_PICK_MINIMUM_PRECISION)
+  def literalPickMinimumPrecision: Boolean = getConf(LITERAL_PICK_MINIMUM_PRECISION).asInstanceOf[Boolean]
 
   def continuousStreamingEpochBacklogQueueSize: Int =
-    getConf(CONTINUOUS_STREAMING_EPOCH_BACKLOG_QUEUE_SIZE)
+    getConf(CONTINUOUS_STREAMING_EPOCH_BACKLOG_QUEUE_SIZE).asInstanceOf[Int]
 
-  def continuousStreamingExecutorQueueSize: Int = getConf(CONTINUOUS_STREAMING_EXECUTOR_QUEUE_SIZE)
+  def continuousStreamingExecutorQueueSize: Int = getConf(CONTINUOUS_STREAMING_EXECUTOR_QUEUE_SIZE).asInstanceOf[Int]
 
   def continuousStreamingExecutorPollIntervalMs: Long =
-    getConf(CONTINUOUS_STREAMING_EXECUTOR_POLL_INTERVAL_MS)
+    getConf(CONTINUOUS_STREAMING_EXECUTOR_POLL_INTERVAL_MS).asInstanceOf[Long]
 
-  def disabledV2StreamingWriters: String = getConf(DISABLED_V2_STREAMING_WRITERS)
+  def disabledV2StreamingWriters: String = getConf(DISABLED_V2_STREAMING_WRITERS).asInstanceOf[String]
 
   def disabledV2StreamingMicroBatchReaders: String =
-    getConf(DISABLED_V2_STREAMING_MICROBATCH_READERS)
+    getConf(DISABLED_V2_STREAMING_MICROBATCH_READERS).asInstanceOf[String]
 
-  def fastFailFileFormatOutput: Boolean = getConf(FASTFAIL_ON_FILEFORMAT_OUTPUT)
+  def fastFailFileFormatOutput: Boolean = getConf(FASTFAIL_ON_FILEFORMAT_OUTPUT).asInstanceOf[Boolean]
 
-  def concatBinaryAsString: Boolean = getConf(CONCAT_BINARY_AS_STRING)
+  def concatBinaryAsString: Boolean = getConf(CONCAT_BINARY_AS_STRING).asInstanceOf[Boolean]
 
-  def eltOutputAsString: Boolean = getConf(ELT_OUTPUT_AS_STRING)
+  def eltOutputAsString: Boolean = getConf(ELT_OUTPUT_AS_STRING).asInstanceOf[Boolean]
 
-  def validatePartitionColumns: Boolean = getConf(VALIDATE_PARTITION_COLUMNS)
+  def validatePartitionColumns: Boolean = getConf(VALIDATE_PARTITION_COLUMNS).asInstanceOf[Boolean]
 
   def partitionOverwriteMode: PartitionOverwriteMode.Value =
-    PartitionOverwriteMode.withName(getConf(PARTITION_OVERWRITE_MODE))
+    PartitionOverwriteMode.withName(getConf(PARTITION_OVERWRITE_MODE).asInstanceOf[String])
 
   def storeAssignmentPolicy: StoreAssignmentPolicy.Value =
-    StoreAssignmentPolicy.withName(getConf(STORE_ASSIGNMENT_POLICY))
+    StoreAssignmentPolicy.withName(getConf(STORE_ASSIGNMENT_POLICY).asInstanceOf[String])
 
-  def ansiEnabled: Boolean = getConf(ANSI_ENABLED)
+  def ansiEnabled: Boolean = getConf(ANSI_ENABLED).asInstanceOf[Boolean]
 
-  def nestedSchemaPruningEnabled: Boolean = getConf(NESTED_SCHEMA_PRUNING_ENABLED)
+  def nestedSchemaPruningEnabled: Boolean = getConf(NESTED_SCHEMA_PRUNING_ENABLED).asInstanceOf[Boolean]
 
   def serializerNestedSchemaPruningEnabled: Boolean =
-    getConf(SERIALIZER_NESTED_SCHEMA_PRUNING_ENABLED)
+    getConf(SERIALIZER_NESTED_SCHEMA_PRUNING_ENABLED).asInstanceOf[Boolean]
 
-  def nestedPruningOnExpressions: Boolean = getConf(NESTED_PRUNING_ON_EXPRESSIONS)
+  def nestedPruningOnExpressions: Boolean = getConf(NESTED_PRUNING_ON_EXPRESSIONS).asInstanceOf[Boolean]
 
-  def csvColumnPruning: Boolean = getConf(SQLConf.CSV_PARSER_COLUMN_PRUNING)
+  def csvColumnPruning: Boolean = getConf(SQLConf.CSV_PARSER_COLUMN_PRUNING).asInstanceOf[Boolean]
 
   def legacySizeOfNull: Boolean = {
     // size(null) should return null under ansi mode.
-    getConf(SQLConf.LEGACY_SIZE_OF_NULL) && !getConf(ANSI_ENABLED)
+    getConf(SQLConf.LEGACY_SIZE_OF_NULL).asInstanceOf[Boolean] && !getConf(ANSI_ENABLED).asInstanceOf[Boolean]
   }
 
-  def isReplEagerEvalEnabled: Boolean = getConf(SQLConf.REPL_EAGER_EVAL_ENABLED)
+  def isReplEagerEvalEnabled: Boolean = getConf(SQLConf.REPL_EAGER_EVAL_ENABLED).asInstanceOf[Boolean]
 
-  def replEagerEvalMaxNumRows: Int = getConf(SQLConf.REPL_EAGER_EVAL_MAX_NUM_ROWS)
+  def replEagerEvalMaxNumRows: Int = getConf(SQLConf.REPL_EAGER_EVAL_MAX_NUM_ROWS).asInstanceOf[Int]
 
-  def replEagerEvalTruncate: Int = getConf(SQLConf.REPL_EAGER_EVAL_TRUNCATE)
+  def replEagerEvalTruncate: Int = getConf(SQLConf.REPL_EAGER_EVAL_TRUNCATE).asInstanceOf[Int]
 
-  def avroCompressionCodec: String = getConf(SQLConf.AVRO_COMPRESSION_CODEC)
+  def avroCompressionCodec: String = getConf(SQLConf.AVRO_COMPRESSION_CODEC).asInstanceOf[String]
 
-  def avroDeflateLevel: Int = getConf(SQLConf.AVRO_DEFLATE_LEVEL)
+  def avroDeflateLevel: Int = getConf(SQLConf.AVRO_DEFLATE_LEVEL).asInstanceOf[Int]
 
   def replaceDatabricksSparkAvroEnabled: Boolean =
-    getConf(SQLConf.LEGACY_REPLACE_DATABRICKS_SPARK_AVRO_ENABLED)
+    getConf(SQLConf.LEGACY_REPLACE_DATABRICKS_SPARK_AVRO_ENABLED).asInstanceOf[Boolean]
 
-  def setOpsPrecedenceEnforced: Boolean = getConf(SQLConf.LEGACY_SETOPS_PRECEDENCE_ENABLED)
+  def setOpsPrecedenceEnforced: Boolean = getConf(SQLConf.LEGACY_SETOPS_PRECEDENCE_ENABLED).asInstanceOf[Boolean]
 
   def exponentLiteralAsDecimalEnabled: Boolean =
-    getConf(SQLConf.LEGACY_EXPONENT_LITERAL_AS_DECIMAL_ENABLED)
+    getConf(SQLConf.LEGACY_EXPONENT_LITERAL_AS_DECIMAL_ENABLED).asInstanceOf[Boolean]
 
   def allowNegativeScaleOfDecimalEnabled: Boolean =
-    getConf(SQLConf.LEGACY_ALLOW_NEGATIVE_SCALE_OF_DECIMAL_ENABLED)
+    getConf(SQLConf.LEGACY_ALLOW_NEGATIVE_SCALE_OF_DECIMAL_ENABLED).asInstanceOf[Boolean]
 
-  def legacyStatisticalAggregate: Boolean = getConf(SQLConf.LEGACY_STATISTICAL_AGGREGATE)
+  def legacyStatisticalAggregate: Boolean = getConf(SQLConf.LEGACY_STATISTICAL_AGGREGATE).asInstanceOf[Boolean]
 
   def truncateTableIgnorePermissionAcl: Boolean =
-    getConf(SQLConf.TRUNCATE_TABLE_IGNORE_PERMISSION_ACL)
+    getConf(SQLConf.TRUNCATE_TABLE_IGNORE_PERMISSION_ACL).asInstanceOf[Boolean]
 
   def nameNonStructGroupingKeyAsValue: Boolean =
-    getConf(SQLConf.NAME_NON_STRUCT_GROUPING_KEY_AS_VALUE)
+    getConf(SQLConf.NAME_NON_STRUCT_GROUPING_KEY_AS_VALUE).asInstanceOf[Boolean]
 
-  def maxToStringFields: Int = getConf(SQLConf.MAX_TO_STRING_FIELDS)
+  def maxToStringFields: Int = getConf(SQLConf.MAX_TO_STRING_FIELDS).asInstanceOf[Int]
 
-  def maxPlanStringLength: Int = getConf(SQLConf.MAX_PLAN_STRING_LENGTH).toInt
+  def maxPlanStringLength: Int = getConf(SQLConf.MAX_PLAN_STRING_LENGTH).asInstanceOf[Int]
 
-  def maxMetadataStringLength: Int = getConf(SQLConf.MAX_METADATA_STRING_LENGTH)
+  def maxMetadataStringLength: Int = getConf(SQLConf.MAX_METADATA_STRING_LENGTH).asInstanceOf[Int]
 
   def setCommandRejectsSparkCoreConfs: Boolean =
-    getConf(SQLConf.SET_COMMAND_REJECTS_SPARK_CORE_CONFS)
+    getConf(SQLConf.SET_COMMAND_REJECTS_SPARK_CORE_CONFS).asInstanceOf[Boolean]
 
-  def castDatetimeToString: Boolean = getConf(SQLConf.LEGACY_CAST_DATETIME_TO_STRING)
+  def castDatetimeToString: Boolean = getConf(SQLConf.LEGACY_CAST_DATETIME_TO_STRING).asInstanceOf[Boolean]
 
-  def ignoreDataLocality: Boolean = getConf(SQLConf.IGNORE_DATA_LOCALITY)
+  def ignoreDataLocality: Boolean = getConf(SQLConf.IGNORE_DATA_LOCALITY).asInstanceOf[Boolean]
 
-  def csvFilterPushDown: Boolean = getConf(CSV_FILTER_PUSHDOWN_ENABLED)
+  def csvFilterPushDown: Boolean = getConf(CSV_FILTER_PUSHDOWN_ENABLED).asInstanceOf[Boolean]
 
-  def jsonFilterPushDown: Boolean = getConf(JSON_FILTER_PUSHDOWN_ENABLED)
+  def jsonFilterPushDown: Boolean = getConf(JSON_FILTER_PUSHDOWN_ENABLED).asInstanceOf[Boolean]
 
-  def avroFilterPushDown: Boolean = getConf(AVRO_FILTER_PUSHDOWN_ENABLED)
+  def avroFilterPushDown: Boolean = getConf(AVRO_FILTER_PUSHDOWN_ENABLED).asInstanceOf[Boolean]
 
-  def integerGroupingIdEnabled: Boolean = getConf(SQLConf.LEGACY_INTEGER_GROUPING_ID)
+  def integerGroupingIdEnabled: Boolean = getConf(SQLConf.LEGACY_INTEGER_GROUPING_ID).asInstanceOf[Boolean]
 
-  def metadataCacheTTL: Long = getConf(StaticSQLConf.METADATA_CACHE_TTL_SECONDS)
+  def metadataCacheTTL: Long = getConf(StaticSQLConf.METADATA_CACHE_TTL_SECONDS).asInstanceOf[Long]
 
-  def coalesceBucketsInJoinEnabled: Boolean = getConf(SQLConf.COALESCE_BUCKETS_IN_JOIN_ENABLED)
+  def coalesceBucketsInJoinEnabled: Boolean = getConf(SQLConf.COALESCE_BUCKETS_IN_JOIN_ENABLED).asInstanceOf[Boolean]
 
   def coalesceBucketsInJoinMaxBucketRatio: Int =
-    getConf(SQLConf.COALESCE_BUCKETS_IN_JOIN_MAX_BUCKET_RATIO)
+    getConf(SQLConf.COALESCE_BUCKETS_IN_JOIN_MAX_BUCKET_RATIO).asInstanceOf[Int]
 
   def optimizeNullAwareAntiJoin: Boolean =
-    getConf(SQLConf.OPTIMIZE_NULL_AWARE_ANTI_JOIN)
+    getConf(SQLConf.OPTIMIZE_NULL_AWARE_ANTI_JOIN).asInstanceOf[Boolean]
 
-  def legacyPathOptionBehavior: Boolean = getConf(SQLConf.LEGACY_PATH_OPTION_BEHAVIOR)
+  def legacyPathOptionBehavior: Boolean = getConf(SQLConf.LEGACY_PATH_OPTION_BEHAVIOR).asInstanceOf[Boolean]
 
-  def disabledJdbcConnectionProviders: String = getConf(SQLConf.DISABLED_JDBC_CONN_PROVIDER_LIST)
+  def disabledJdbcConnectionProviders: String = getConf(SQLConf.DISABLED_JDBC_CONN_PROVIDER_LIST).asInstanceOf[String]
 
-  def charVarcharAsString: Boolean = getConf(SQLConf.LEGACY_CHAR_VARCHAR_AS_STRING)
+  def charVarcharAsString: Boolean = getConf(SQLConf.LEGACY_CHAR_VARCHAR_AS_STRING).asInstanceOf[Boolean]
 
   /** ********************** SQLConf functionality methods ************ */
 
@@ -3768,10 +3729,7 @@ class SQLConf extends Serializable {
   }
 
   private var definedConfsLoaded = false
-  /**
-   * Init [[StaticSQLConf]] and [[org.apache.spark.sql.hive.HiveUtils]] so that all the defined
-   * SQL Configurations will be registered to SQLConf
-   */
+  
   private def loadDefinedConfs(): Unit = {
     if (!definedConfsLoaded) {
       definedConfsLoaded = true
@@ -3782,8 +3740,7 @@ class SQLConf extends Serializable {
         val symbol = ScalaReflection.mirror.staticModule("org.apache.spark.sql.hive.HiveUtils")
         ScalaReflection.mirror.reflectModule(symbol).instance
       } catch {
-        case NonFatal(e) =>
-          logWarning("SQL configurations from Hive module is not loaded", e)
+        case NonFatal(e) => _
       }
     }
   }
@@ -3837,10 +3794,7 @@ class SQLConf extends Serializable {
    */
   private def logDeprecationWarning(key: String): Unit = {
     SQLConf.deprecatedSQLConfigs.get(key).foreach {
-      case DeprecatedConfig(configName, version, comment) =>
-        logWarning(
-          s"The SQL config '$configName' has been deprecated in Spark v$version " +
-          s"and may be removed in the future. $comment")
+      case DeprecatedConfig(configName, version, comment) => _
     }
   }
 

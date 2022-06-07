@@ -20,6 +20,8 @@ package com.ledis.config
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
+import com.ledis.utils.Utils
+
 
 
 /**

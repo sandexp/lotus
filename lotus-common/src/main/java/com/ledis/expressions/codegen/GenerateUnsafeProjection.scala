@@ -154,7 +154,6 @@ object GenerateUnsafeProjection extends CodeGenerator[Seq[Expression], UnsafePro
     val index = ctx.freshName("index")
 
     val et = UserDefinedType.sqlType(elementType)
-
     val jt = CodeGenerator.javaType(et)
 
     val elementOrOffsetSize = et match {

@@ -28,7 +28,6 @@ import com.ledis.expressions.projection.IntegerLiteral
 import scala.collection.mutable
 import com.ledis.plans.logical._
 import com.ledis.rules.Rule
-import com.ledis.sql.catalyst.analysis.Resolver
 import com.ledis.trees.CurrentOrigin
 
 

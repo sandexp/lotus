@@ -24,13 +24,14 @@ import com.ledis.expressions.expression.Expression
 import com.ledis.expressions.group.GroupingID
 import com.ledis.plans.logical.LogicalPlan
 import com.ledis.types.{AbstractDataType, DataType, StructType}
+import com.ledis.utils._
 
 /**
  * Object for grouping all error messages of the query compilation.
  * Currently it includes all AnalysisExcpetions created and thrown directly in
  * org.apache.spark.sql.catalyst.analysis.Analyzer.
  */
-private[spark] object QueryCompilationErrors {
+object QueryCompilationErrors {
 
   def groupingIDMismatchError(groupingID: GroupingID, groupByExprs: Seq[Expression]): Throwable = {
     new AnalysisException(

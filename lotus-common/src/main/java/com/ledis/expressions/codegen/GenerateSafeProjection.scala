@@ -17,19 +17,17 @@
 
 package com.ledis.expressions.codegen
 
-import scala.annotation.tailrec
-import com.ledis.expressions._
-import com.ledis.expressions.util.BindReferences.bindReferences
 import com.ledis.expressions.aggregate.NoOp
 import com.ledis.expressions.codegen.Block._
 import com.ledis.expressions.expression.{Attribute, Expression}
+import com.ledis.expressions.util.BindReferences.bindReferences
 import com.ledis.sql.catalyst.expressions.Projection
 import com.ledis.types._
 import com.ledis.utils.collections.row.{GenericInternalRow, InternalRow, SpecificInternalRow}
 import com.ledis.utils.collections.{ArrayBasedMapData, GenericArrayData, MapData}
 
 /**
- * Java can not access Projection (in package object)
+ * Java can not access Projection (in AnalyzerHelper object)
  */
 abstract class BaseProjection extends Projection {}
 

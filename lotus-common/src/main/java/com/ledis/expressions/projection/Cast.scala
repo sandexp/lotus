@@ -1838,6 +1838,7 @@ object AnsiCast {
     case (BooleanType, StringType) => true
     case (BinaryType, StringType) => true
 
+    
     case (ArrayType(fromType, fn), ArrayType(toType, tn)) =>
       canCast(fromType, toType) &&
         resolvableNullability(fn || forceNullable(fromType, toType), tn)

@@ -36,6 +36,7 @@ import com.ledis.config.SQLConf
 import com.ledis.config.SQLConf.{PartitionOverwriteMode, StoreAssignmentPolicy}
 import com.ledis.errors.QueryCompilationErrors
 import com.ledis.codec.OuterScopes
+import com.ledis.connector.{FieldReference, IdentityTransform}
 import com.ledis.expressions._
 import com.ledis.expressions.SubExprUtils._
 import com.ledis.expressions.aggregate._
@@ -52,7 +53,6 @@ import com.ledis.optimizer.OptimizeUpdateFields
 import com.ledis.plans._
 import com.ledis.plans.logical._
 import com.ledis.rules._
-import com.ledis.sql.catalyst.analysis.Resolver
 import com.ledis.trees.TreeNodeRef
 import com.ledis.types._
 import com.ledis.utils.helpers.SQLConfHelper
@@ -60,6 +60,7 @@ import com.ledis.utils.{DataSourceV2Relation, FunctionIdentifier, QueryPlanningT
 import com.ledis.utils.collections.CaseInsensitiveStringMap
 import com.ledis.utils.expressions.Transform
 import com.ledis.utils.util.CharVarcharUtils
+import com.ledis.analysis._
 
 /**
  * A trivial [[Analyzer]] with a dummy [[SessionCatalog]] and [[EmptyFunctionRegistry]].
@@ -206,7 +207,7 @@ class Analyzer(override val catalogManager: CatalogManager)
 
   private def executeSameContext(plan: LogicalPlan): LogicalPlan = super.execute(plan)
 
-  def resolver: Resolver = conf.resolver
+  def resolver: Resolver = conf.resolver.asInstanceOf[Resolver]
 
   /**
    * If the plan cannot be resolved within maxIterations, analyzer will throw exception to inform
@@ -891,14 +892,14 @@ class Analyzer(override val catalogManager: CatalogManager)
         }
       case u @ UnresolvedTable(ident, cmd) =>
         lookupTempView(ident).foreach { _ =>
-          u.failAnalysis(s"${ident.quoted} is a temp view. '$cmd' expects a table")
+          throw new AnalysisException(s"${ident.quoted} is a temp view. '$cmd' expects a table")
         }
         u
       case u @ UnresolvedTableOrView(ident, cmd, allowTempView) =>
         lookupTempView(ident)
           .map { _ =>
             if (!allowTempView) {
-              u.failAnalysis(
+              throw new AnalysisException(
                 s"${ident.quoted} is a temp view. '$cmd' expects a table or permanent view.")
             }
             ResolvedView(ident.asIdentifier, isTemp = true)
@@ -1025,7 +1026,6 @@ class Analyzer(override val catalogManager: CatalogManager)
           .map(v2Relation => i.copy(table = v2Relation))
           .getOrElse(i)
 
-      // TODO (SPARK-27484): handle streaming write commands when we have them.
       case write: V2WriteCommand =>
         write.table match {
           case u: UnresolvedRelation if !u.isStreaming =>
@@ -1084,7 +1084,7 @@ class Analyzer(override val catalogManager: CatalogManager)
           val nestedViewDepth = AnalysisContext.get.nestedViewDepth
           val maxNestedViewDepth = AnalysisContext.get.maxNestedViewDepth
           if (nestedViewDepth > maxNestedViewDepth) {
-            view.failAnalysis(s"The depth of view ${desc.identifier} exceeds the maximum " +
+            throw new AnalysisException(s"The depth of view ${desc.identifier} exceeds the maximum " +
               s"view resolution depth ($maxNestedViewDepth). Analysis is aborted to " +
               s"avoid errors. Increase the value of ${SQLConf.MAX_NESTED_VIEW_DEPTH.key} to " +
               "work around this.")
@@ -1112,20 +1112,19 @@ class Analyzer(override val catalogManager: CatalogManager)
 
         EliminateSubqueryAliases(relation) match {
           case v: View =>
-            table.failAnalysis(s"Inserting into a view is not allowed. View: ${v.desc.identifier}.")
+            throw new AnalysisException(s"Inserting into a view is not allowed. View: ${v.desc.identifier}.")
           case other => i.copy(table = other)
         }
 
-      // TODO (SPARK-27484): handle streaming write commands when we have them.
       case write: V2WriteCommand =>
         write.table match {
           case u: UnresolvedRelation if !u.isStreaming =>
             lookupRelation(u.multipartIdentifier, u.options, false)
               .map(EliminateSubqueryAliases(_))
               .map {
-                case v: View => write.failAnalysis(
+                case v: View => throw new AnalysisException(
                   s"Writing into a view is not allowed. View: ${v.desc.identifier}.")
-                case u: UnresolvedCatalogRelation => write.failAnalysis(
+                case u: UnresolvedCatalogRelation => throw new AnalysisException(
                   "Cannot write into v1 table: " + u.tableMeta.identifier)
                 case r: DataSourceV2Relation => write.withNewTable(r)
                 case other => throw new IllegalStateException(
@@ -1142,7 +1141,7 @@ class Analyzer(override val catalogManager: CatalogManager)
         lookupTableOrView(identifier).map {
           case v: ResolvedView =>
             val viewStr = if (v.isTemp) "temp view" else "view"
-            u.failAnalysis(s"${v.identifier.quoted} is a $viewStr. '$cmd' expects a table.")
+            throw new AnalysisException(s"${v.identifier.quoted} is a $viewStr. '$cmd' expects a table.")
           case table => table
         }.getOrElse(u)
 
@@ -1188,21 +1187,9 @@ class Analyzer(override val catalogManager: CatalogManager)
                 v1SessionCatalog.getRelation(v1Table.v1Table, options)
               }
             case table =>
-              if (isStreaming) {
-                val v1Fallback = table match {
-                  case withFallback: V2TableWithV1Fallback =>
-                    Some(UnresolvedCatalogRelation(withFallback.v1Table, isStreaming = true))
-                  case _ => None
-                }
-                SubqueryAlias(
-                  catalog.name +: ident.asMultipartIdentifier,
-                  StreamingRelationV2(None, table.name, table, options, table.schema.toAttributes,
-                    Some(catalog), Some(ident), v1Fallback))
-              } else {
                 SubqueryAlias(
                   catalog.name +: ident.asMultipartIdentifier,
                   DataSourceV2Relation.create(table, Some(catalog), Some(ident), options))
-              }
           }
           val key = catalog.name +: ident.namespace :+ ident.name
           AnalysisContext.get.relationCache.get(key).map(_.transform {
@@ -1829,7 +1816,7 @@ class Analyzer(override val catalogManager: CatalogManager)
    * returning the original attribute. In this case `d` will be resolved in subsequent passes
    * after `b` is resolved.
    */
-  protected[sql] def resolveExpressionBottomUp(
+  def resolveExpressionBottomUp(
       expr: Expression,
       plan: LogicalPlan,
       throws: Boolean = false): Expression = {
@@ -1882,7 +1869,7 @@ class Analyzer(override val catalogManager: CatalogManager)
             if (index > 0 && index <= child.output.size) {
               SortOrder(child.output(index - 1), direction, nullOrdering, Seq.empty)
             } else {
-              s.failAnalysis(
+              failAnalysis(
                 s"ORDER BY position $index is not in select list " +
                   s"(valid range is [1, ${child.output.size}])")
             }
@@ -1898,7 +1885,7 @@ class Analyzer(override val catalogManager: CatalogManager)
           case u @ UnresolvedOrdinal(index) if index > 0 && index <= aggs.size =>
             aggs(index - 1)
           case ordinal @ UnresolvedOrdinal(index) =>
-            ordinal.failAnalysis(
+            failAnalysis(
               s"GROUP BY position $index is not in select list " +
                 s"(valid range is [1, ${aggs.size}])")
           case o => o
@@ -2271,7 +2258,7 @@ class Analyzer(override val catalogManager: CatalogManager)
         // Checks if the number of the aliases equals to the number of output columns
         // in the subquery.
         if (columnNames.size != outputAttrs.size) {
-          u.failAnalysis("Number of column aliases does not match number of columns. " +
+          throw new AnalysisException("Number of column aliases does not match number of columns. " +
             s"Number of column aliases: ${columnNames.size}; " +
             s"number of columns: ${outputAttrs.size}.")
         }
@@ -3119,7 +3106,7 @@ class Analyzer(override val catalogManager: CatalogManager)
 
       i.userSpecifiedCols.map { col =>
           i.table.resolve(Seq(col), resolver)
-            .getOrElse(i.table.failAnalysis(s"Cannot resolve column name $col"))
+            .getOrElse(i,throw new AnalysisException(s"Cannot resolve column name $col"))
       }
     }
 
@@ -3128,7 +3115,7 @@ class Analyzer(override val catalogManager: CatalogManager)
         cols: Seq[NamedExpression],
         query: LogicalPlan): LogicalPlan = {
       if (cols.size != query.output.size) {
-        query.failAnalysis(
+        throw new AnalysisException(
           s"Cannot write to table due to mismatched user specified column size(${cols.size}) and" +
             s" data column size(${query.output.size})")
       }
@@ -3347,7 +3334,7 @@ class Analyzer(override val catalogManager: CatalogManager)
           child
 
         case UpCast(child, target: AtomicType, _)
-            if SQLConf.get.getConf(SQLConf.LEGACY_LOOSE_UPCAST) &&
+            if SQLConf.get.getConf(SQLConf.LEGACY_LOOSE_UPCAST).asInstanceOf[Boolean] &&
               child.dataType == StringType =>
           Cast(child, target.asNullable)
 
@@ -3701,7 +3688,7 @@ object TimeWindowing extends Rule[LogicalPlan] {
           renamedPlan.withNewChildren(substitutedPlan :: Nil)
         }
       } else if (numWindowExpr > 1) {
-        p.failAnalysis("Multiple time window expressions would result in a cartesian product " +
+        throw new AnalysisException("Multiple time window expressions would result in a cartesian product " +
           "of rows, therefore they are currently not supported.")
       } else {
         p // Return unchanged. Analyzer will throw exception later

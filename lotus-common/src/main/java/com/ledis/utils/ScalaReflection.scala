@@ -18,23 +18,21 @@
 package com.ledis.utils
 
 import com.ledis.analysis.GetColumnByOrdinal
-import com.ledis.expressions.expression.{Attribute, Expression, IsNull, KnownNotNull}
+import com.ledis.expressions.expression.{Attribute, Expression, If, IsNull, KnownNotNull}
 import com.ledis.expressions.objects._
+import com.ledis.expressions.util.BoundReference
 import com.ledis.types._
 import com.ledis.utils.collections.MapData
 import com.ledis.utils.collections.row.InternalRow
-import javax.lang.model.SourceVersion
-import org.apache.commons.lang3.reflect.ConstructorUtils
 import com.ledis.utils.serializer.DeserializerBuildHelper._
 import com.ledis.utils.serializer.SerializerBuildHelper._
-import com.ledis.expressions.expression.If
-import com.ledis.expressions.util.BoundReference
-
+import javax.lang.model.SourceVersion
+import org.apache.commons.lang3.reflect.ConstructorUtils
 
 trait DefinedByConstructorParams
 
 
-private[catalyst] object ScalaSubtypeLock
+object ScalaSubtypeLock
 
 
 /**
@@ -72,7 +70,7 @@ object ScalaReflection extends ScalaReflection {
    *
    * See https://github.com/scala/bug/issues/10766
    */
-  private[catalyst] def isSubtype(tpe1: `Type`, tpe2: `Type`): Boolean = {
+  def isSubtype(tpe1: `Type`, tpe2: `Type`): Boolean = {
     ScalaSubtypeLock.synchronized {
       tpe1 <:< tpe2
     }
@@ -354,7 +352,7 @@ object ScalaReflection extends ScalaReflection {
         )
 
       case t if isSubtype(t, localTypeOf[Enumeration#Value]) =>
-        // package example
+        // AnalyzerHelper example
         // object Foo extends Enumeration {
         //  type Foo = Value
         //  val E1, E2 = Value
@@ -619,7 +617,7 @@ object ScalaReflection extends ScalaReflection {
    *
    * In simple cases, both the Scala and Java names are the same, however when Scala
    * generates constructs that do not map to a Java equivalent, such as singleton objects
-   * or nested classes in package objects, it uses the dollar sign ($) to create
+   * or nested classes in AnalyzerHelper objects, it uses the dollar sign ($) to create
    * synthetic classes, emulating behaviour in Java bytecode.
    */
   def getClassNameFromType(tpe: `Type`): String = {

@@ -42,6 +42,7 @@ object Catalogs {
    */
   @throws[CatalogNotFoundException]
   def load(name: String, conf: SQLConf): CatalogPlugin = {
+    
     val pluginClassName = try {
       conf.getConfString("spark.sql.catalog." + name)
     } catch {

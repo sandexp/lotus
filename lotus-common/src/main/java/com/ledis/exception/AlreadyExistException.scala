@@ -21,6 +21,7 @@ import com.ledis.catalog.CatalogTypes.TablePartitionSpec
 import com.ledis.catalog.Identifier
 import com.ledis.types.StructType
 import com.ledis.utils.collections.row.InternalRow
+import com.ledis.catalog.CatalogV2Implicits._
 
 /**
  * Thrown by a catalog when an item already exists. The analyzer will rethrow the exception

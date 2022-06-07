@@ -21,15 +21,13 @@ import java.util.UUID
 
 import com.ledis.catalog._
 import com.ledis.config.SQLConf
-import com.ledis.errors.TreeNodeException
-import com.ledis.expressions._
+import com.ledis.errors.{TreeNodeException, _}
+import com.ledis.expressions.expression.ExprId
 import com.ledis.plans.JoinType
 import com.ledis.plans.physical.{BroadcastMode, Partitioning}
-import com.ledis.utils.util.StringUtils.PlanStringConcat
-import com.ledis.utils.truncatedString
 import com.ledis.types._
-import com.ledis.utils.Utils
-import com.ledis.errors._
+import com.ledis.utils.{Utils, truncatedString}
+import com.ledis.utils.util.StringUtils.PlanStringConcat
 import org.apache.commons.lang3.ClassUtils
 import org.json4s.JsonAST._
 import org.json4s.JsonDSL._
