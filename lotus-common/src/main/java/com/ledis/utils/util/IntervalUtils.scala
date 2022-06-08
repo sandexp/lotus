@@ -34,7 +34,6 @@ object IntervalUtils {
   def getMonths(interval: CalendarInterval): Byte = {
     (interval.months % MONTHS_PER_YEAR).toByte
   }
-
   def getDays(interval: CalendarInterval): Int = {
     val daysInMicroseconds = (interval.microseconds / MICROS_PER_DAY).toInt
     Math.addExact(interval.days, daysInMicroseconds)

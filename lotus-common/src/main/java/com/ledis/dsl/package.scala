@@ -20,8 +20,8 @@ package com.ledis
 import java.sql.{Date, Timestamp}
 import java.time.{Instant, LocalDate}
 
-import scala.language.implicitConversions
 import com.ledis.analysis._
+import com.ledis.codec.Encoder
 import com.ledis.expressions._
 import com.ledis.expressions.aggregate._
 import com.ledis.expressions.expression._
@@ -30,11 +30,13 @@ import com.ledis.expressions.order._
 import com.ledis.expressions.predicate._
 import com.ledis.expressions.projection.{Cast, Literal}
 import com.ledis.expressions.util.BoundReference
-import com.ledis.plans.{Inner, JoinType}
 import com.ledis.plans.logical._
+import com.ledis.plans.{Inner, JoinType}
 import com.ledis.types._
-import com.ledis.utils
 import com.ledis.utils.{FilterFunction, UTF8String}
+import com.ledis.expressions.EmptyRow
+
+import scala.language.implicitConversions
 
 /**
  * A collection of implicit conversions that create a DSL for constructing catalyst data structures.

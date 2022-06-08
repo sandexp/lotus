@@ -19,13 +19,11 @@ package com.ledis.expressions.codegen
 
 import java.io.ObjectInputStream
 
-import com.ledis.expressions._
 import com.ledis.expressions.expression.Attribute
-import com.ledis.expressions.util.BindReferences.bindReferences
 import com.ledis.expressions.order._
+import com.ledis.expressions.util.BindReferences.bindReferences
 import com.ledis.expressions.util.BoundReference
 import com.ledis.types.StructType
-import com.ledis.utils.Utils
 import com.ledis.utils.collections.row.InternalRow
 
 
@@ -193,14 +191,7 @@ class LazilyGeneratedOrdering(val ordering: Seq[SortOrder])
   private def readObject(in: ObjectInputStream): Unit = {
   
   }
-
-  override def write(): Unit = Utils.tryOrIOException {
   
-  }
-
-  override def read(): Unit = Utils.tryOrIOException {
-  
-  }
 }
 
 object LazilyGeneratedOrdering {

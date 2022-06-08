@@ -962,6 +962,7 @@ class Analyzer(override val catalogManager: CatalogManager)
    */
   object AddMetadataColumns extends Rule[LogicalPlan] {
   
+    
     private def hasMetadataCol(plan: LogicalPlan): Boolean = {
       plan.expressions.exists(_.find {
         case a: Attribute => a.isMetadataCol

@@ -39,7 +39,6 @@ import com.ledis.plans.logical._
 import com.ledis.types._
 import com.ledis.utils.expressions.Transform
 import com.ledis.utils.{FunctionIdentifier, TableIdentifier, UTF8String}
-import com.ledis.utils.util.DateTimeUtils.{getZoneId, stringToDate, stringToTimestamp}
 import com.ledis.utils.util.IntervalUtils.IntervalUnit
 import com.ledis.utils.helpers.SQLConfHelper
 import com.ledis.utils.random.RandomSampler
@@ -48,6 +47,7 @@ import javax.xml.bind.DatatypeConverter
 import org.antlr.v4.runtime.tree.{ParseTree, RuleNode, TerminalNode}
 import org.antlr.v4.runtime.{ParserRuleContext, Token}
 import com.ledis.utils.expressions.{Expression => V2Expression}
+import com.ledis.utils.DateTimeUtils._
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable.ArrayBuffer
@@ -2593,7 +2593,7 @@ class AstBuilder extends SqlBaseBaseVisitor[AnyRef] with SQLConfHelper {
             HoursTransform(getSingleFieldReference(applyCtx, arguments))
 
           case name =>
-            ApplyTransform(name, arguments.asInstanceOf[Seq[Expression]])
+            ApplyTransform(name, arguments)
         }
     }
   }

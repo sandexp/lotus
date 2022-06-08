@@ -23,6 +23,8 @@ import com.ledis.utils.XORShiftRandom
 
 import scala.reflect.ClassTag
 
+import org.apache.commons.math3.distribution.PoissonDistribution
+
 /**
  * :: DeveloperApi ::
  * A pseudorandom sampler. It is possible to change the sampled item type. For example, we might
@@ -179,7 +181,6 @@ class BernoulliSampler[T: ClassTag](fraction: Double) extends RandomSampler[T, T
  * @param useGapSamplingIfPossible if true, use gap sampling when sampling ratio is low.
  * @tparam T item type
  */
-@DeveloperApi
 class PoissonSampler[T](
     fraction: Double,
     useGapSamplingIfPossible: Boolean) extends RandomSampler[T, T] {
@@ -233,7 +234,6 @@ class PoissonSampler[T](
 }
 
 
-private[spark]
 class GapSampling(
     f: Double,
     rng: Random = RandomSampler.newDefaultRNG,
@@ -274,7 +274,6 @@ class GapSampling(
 }
 
 
-private[spark]
 class GapSamplingReplacement(
     val f: Double,
     val rng: Random = RandomSampler.newDefaultRNG,

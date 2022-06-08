@@ -175,6 +175,7 @@ object HistogramSerializer {
    */
   final def serialize(histogram: Histogram): String = {
     val bos = new ByteArrayOutputStream()
+    
     val out = new DataOutputStream(new LZ4BlockOutputStream(bos))
     out.writeDouble(histogram.height)
     out.writeInt(histogram.bins.length)

@@ -28,6 +28,8 @@ import com.ledis.types._
 import com.ledis.utils.{ScalaReflection, WalkedTypePath}
 import com.ledis.utils.collections.ArrayBasedMapData
 import com.ledis.utils.collections.row.Row
+import com.ledis.utils.serializer.SerializerBuildHelper._
+import com.ledis.utils.serializer.DeserializerBuildHelper._
 
 import scala.collection.Map
 import scala.reflect.ClassTag
@@ -70,7 +72,6 @@ object RowEncoder {
       deserializer,
       ClassTag(cls))
   }
-
   private def serializerFor(
       inputObject: Expression,
       inputType: DataType): Expression = inputType match {

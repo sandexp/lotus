@@ -20,10 +20,9 @@ package com.ledis.expressions
 import java.util.Locale
 
 import com.google.common.collect.Maps
-import com.ledis.analysis.UnresolvedAttribute
+import com.ledis.analysis.{Resolver, UnresolvedAttribute}
 import com.ledis.exception.AnalysisException
 import com.ledis.expressions.projection.Literal
-import com.ledis.sql.catalyst.analysis.Resolver
 import com.ledis.types.{StructField, StructType}
 import com.ledis.utils.collections.row.InternalRow
 
@@ -47,7 +46,7 @@ import com.ledis.utils.collections.row.InternalRow
  * For example, in the SQL statement `SELECT a+b AS c FROM ...`, the expressions `a` and `b` would
  * be represented by `AttributeReferences` and `c` would be represented by an `Alias`.
  *
- * During [[com.ledis.sql.catalyst.analysis]], all named expressions are assigned a globally unique expression id, which
+ * During [[com.ledis.analysis]], all named expressions are assigned a globally unique expression id, which
  * can be used for equality comparisons.  While the original names are kept around for debugging
  * purposes, they should never be used to check if two attributes refer to the same value, as
  * plan transformations can result in the introduction of naming ambiguity. For example, consider

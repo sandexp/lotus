@@ -18,6 +18,8 @@
 package com.ledis.utils;
 
 import com.ledis.exception.IncompatibleMergeException;
+import com.ledis.utils.hash.Murmur3_x86_32;
+import com.ledis.utils.unsafe.Platform;
 
 import java.io.*;
 import java.util.Arrays;
@@ -150,6 +152,7 @@ class CountMinSketchImpl extends CountMinSketch implements Serializable {
     } else if (item instanceof byte[]) {
       addBinary((byte[]) item, count);
     } else {
+      
       addLong(Utils.integralToLong(item), count);
     }
   }
@@ -234,7 +237,7 @@ class CountMinSketchImpl extends CountMinSketch implements Serializable {
     } else if (item instanceof byte[]) {
       return estimateCountForBinaryItem((byte[]) item);
     } else {
-      return estimateCountForLongItem(Utils.integralToLong(item));
+      return estimateCountForLongItem((Long) item);
     }
   }
 

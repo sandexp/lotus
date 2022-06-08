@@ -19,6 +19,8 @@ package com.ledis.expressions.objects
 
 import java.lang.reflect.{Method, Modifier}
 
+import com.ledis.codec.RowEncoder
+
 import scala.collection.JavaConverters._
 import scala.collection.mutable.{Builder, IndexedSeq, WrappedArray}
 import scala.reflect.ClassTag
@@ -32,6 +34,7 @@ import com.ledis.expressions.projection.Literal
 import com.ledis.types._
 import com.ledis.utils.collections._
 import com.ledis.utils.collections.row._
+import com.ledis.utils.serializer.{JavaSerializer, JavaSerializerInstance, SerializerInstance}
 
 /**
  * Common base class for [[StaticInvoke]], [[Invoke]], and [[NewInstance]].
@@ -177,6 +180,7 @@ trait SerializerSupport {
    */
   val kryo: Boolean
 
+  
   /**
    * The serializer instance to be used for serialization/deserialization in interpreted execution
    */
@@ -207,7 +211,7 @@ object SerializerSupport {
    * `useKryo` is set to `true`) or a `JavaSerializerInstance`.
    */
   def newSerializer(useKryo: Boolean): SerializerInstance = {
-    val s= new JavaSerializer(conf)
+    val s= new JavaSerializer()
     s.newInstance()
   }
 }
@@ -480,6 +484,8 @@ case class NewInstance(
         c(args)
       }
     }
+    // fixme return a available result
+    null
   }
 
   override def eval(input: InternalRow): Any = {

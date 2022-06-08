@@ -28,6 +28,8 @@ import com.ledis.expressions.expression.Expression
 import com.ledis.types.StructType
 import com.ledis.utils.{FunctionIdentifier, TableIdentifier}
 import com.ledis.utils.util.StringUtils
+import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.fs.Path
 
 /**
  * An in-memory (ephemeral) implementation of the system catalog.
@@ -38,8 +40,9 @@ import com.ledis.utils.util.StringUtils
  *
  * All public methods should be synchronized for thread-safety.
  */
-class InMemoryCatalog()
+class InMemoryCatalog(isDistributed:Boolean, hadoopConfig: Configuration)
   extends ExternalCatalog {
+  
 
   import CatalogTypes.TablePartitionSpec
 

@@ -18,10 +18,10 @@
 package com.ledis.expressions.util
 
 import com.ledis.errors.attachTree
+import com.ledis.expressions.AttributeSeq
 import com.ledis.expressions.codegen.{CodeGenerator, CodegenContext, ExprCode, FalseLiteral, JavaCode}
 import com.ledis.expressions.codegen.Block._
 import com.ledis.expressions.expression.{AttributeReference, Expression, LeafExpression}
-import com.ledis.sql.catalyst.expressions.AttributeSeq
 import com.ledis.types._
 import com.ledis.utils.collections.row.InternalRow
 

@@ -18,7 +18,7 @@
 package com.ledis.utils.writer;
 
 import com.ledis.plans.logical.Filter;
-import com.ledis.sources.AlwaysTrue$;
+import com.ledis.sources.*;
 
 /**
  * Write builder trait for tables that support overwrite by filter.

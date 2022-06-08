@@ -26,7 +26,7 @@ import com.ledis.config.SQLConf
 import com.ledis.expressions.codegen._
 import com.ledis.expressions.codegen.Block._
 import com.ledis.expressions.expression.{Expression, NullIntolerant, TimeZoneAwareExpression, UnaryExpression, Unevaluable}
-import com.ledis.utils.util.DateTimeUtils._
+import com.ledis.expressions.projection.Cast.canNullSafeCastToDecimal
 import com.ledis.types._
 import com.ledis.types.CalendarInterval
 import com.ledis.utils._
@@ -35,10 +35,12 @@ import com.ledis.utils.converter.NumberConverter
 import com.ledis.utils.DateTimeConstants._
 import com.ledis.utils.UTF8String.{IntWrapper, LongWrapper}
 import com.ledis.utils.collections.row.{GenericInternalRow, InternalRow}
-import com.ledis.utils.util.{DateTimeUtils, IntervalUtils, StringUtils}
+import com.ledis.utils.util.{IntervalUtils, StringUtils}
+import com.ledis.utils.DateTimeUtils._
 
 object Cast {
 
+  
   /**
    * Returns true iff we can cast `from` type to `to` type.
    */
@@ -1809,7 +1811,9 @@ object AnsiCast {
    *   - Numeric <=> Boolean
    *   - String <=> Binary
    */
+  
   def canCast(from: DataType, to: DataType): Boolean = (from, to) match {
+    
     case (fromType, toType) if fromType == toType => true
 
     case (NullType, _) => true
@@ -1861,6 +1865,28 @@ object AnsiCast {
 
     case _ => false
   }
+  
+  def forceNullable(from: DataType, to: DataType): Boolean = (from, to) match {
+    case (NullType, _) => false // empty array or map case
+    case (_, _) if from == to => false
+    
+    case (StringType, BinaryType) => false
+    case (StringType, _) => true
+    case (_, StringType) => false
+    
+    case (FloatType | DoubleType, TimestampType) => true
+    case (TimestampType, DateType) => false
+    case (_, DateType) => true
+    case (DateType, TimestampType) => false
+    case (DateType, _) => true
+    case (_, CalendarIntervalType) => true
+    
+    case (_, to: DecimalType) if !canNullSafeCastToDecimal(from, to) => true
+    case (_: FractionalType, _: IntegralType) => true  // NaN, infinity
+    case _ => false
+  }
+  
+  def resolvableNullability(from: Boolean, to: Boolean): Boolean = !from || to
 
   // Show suggestion on how to complete the disallowed explicit casting with built-in type
   // conversion functions.

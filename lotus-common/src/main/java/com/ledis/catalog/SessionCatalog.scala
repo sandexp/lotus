@@ -28,11 +28,10 @@ import com.google.common.cache.{Cache, CacheBuilder}
 import com.ledis.exception._
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
-import com.ledis.sql.catalyst._
 import com.ledis.analysis._
 import com.ledis.analysis.FunctionRegistry.FunctionBuilder
 import com.ledis.catalog.util.CatalogUtils
-import com.ledis.config.{Configuration, SQLConf}
+import com.ledis.config.{SQLConf}
 import com.ledis.expressions.expression.Expression
 import com.ledis.expressions.{ExpressionInfo, ImplicitCastInputTypes}
 import com.ledis.parser.{CatalystSqlParser, ParserInterface}
@@ -43,6 +42,7 @@ import com.ledis.utils._
 import com.ledis.utils.helpers.SQLConfHelper
 import com.ledis.utils.util.{CharVarcharUtils, StringUtils}
 import com.ledis.config.StaticSQLConf.GLOBAL_TEMP_DATABASE
+import com.ledis.expressions._
 
 object SessionCatalog {
   val DEFAULT_DATABASE = "default"
@@ -1665,6 +1665,7 @@ class SessionCatalog(
     tempViews.foreach(kv => target.tempViews.put(kv._1, kv._2))
   }
 
+  
   /**
    * Validate the new locatoin before renaming a managed table, which should be non-existent.
    */

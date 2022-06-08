@@ -1,18 +1,36 @@
-package com.ledis.utils.util
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.ledis.utils
 
 import java.nio.charset.StandardCharsets
 import java.sql.{Date, Timestamp}
 import java.time._
 import java.time.temporal.{ChronoField, ChronoUnit, IsoFields}
-import java.util.concurrent.TimeUnit.{DAYS, MICROSECONDS, NANOSECONDS}
 import java.util.{Locale, TimeZone}
+import java.util.concurrent.TimeUnit._
 
 import com.ledis.types.{CalendarInterval, Decimal}
-import com.ledis.utils.UTF8String
-import com.ledis.utils.DateTimeConstants._
-import sun.util.calendar.ZoneInfo
 
 import scala.util.control.NonFatal
+import sun.util.calendar.ZoneInfo
+import com.ledis.utils.DateTimeConstants._
+import com.ledis.utils.RebaseDateTime._
+
 
 /**
  * Helper functions for converting between internal and external date and time representations.
@@ -690,23 +708,23 @@ object DateTimeUtils {
   }
 
   // The constants are visible for testing purpose only.
-  val TRUNC_INVALID = -1
+  private[sql] val TRUNC_INVALID = -1
   // The levels from TRUNC_TO_MICROSECOND to TRUNC_TO_DAY are used in truncations
   // of TIMESTAMP values only.
-  val TRUNC_TO_MICROSECOND = 0
-  val MIN_LEVEL_OF_TIMESTAMP_TRUNC = TRUNC_TO_MICROSECOND
-  val TRUNC_TO_MILLISECOND = 1
-  val TRUNC_TO_SECOND = 2
-  val TRUNC_TO_MINUTE = 3
-  val TRUNC_TO_HOUR = 4
-  val TRUNC_TO_DAY = 5
+  private[sql] val TRUNC_TO_MICROSECOND = 0
+  private[sql] val MIN_LEVEL_OF_TIMESTAMP_TRUNC = TRUNC_TO_MICROSECOND
+  private[sql] val TRUNC_TO_MILLISECOND = 1
+  private[sql] val TRUNC_TO_SECOND = 2
+  private[sql] val TRUNC_TO_MINUTE = 3
+  private[sql] val TRUNC_TO_HOUR = 4
+  private[sql] val TRUNC_TO_DAY = 5
   // The levels from TRUNC_TO_WEEK to TRUNC_TO_YEAR are used in truncations
   // of DATE and TIMESTAMP values.
-  val TRUNC_TO_WEEK = 6
-  val MIN_LEVEL_OF_DATE_TRUNC = TRUNC_TO_WEEK
-  val TRUNC_TO_MONTH = 7
-  val TRUNC_TO_QUARTER = 8
-  val TRUNC_TO_YEAR = 9
+  private[sql] val TRUNC_TO_WEEK = 6
+  private[sql] val MIN_LEVEL_OF_DATE_TRUNC = TRUNC_TO_WEEK
+  private[sql] val TRUNC_TO_MONTH = 7
+  private[sql] val TRUNC_TO_QUARTER = 8
+  private[sql] val TRUNC_TO_YEAR = 9
 
   /**
    * Returns the trunc date from original date and trunc level.

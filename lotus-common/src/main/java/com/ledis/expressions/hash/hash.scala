@@ -22,7 +22,7 @@ import java.security.{MessageDigest, NoSuchAlgorithmException}
 import java.util.concurrent.TimeUnit._
 import java.util.zip.CRC32
 
-import scala.annotation.tailrec
+import com.ledis.expressions.NullIntolerant
 import org.apache.commons.codec.digest.DigestUtils
 import com.ledis.utils.DateTimeConstants._
 import com.ledis.analysis.TypeCheckResult
@@ -31,7 +31,6 @@ import com.ledis.expressions.ImplicitCastInputTypes
 import com.ledis.expressions.codegen._
 import com.ledis.expressions.codegen.Block._
 import com.ledis.expressions.expression.{BinaryExpression, Expression, UnaryExpression}
-import com.ledis.sql.catalyst.expressions.NullIntolerant
 import com.ledis.types._
 import com.ledis.types.CalendarInterval
 import com.ledis.utils.collections.MapData

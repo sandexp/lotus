@@ -80,10 +80,12 @@ trait ConstraintHelper {
     }
     inferredConstraints -- constraints
   }
+  
   private def replaceConstraints(
       constraints: ExpressionSet,
       source: Expression,
-      destination: Expression): ExpressionSet = constraints.map(_ transform {
+      destination: Expression): ExpressionSet =
+    constraints.map(_ transform {
     case e: Expression if e.semanticEquals(source) => destination
   })
 

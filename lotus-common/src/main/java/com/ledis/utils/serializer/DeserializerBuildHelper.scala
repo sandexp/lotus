@@ -6,8 +6,7 @@ import com.ledis.expressions.expression.Expression
 import com.ledis.expressions.objects.{AssertNotNull, Invoke, StaticInvoke}
 import com.ledis.expressions.projection.{Literal, UpCast}
 import com.ledis.types._
-import com.ledis.utils.WalkedTypePath
-import com.ledis.utils.util.DateTimeUtils
+import com.ledis.utils.{DateTimeUtils, WalkedTypePath}
 
 object DeserializerBuildHelper {
   /** Returns the current path with a sub-field extracted. */

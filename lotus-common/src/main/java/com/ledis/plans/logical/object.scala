@@ -18,13 +18,16 @@
 package com.ledis.plans.logical
 
 import com.ledis.analysis.UnresolvedDeserializer
+import com.ledis.codec.{Encoder, ExpressionEncoder, RowEncoder}
 import com.ledis.config.SQLConf
 import com.ledis.expressions.collections.AttributeSet
 import com.ledis.expressions.expression.{Attribute, AttributeReference, Expression, NamedExpression}
 import com.ledis.expressions.objects.Invoke
 import com.ledis.expressions.projection.Literal
 import com.ledis.types._
+import com.ledis.utils.{Broadcast, FilterFunction, GroupStateTimeout}
 import com.ledis.utils.collections.row.Row
+import com.ledis.codec._
 
 object CatalystSerde {
   def deserialize[T : Encoder](child: LogicalPlan): DeserializeToObject = {
@@ -396,7 +399,6 @@ object FlatMapGroupsWithState {
       func: (Any, Iterator[Any], LogicalGroupState[Any]) => Iterator[Any],
       groupingAttributes: Seq[Attribute],
       dataAttributes: Seq[Attribute],
-      outputMode: OutputMode,
       isMapGroupsWithState: Boolean,
       timeout: GroupStateTimeout,
       child: LogicalPlan): LogicalPlan = {
@@ -410,7 +412,6 @@ object FlatMapGroupsWithState {
       dataAttributes,
       CatalystSerde.generateObjAttr[U],
       encoder.asInstanceOf[ExpressionEncoder[Any]],
-      outputMode,
       isMapGroupsWithState,
       timeout,
       child)
@@ -443,14 +444,10 @@ case class FlatMapGroupsWithState(
     dataAttributes: Seq[Attribute],
     outputObjAttr: Attribute,
     stateEncoder: ExpressionEncoder[Any],
-    outputMode: OutputMode,
     isMapGroupsWithState: Boolean = false,
     timeout: GroupStateTimeout,
     child: LogicalPlan) extends UnaryNode with ObjectProducer {
-
-  if (isMapGroupsWithState) {
-    assert(outputMode == OutputMode.Update)
-  }
+  
 }
 
 /** Factory for constructing new `FlatMapGroupsInR` nodes. */
@@ -516,7 +513,7 @@ case class FlatMapGroupsInR(
 /**
  * Similar with `FlatMapGroupsInR` but serializes and deserializes input/output in
  * Arrow format.
- * This is also somewhat similar with [[FlatMapGroupsInPandas]].
+ * This is also somewhat similar with `FlatMapGroupsInPandas`.
  */
 case class FlatMapGroupsInRWithArrow(
     func: Array[Byte],

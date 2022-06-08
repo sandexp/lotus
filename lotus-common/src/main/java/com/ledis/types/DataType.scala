@@ -19,14 +19,14 @@ package com.ledis.types
 
 import java.util.Locale
 
-import com.fasterxml.jackson.databind.annotation.{JsonDeserialize, JsonSerialize}
+import com.ledis.analysis.Resolver
 import com.ledis.config.SQLConf
 import com.ledis.config.SQLConf.StoreAssignmentPolicy
+import com.ledis.config.SQLConf.StoreAssignmentPolicy.{ANSI, STRICT}
 import com.ledis.exception.AnalysisException
 import com.ledis.expressions.expression.Expression
 import com.ledis.expressions.projection.Cast
 import com.ledis.parser.CatalystSqlParser
-import com.ledis.sql.catalyst.analysis.Resolver
 import com.ledis.utils.util.StringUtils.StringConcat
 import org.json4s.JsonAST.JValue
 import org.json4s.JsonDSL._

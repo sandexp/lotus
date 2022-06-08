@@ -19,15 +19,15 @@ package com.ledis.catalog.util
 
 import java.net.URI
 
+import com.ledis.analysis.Resolver
 import com.ledis.catalog.CatalogTypes.TablePartitionSpec
 import com.ledis.catalog.{BucketSpec, CatalogTable, CatalogTablePartition}
 import com.ledis.exception.AnalysisException
 import com.ledis.expressions.expression.{AttributeReference, Expression}
 import com.ledis.expressions.predicate.{And, Predicate}
 import com.ledis.expressions.util.BoundReference
-import com.ledis.sql.catalyst.analysis.Resolver
 import com.ledis.utils.util.CharVarcharUtils
-import jdk.nashorn.tools.Shell
+import org.apache.hadoop.fs.Path
 
 object ExternalCatalogUtils {
   // This duplicates default value of Hive `ConfVars.DEFAULTPARTITIONNAME`, since catalyst doesn't
@@ -53,11 +53,6 @@ object ExternalCatalogUtils {
       '{', '[', ']', '^')
 
     clist.foreach(bitSet.set(_))
-    
-    // fix me: hdfs api
-    if (Shell.WINDOWS) {
-      Array(' ', '<', '>', '|').foreach(bitSet.set(_))
-    }
 
     bitSet
   }

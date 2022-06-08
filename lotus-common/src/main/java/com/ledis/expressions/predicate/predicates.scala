@@ -28,12 +28,11 @@ import com.ledis.expressions.collections.AttributeSet
 import com.ledis.expressions.expression._
 import com.ledis.expressions.helpers.AliasHelper
 import com.ledis.expressions.projection.Literal
-import com.ledis.sql.catalyst.expressions.NullIntolerant
 import com.ledis.plans.logical.{Aggregate, LeafNode, LogicalPlan, Project}
 import com.ledis.types._
 import com.ledis.utils.collections.row.InternalRow
 import com.ledis.utils.util.TypeUtils
-
+import com.ledis.expressions.NullIntolerant
 
 /**
  * A base class for generated/interpreted predicate

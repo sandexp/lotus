@@ -26,7 +26,8 @@ import com.ledis.expressions.expression.ExprId
 import com.ledis.plans.JoinType
 import com.ledis.plans.physical.{BroadcastMode, Partitioning}
 import com.ledis.types._
-import com.ledis.utils.{Utils, truncatedString}
+import com.ledis.utils.ScalaReflection._
+import com.ledis.utils.truncatedString
 import com.ledis.utils.util.StringUtils.PlanStringConcat
 import org.apache.commons.lang3.ClassUtils
 import org.json4s.JsonAST._
@@ -745,7 +746,7 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
   }
 
   protected def jsonFields: List[JField] = {
-    val fieldNames = Utils.getConstructorParameterNames(getClass)
+    val fieldNames = getConstructorParameterNames(getClass)
     val fieldValues = productIterator.toSeq ++ otherCopyArgs
     assert(fieldNames.length == fieldValues.length, s"$simpleClassName fields: " +
       fieldNames.mkString(", ") + s", values: " + fieldValues.mkString(", "))
@@ -794,7 +795,7 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
     case obj if obj.getClass.getName.endsWith("$") => "object" -> obj.getClass.getName
     case p: Product if shouldConvertToJson(p) =>
       try {
-        val fieldNames = Utils.getConstructorParameterNames(p.getClass)
+        val fieldNames = getConstructorParameterNames(p.getClass)
         val fieldValues = {
           if (p.productArity == fieldNames.length) {
             p.productIterator.toSeq

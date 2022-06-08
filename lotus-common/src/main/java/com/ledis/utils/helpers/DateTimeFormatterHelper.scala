@@ -23,8 +23,11 @@ import java.time.format.{DateTimeFormatter, DateTimeFormatterBuilder, ResolverSt
 import java.time.temporal.{ChronoField, TemporalAccessor, TemporalQueries}
 import java.util.{Date, Locale}
 
+import com.google.common.cache.CacheBuilder
 import com.ledis.config.SQLConf
+import com.ledis.config.SQLConf.LegacyBehaviorPolicy._
 import com.ledis.utils.TimestampFormatter
+import com.ledis.utils.helpers.DateTimeFormatterHelper._
 
 trait DateTimeFormatterHelper {
   private def getOrDefault(accessor: TemporalAccessor, field: ChronoField, default: Int): Int = {
@@ -125,6 +128,7 @@ trait DateTimeFormatterHelper {
     formatter
   }
 
+  
   private def needConvertToSparkUpgradeException(e: Throwable): Boolean = e match {
     case _: DateTimeException if SQLConf.get.legacyTimeParserPolicy == EXCEPTION => true
     case _ => false
@@ -156,6 +160,7 @@ trait DateTimeFormatterHelper {
       } catch {
         case _: Throwable => throw e
       }
+      ""
   }
 
   /**
@@ -171,7 +176,7 @@ trait DateTimeFormatterHelper {
    */
   protected def checkLegacyFormatter(
       pattern: String,
-      tryLegacyFormatter: => Unit): PartialFunction[Throwable, DateTimeFormatter] = {
+      tryLegacyFormatter: => Unit): Unit = {
   }
 }
 
@@ -253,12 +258,6 @@ private object DateTimeFormatterHelper {
     val formatter = DateTimeFormatter.ofPattern("LLL qqq", Locale.US)
     formatter.format(LocalDate.of(2000, 1, 1)) == "1 1"
   }
-  // SPARK-31892: The week-based date fields are rarely used and really confusing for parsing values
-  // to datetime, especially when they are mixed with other non-week-based ones;
-  // SPARK-31879: It's also difficult for us to restore the behavior of week-based date fields
-  // formatting, in DateTimeFormatter the first day of week for week-based date fields become
-  // localized, for the default Locale.US, it uses Sunday as the first day of week, while in Spark
-  // 2.4, the SimpleDateFormat uses Monday as the first day of week.
   final val weekBasedLetters = Set('Y', 'W', 'w', 'u', 'e', 'c')
   final val unsupportedLetters = Set('A', 'n', 'N', 'p')
   // The quarter fields will also be parsed strangely, e.g. when the pattern contains `yMd` and can
@@ -266,15 +265,7 @@ private object DateTimeFormatterHelper {
   // fields is incomplete, e.g. `yM`, the checking will be bypassed.
   final val unsupportedLettersForParsing = Set('E', 'F', 'q', 'Q')
   final val unsupportedPatternLengths = {
-    // SPARK-31771: Disable Narrow-form TextStyle to avoid silent data change, as it is Full-form in
-    // 2.4
     Seq("G", "M", "L", "E", "Q", "q").map(_ * 5) ++
-      // SPARK-31867: Disable year pattern longer than 10 which will cause Java time library throw
-      // unchecked `ArrayIndexOutOfBoundsException` by the `NumberPrinterParser` for formatting. It
-      // makes the call side difficult to handle exceptions and easily leads to silent data change
-      // because of the exceptions being suppressed.
-      // SPARK-32424: The max year that we can actually handle is 6 digits, otherwise, it will
-      // overflow
       Seq("y").map(_ * 7)
   }.toSet
   

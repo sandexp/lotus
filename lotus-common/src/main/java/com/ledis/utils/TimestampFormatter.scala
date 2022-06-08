@@ -27,10 +27,13 @@ import java.util.{Calendar, GregorianCalendar, Locale, TimeZone}
 
 import com.ledis.config.SQLConf
 import com.ledis.types.Decimal
-import com.ledis.utils.LegacyDateFormats.LegacyDateFormat
+import com.ledis.utils.LegacyDateFormats.{LegacyDateFormat, LENIENT_SIMPLE_DATE_FORMAT}
 import com.ledis.utils.helpers.DateTimeFormatterHelper
 import com.ledis.utils.DateTimeConstants._
-import com.ledis.utils.util.DateTimeUtils
+import com.ledis.utils.RebaseDateTime._
+import com.ledis.config.SQLConf.LegacyBehaviorPolicy._
+import com.ledis.utils.DateTimeUtils._
+
 import org.apache.commons.lang3.time.FastDateFormat
 
 
@@ -54,6 +57,7 @@ sealed trait TimestampFormatter extends Serializable {
   def format(instant: Instant): String
   def validatePatternString(): Unit
 }
+
 
 class Iso8601TimestampFormatter(
     pattern: String,
@@ -103,9 +107,7 @@ class Iso8601TimestampFormatter(
   }
 
   override def validatePatternString(): Unit = {
-    try {
-      formatter
-    } catch checkLegacyFormatter(pattern, legacyFormatter.validatePatternString)
+    formatter
   }
 }
 

@@ -44,14 +44,13 @@ import com.ledis.utils.ScalaReflection
 import com.ledis.expressions.codegen._
 import com.ledis.expressions.expression.{Expression, LeafExpression}
 import com.ledis.utils._
-import com.ledis.utils.util.DateTimeUtils.instantToMicros
 import com.ledis.types._
 import com.ledis.types.CalendarInterval
 import com.ledis.utils.collections.{ArrayBasedMapData, MapData}
 import com.ledis.utils.converter.CatalystTypeConverters
-import com.ledis.utils.util.DateTimeUtils
 import com.ledis.utils.UTF8String
 import com.ledis.utils.collections.row.InternalRow
+import com.ledis.utils.DateTimeUtils._
 
 object Literal {
   val TrueLiteral: Literal = Literal(true, BooleanType)

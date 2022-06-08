@@ -142,6 +142,7 @@ object GenerateUnsafeProjection extends CodeGenerator[Seq[Expression], UnsafePro
      """.stripMargin
   }
 
+  
   private def writeArrayToBuffer(
       ctx: CodegenContext,
       input: String,

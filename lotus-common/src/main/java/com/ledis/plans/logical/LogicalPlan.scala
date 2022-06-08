@@ -27,7 +27,6 @@ import com.ledis.expressions.predicate.EqualNullSafe
 import com.ledis.expressions.projection.Literal
 import com.ledis.plans.QueryPlan
 import com.ledis.plans.logical.statsEstimation.LogicalPlanStats
-import com.ledis.sql.catalyst.analysis.Resolver
 import com.ledis.types.StructType
 
 
@@ -36,7 +35,6 @@ abstract class LogicalPlan
   with AnalysisHelper
   with LogicalPlanStats
   with QueryPlanConstraints {
-
   /**
    * Metadata fields that can be projected from this node.
    * Should be overridden if the plan does not propagate its children's output.

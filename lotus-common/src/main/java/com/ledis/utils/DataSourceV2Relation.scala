@@ -177,6 +177,7 @@ object DataSourceV2Relation {
       identifier: Option[Identifier]): DataSourceV2Relation =
     create(table, catalog, identifier, CaseInsensitiveStringMap.empty)
 
+  
   /**
    * This is used to transform data source v2 statistics to logical.Statistics.
    */

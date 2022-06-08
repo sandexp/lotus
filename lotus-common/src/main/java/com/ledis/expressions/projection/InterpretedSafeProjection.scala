@@ -20,7 +20,6 @@ import com.ledis.config.SQLConf
 import com.ledis.expressions._
 import com.ledis.expressions.aggregate.NoOp
 import com.ledis.expressions.expression.{Expression, Stateful}
-import com.ledis.sql.catalyst.expressions.Projection
 import com.ledis.types._
 import com.ledis.utils.collections.row.{GenericInternalRow, InternalRow, SpecificInternalRow}
 import com.ledis.utils.collections.{ArrayBasedMapData, GenericArrayData, MapData}

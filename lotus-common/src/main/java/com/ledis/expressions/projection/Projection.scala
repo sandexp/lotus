@@ -23,12 +23,11 @@ import com.ledis.expressions._
 import com.ledis.expressions.codegen.{GenerateMutableProjection, GenerateSafeProjection, GenerateUnsafeProjection}
 import com.ledis.expressions.expression.{Attribute, Expression, Nondeterministic}
 import com.ledis.expressions.util.BoundReference
-import com.ledis.sql.catalyst.expressions.Projection
 import com.ledis.types.{DataType, StructType}
 import com.ledis.utils.collections.row.{GenericInternalRow, InternalRow, UnsafeRow}
 
 /**
- * A [[com.ledis.sql.catalyst.expressions.Projection]] that is calculated by calling the `eval` of each of the specified expressions.
+ * A [[Projection]] that is calculated by calling the `eval` of each of the specified expressions.
  *
  * @param expressions a sequence of expressions that determine the value of each column of the
  *                    output row.
@@ -171,7 +170,7 @@ object UnsafeProjection
 object SafeProjection extends CodeGeneratorWithInterpretedFallback[Seq[Expression], Projection] {
 
   override protected def createCodeGeneratedObject(in: Seq[Expression]): Projection = {
-    GenerateSafeProjection.generate(in)
+    GenerateSafeProjection.generate(in).asInstanceOf[Projection]
   }
 
   override protected def createInterpretedObject(in: Seq[Expression]): Projection = {

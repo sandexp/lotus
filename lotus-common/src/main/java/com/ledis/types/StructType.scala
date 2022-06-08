@@ -17,6 +17,7 @@
 
 package com.ledis.types
 
+import com.ledis.analysis.Resolver
 import com.ledis.config.SQLConf
 import com.ledis.exception.AnalysisException
 import com.ledis.expressions.expression.{Attribute, AttributeReference}
@@ -27,7 +28,6 @@ import scala.collection.{Map, mutable}
 import scala.util.Try
 import scala.util.control.NonFatal
 import com.ledis.parser.{CatalystSqlParser, LegacyTypeStringParser}
-import com.ledis.sql.catalyst.analysis.Resolver
 import com.ledis.utils.util.StringUtils.StringConcat
 import com.ledis.utils._
 import com.ledis.utils.collections.row.Row

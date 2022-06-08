@@ -23,8 +23,12 @@ import java.util.{Date, Locale}
 
 import com.ledis.config.SQLConf
 import com.ledis.utils.helpers.DateTimeFormatterHelper
-import com.ledis.utils.util.DateTimeUtils
+import com.ledis.config.SQLConf.LegacyBehaviorPolicy.LEGACY
+import com.ledis.utils.DateTimeUtils._
+
 import org.apache.commons.lang3.time.FastDateFormat
+
+
 
 sealed trait DateFormatter extends Serializable {
   def parse(s: String): Int // returns days since epoch
@@ -77,9 +81,7 @@ class Iso8601DateFormatter(
   }
 
   override def validatePatternString(): Unit = {
-    try {
-      formatter
-    } catch checkLegacyFormatter(pattern, legacyFormatter.validatePatternString)
+    formatter
   }
 }
 

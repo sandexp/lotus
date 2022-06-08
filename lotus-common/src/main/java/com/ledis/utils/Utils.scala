@@ -123,6 +123,7 @@ object Utils {
     result + ((bytes(0) & 0xFFL) << 56)
   }
 
+  
   /** Serialize via nested stream using specific serializer */
   def serializeViaNestedStream(os: OutputStream, ser: SerializerInstance)(
       f: SerializationStream => Unit): Unit = {

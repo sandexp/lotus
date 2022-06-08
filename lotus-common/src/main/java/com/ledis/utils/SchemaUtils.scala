@@ -23,7 +23,6 @@ import com.ledis.analysis._
 import com.ledis.connector.{BucketTransform, FieldReference, NamedTransform}
 import com.ledis.exception.AnalysisException
 import com.ledis.expressions.expression.{Alias, Attribute, NamedExpression}
-import com.ledis.sql.catalyst.AnalyzerHelper.Resolver
 import com.ledis.types.{ArrayType, DataType, MapType, StructField, StructType}
 import com.ledis.utils.expressions.Transform
 

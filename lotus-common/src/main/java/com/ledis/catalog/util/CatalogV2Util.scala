@@ -5,13 +5,13 @@ import java.util.Collections
 
 import com.ledis.analysis.{NamedRelation, UnresolvedV2Relation}
 import com.ledis.catalog.support.{SupportsCatalogOptions, SupportsNamespaces}
-import com.ledis.catalog.{CatalogManager, CatalogPlugin, Identifier, NamespaceChange}
-import com.ledis.catalog.table.{Table, TableCatalog, TableChange}
 import com.ledis.catalog.table.TableChange._
+import com.ledis.catalog.table.{Table, TableCatalog, TableChange}
+import com.ledis.catalog.{CatalogManager, CatalogPlugin, Identifier, NamespaceChange}
 import com.ledis.exception.{AnalysisException, NoSuchDatabaseException, NoSuchNamespaceException, NoSuchTableException}
 import com.ledis.plans.logical._
 import com.ledis.types._
-import com.ledis.utils.{DataSourceV2Relation, Utils}
+import com.ledis.utils.DataSourceV2Relation
 import com.ledis.utils.collections.CaseInsensitiveStringMap
 
 import scala.collection.JavaConverters._
@@ -339,7 +339,7 @@ object CatalogV2Util {
   }
 
   def withDefaultOwnership(properties: Map[String, String]): Map[String, String] = {
-    properties ++ Map(TableCatalog.PROP_OWNER -> Utils.getCurrentUserName())
+    properties ++ Map(TableCatalog.PROP_OWNER -> "")
   }
 
   def createAlterTable(

@@ -320,6 +320,7 @@ class CodegenContext {
     }
   }
 
+  
   /**
    * Add buffer variable which stores data coming from an [[InternalRow]]. This methods guarantees
    * that the variable is safely stored, which is important for (potentially) byte array backed

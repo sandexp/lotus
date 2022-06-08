@@ -53,7 +53,8 @@ class FailureSafeParser[IN](
     }
   }
 
-  def parse(input: IN): Iterator[InternalRow] = {
+  
+  def parse(input: IN): Object = {
     try {
       rawParser.apply(input).toIterator.map(row => toResultRow(Some(row), () => null))
     } catch {

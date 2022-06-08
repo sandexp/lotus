@@ -35,6 +35,7 @@ import com.ledis.utils.AliasIdentifier
 import com.ledis.utils.collections.AttributeMap
 import com.ledis.utils.random.RandomSampler
 
+
 /**
  * When planning take() or collect() operations, this special node that is inserted at the top of
  * the logical plan before invoking the query planner.
