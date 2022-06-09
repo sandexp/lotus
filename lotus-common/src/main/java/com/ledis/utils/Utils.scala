@@ -18,20 +18,21 @@
 package com.ledis.utils
 
 import java.io._
-import java.lang.{Byte => JByte}
-import java.lang.management.{LockInfo, ManagementFactory, MonitorInfo, ThreadInfo}
-import java.lang.reflect.InvocationTargetException
+import java.lang.management.{LockInfo, ManagementFactory, MonitorInfo}
 import java.math.{MathContext, RoundingMode}
 import java.net._
 import java.nio.ByteBuffer
-import java.nio.channels.{Channels, FileChannel, WritableByteChannel}
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
-import java.security.SecureRandom
-import java.util.{Locale, Properties, Random, UUID}
 import java.util.concurrent._
-import java.util.concurrent.TimeUnit.NANOSECONDS
 import java.util.zip.GZIPInputStream
+import java.util.{Locale, Properties, Random, UUID}
+
+import com.google.common.cache.LoadingCache
+import com.google.common.io.ByteStreams
+import com.google.common.net.InetAddresses
+import com.ledis.utils.serializer.{DeserializationStream, SerializationStream, SerializerInstance}
+import org.apache.commons.lang3.SystemUtils
 
 import scala.annotation.tailrec
 import scala.collection.JavaConverters._
@@ -39,20 +40,12 @@ import scala.collection.Map
 import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
 import scala.reflect.ClassTag
-import scala.util.{Failure, Success, Try}
+import scala.util.Try
 import scala.util.control.{ControlThrowable, NonFatal}
 import scala.util.matching.Regex
-import _root_.io.netty.channel.unix.Errors.NativeIoException
-import com.google.common.cache.{CacheBuilder, CacheLoader, LoadingCache}
-import com.google.common.io.{ByteStreams, Files => GFiles}
-import com.google.common.net.InetAddresses
-import org.apache.commons.codec.binary.Hex
-import org.apache.commons.lang3.SystemUtils
-import org.slf4j.Logger
 
 /** CallSite represents a place in user code. It can have a short and a long form. */
 case class CallSite(shortForm: String, longForm: String)
-
 object CallSite {
   val SHORT_FORM = "callSite.short"
   val LONG_FORM = "callSite.long"
@@ -66,7 +59,9 @@ object Utils {
   val random = new Random()
 
   @volatile private var cachedLocalDir: String = ""
-
+	
+  val REDACTION_REPLACEMENT_TEXT = "*********(redacted)"
+	
   /**
    * Define a default value for driver memory here since this value is referenced across the code
    * base and nearly all files already use Utils.scala
@@ -110,7 +105,7 @@ object Utils {
     ois.readObject.asInstanceOf[T]
   }
 
-  /** Deserialize a Long value (used for [[org.apache.spark.api.python.PythonPartitioner]]) */
+  /** Deserialize a Long value */
   def deserializeLongValue(bytes: Array[Byte]) : Long = {
     // Note: we assume that we are given a Long value encoded in network (big-endian) byte order
     var result = bytes(7) & 0xFFL
@@ -151,6 +146,18 @@ object Utils {
       isWrapper.close()
     }
   }
+  
+  def getBytesFromUTF8String(str: String): Array[Byte] = str.getBytes(StandardCharsets.UTF_8)
+  
+  def integralToLong(i: Any): Long = {
+    var longValue = 0L
+    if (i.isInstanceOf[Long]) longValue = i.asInstanceOf[Long]
+    else if (i.isInstanceOf[Integer]) longValue = i.asInstanceOf[Integer].longValue
+    else if (i.isInstanceOf[Short]) longValue = i.asInstanceOf[Short].longValue
+    else if (i.isInstanceOf[Byte]) longValue = i.asInstanceOf[Byte].longValue
+    else throw new IllegalArgumentException("Unsupported data type " + i.getClass.getName)
+    longValue
+  }
 
   /**
    * Get the ClassLoader which loaded Spark.
@@ -164,7 +171,7 @@ object Utils {
    * This should be used whenever passing a ClassLoader to Class.ForName or finding the currently
    * active loader when setting up ClassLoader delegation chains.
    */
-  def getContextOrSparkClassLoader: ClassLoader =
+  def getContextOrClassLoader: ClassLoader =
     Option(Thread.currentThread().getContextClassLoader).getOrElse(getSparkClassLoader)
 
   /** Determines whether the provided class is loadable in the current thread. */
@@ -182,7 +189,7 @@ object Utils {
       initialize: Boolean = true,
       noSparkClassLoader: Boolean = false): Class[C] = {
     if (!noSparkClassLoader) {
-      Class.forName(className, initialize, getContextOrSparkClassLoader).asInstanceOf[Class[C]]
+      Class.forName(className, initialize, getContextOrClassLoader).asInstanceOf[Class[C]]
     } else {
       Class.forName(className, initialize, Thread.currentThread().getContextClassLoader).
         asInstanceOf[Class[C]]
@@ -1506,7 +1513,7 @@ object Utils {
         (key, value)
     }.asInstanceOf[Seq[(K, V)]]
   }
-
+  
   /**
    * Looks up the redaction regex from within the key value pairs and uses it to redact the rest
    * of the key value pairs. No care is taken to make sure the redaction property itself is not
@@ -1514,22 +1521,8 @@ object Utils {
    * when printing.
    */
   def redact(kvs: Map[String, String]): Seq[(String, String)] = {
-    val redactionPattern = kvs.getOrElse(
-      SECRET_REDACTION_PATTERN.key,
-      SECRET_REDACTION_PATTERN.defaultValueString
-    ).r
+    val redactionPattern = "(?i)secret|password|token|access[.]key".r
     redact(redactionPattern, kvs.toArray)
-  }
-
-  def redactCommandLineArgs(conf: SparkConf, commands: Seq[String]): Seq[String] = {
-    val redactionPattern = conf.get(SECRET_REDACTION_PATTERN)
-    commands.map {
-      case PATTERN_FOR_COMMAND_LINE_ARG(key, value) =>
-        val (_, newValue) = redact(redactionPattern, Seq((key, value))).head
-        s"-D$key=$newValue"
-
-      case cmd => cmd
-    }
   }
 
   def stringToSeq(str: String): Seq[String] = {

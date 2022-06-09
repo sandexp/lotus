@@ -27,10 +27,11 @@ import com.ledis.exception.AnalysisException
 import com.ledis.expressions.CodegenObjectFactoryMode
 import com.ledis.expressions.codegen.CodeGenerator
 import com.ledis.plans.logical.HintErrorHandler
-import com.ledis.utils.{ByteArrayMethods, ScalaReflection, Utils}
+import com.ledis.utils.{ByteArrayMethods, DateTimeUtils, ScalaReflection, Utils}
 import com.ledis.utils.collections.ByteUnit
 import com.ledis.analysis.caseInsensitiveResolution
 import com.ledis.analysis.caseSensitiveResolution
+import org.apache.hadoop.fs.Path
 
 import scala.collection.JavaConverters._
 import scala.collection.immutable
@@ -779,7 +780,7 @@ object SQLConf {
   val HIVE_VERIFY_PARTITION_PATH = buildConf("spark.sql.hive.verifyPartitionPath")
     .doc("When true, check all the partition paths under the table\'s root directory " +
          "when reading data stored in HDFS. This configuration will be deprecated in the future " +
-         s"releases and replaced by ${SPARK_IGNORE_MISSING_FILES.key}.")
+         s"releases and replaced by spark.")
     .version("1.4.0")
     .booleanConf
     .createWithDefault(false)
@@ -1865,7 +1866,7 @@ object SQLConf {
       .doc("Threshold for number of rows to be spilled by window operator")
       .version("2.2.0")
       .intConf
-      .createWithDefault(SHUFFLE_SPILL_NUM_ELEMENTS_FORCE_SPILL_THRESHOLD.defaultValue.get)
+      .createWithDefault(100)
 
   val SORT_MERGE_JOIN_EXEC_BUFFER_IN_MEMORY_THRESHOLD =
     buildConf("spark.sql.sortMergeJoinExec.buffer.in.memory.threshold")
@@ -1882,7 +1883,7 @@ object SQLConf {
       .doc("Threshold for number of rows to be spilled by sort merge join operator")
       .version("2.2.0")
       .intConf
-      .createWithDefault(SHUFFLE_SPILL_NUM_ELEMENTS_FORCE_SPILL_THRESHOLD.defaultValue.get)
+      .createWithDefault(100)
 
   val CARTESIAN_PRODUCT_EXEC_BUFFER_IN_MEMORY_THRESHOLD =
     buildConf("spark.sql.cartesianProductExec.buffer.in.memory.threshold")
@@ -1899,7 +1900,7 @@ object SQLConf {
       .doc("Threshold for number of rows to be spilled by cartesian product operator")
       .version("2.2.0")
       .intConf
-      .createWithDefault(SHUFFLE_SPILL_NUM_ELEMENTS_FORCE_SPILL_THRESHOLD.defaultValue.get)
+      .createWithDefault(100)
 
   val SUPPORT_QUOTED_REGEX_COLUMN_NAME = buildConf("spark.sql.parser.quotedRegexColumnNames")
     .doc("When true, quoted Identifiers (using backticks) in SELECT statement are interpreted" +
@@ -1984,12 +1985,12 @@ object SQLConf {
   val PANDAS_UDF_BUFFER_SIZE =
     buildConf("spark.sql.execution.pandas.udf.buffer.size")
       .doc(
-        s"Same as `${BUFFER_SIZE.key}` but only applies to Pandas UDF executions. If it is not " +
-        s"set, the fallback is `${BUFFER_SIZE.key}`. Note that Pandas execution requires more " +
+        s"Same as buffer size but only applies to Pandas UDF executions. If it is not " +
+        s"set, the fallback is `buffer size`. Note that Pandas execution requires more " +
         "than 4 bytes. Lowering this value could make small Pandas UDF batch iterated and " +
         "pipelined; however, it might degrade performance. See SPARK-27870.")
       .version("3.0.0")
-      .fallbackConf(BUFFER_SIZE)
+      .fallbackConf(null)
 
   val PYSPARK_SIMPLIFIEID_TRACEBACK =
     buildConf("spark.sql.execution.pyspark.udf.simplifiedTraceback.enabled")
@@ -2062,7 +2063,7 @@ object SQLConf {
     .doc("Regex to decide which keys in a Spark SQL command's options map contain sensitive " +
       "information. The values of options whose names that match this regex will be redacted " +
       "in the explain output. This redaction is applied on top of the global redaction " +
-      s"configuration defined by ${SECRET_REDACTION_PATTERN.key}.")
+      s"configuration defined by redaction key.")
     .version("2.2.2")
     .regexConf
     .createWithDefault("(?i)url".r)
@@ -2074,7 +2075,7 @@ object SQLConf {
         "dummy value. This is currently used to redact the output of SQL explain commands. " +
         "When this conf is not set, the value from `spark.redaction.string.regex` is used.")
       .version("2.3.0")
-      .fallbackConf(org.apache.spark.internal.config.STRING_REDACTION_PATTERN)
+      .fallbackConf(null)
 
   val CONCAT_BINARY_AS_STRING = buildConf("spark.sql.function.concatBinaryAsString")
     .doc("When this option is set to false and all inputs are binary, `functions.concat` returns " +
@@ -2598,15 +2599,15 @@ object SQLConf {
       "explicitly set the current catalog yet.")
     .version("3.0.0")
     .stringConf
-    .createWithDefault(SESSION_CATALOG_NAME)
+    .createWithDefault("default_catalog")
 
   val V2_SESSION_CATALOG_IMPLEMENTATION =
-    buildConf(s"spark.sql.catalog.$SESSION_CATALOG_NAME")
+    buildConf(s"spark.sql.catalog. default_catalog")
       .doc("A catalog implementation that will be used as the v2 interface to Spark's built-in " +
-        s"v1 catalog: $SESSION_CATALOG_NAME. This catalog shares its identifier namespace with " +
-        s"the $SESSION_CATALOG_NAME and must be consistent with it; for example, if a table can " +
-        s"be loaded by the $SESSION_CATALOG_NAME, this catalog must also return the table " +
-        s"metadata. To delegate operations to the $SESSION_CATALOG_NAME, implementations can " +
+        s"v1 catalog:  default_catalog. This catalog shares its identifier namespace with " +
+        s"the  default_catalog and must be consistent with it; for example, if a table can " +
+        s"be loaded by the  default_catalog, this catalog must also return the table " +
+        s"metadata. To delegate operations to the  default_catalog, implementations can " +
         "extend 'CatalogExtension'.")
       .version("3.0.0")
       .stringConf
@@ -3008,7 +3009,7 @@ object SQLConf {
         "The config allows to switch to the behaviour before Spark 2.4 " +
           "and will be removed in the future releases."),
       DeprecatedConfig(HIVE_VERIFY_PARTITION_PATH.key, "3.0",
-        s"This config is replaced by '${SPARK_IGNORE_MISSING_FILES.key}'."),
+        s"This config is replaced by '."),
       DeprecatedConfig(ARROW_EXECUTION_ENABLED.key, "3.0",
         s"Use '${ARROW_PYSPARK_EXECUTION_ENABLED.key}' instead of it."),
       DeprecatedConfig(ARROW_FALLBACK_ENABLED.key, "3.0",
@@ -3775,8 +3776,7 @@ class SQLConf extends Serializable {
    */
   def redactOptions[K, V](options: Seq[(K, V)]): Seq[(K, V)] = {
     val regexes = Seq(
-      getConf(SQL_OPTIONS_REDACTION_PATTERN),
-      SECRET_REDACTION_PATTERN.readFrom(reader))
+      getConf(SQL_OPTIONS_REDACTION_PATTERN))
 
     regexes.foldLeft(options) { case (opts, r) => Utils.redact(Some(r), opts) }
   }

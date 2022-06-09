@@ -58,14 +58,14 @@ object ExpressionSet {
  * On adding a non-deterministic expression, simply append it to the original expressions.
  * This is consistent with how we define `semanticEquals` between two expressions.
  */
-class ExpressionSet protected(
-    private val baseSet: mutable.Set[Expression] = new mutable.HashSet,
-    private val originals: mutable.Buffer[Expression] = new ArrayBuffer)
+class ExpressionSet (
+    val baseSet: mutable.Set[Expression] = new mutable.HashSet,
+    val originals: mutable.Buffer[Expression] = new ArrayBuffer)
   extends Iterable[Expression] {
 
   //  Note: this class supports Scala 2.12. A parallel source tree has a 2.13 implementation.
 
-  protected def add(e: Expression): Unit = {
+  def add(e: Expression): Unit = {
     if (!e.deterministic) {
       originals += e
     } else if (!baseSet.contains(e.canonicalized)) {
@@ -74,7 +74,7 @@ class ExpressionSet protected(
     }
   }
 
-  protected def remove(e: Expression): Unit = {
+  def remove(e: Expression): Unit = {
     if (e.deterministic) {
       baseSet --= baseSet.filter(_ == e.canonicalized)
       originals --= originals.filter(_.canonicalized == e.canonicalized)

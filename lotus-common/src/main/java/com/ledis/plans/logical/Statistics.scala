@@ -17,11 +17,10 @@
 
 package com.ledis.plans.logical
 
-import java.io.{ByteArrayInputStream, ByteArrayOutputStream, DataInputStream, DataOutputStream}
+import java.io._
 import java.math.{MathContext, RoundingMode}
 
 import com.ledis.catalog.CatalogColumnStat
-import com.ledis.expressions._
 import com.ledis.plans.logical.statsEstimation.EstimationUtils
 import com.ledis.types._
 import com.ledis.utils.Utils
@@ -175,8 +174,7 @@ object HistogramSerializer {
    */
   final def serialize(histogram: Histogram): String = {
     val bos = new ByteArrayOutputStream()
-    
-    val out = new DataOutputStream(new LZ4BlockOutputStream(bos))
+    val out = new DataOutputStream(new BufferedOutputStream(bos))
     out.writeDouble(histogram.height)
     out.writeInt(histogram.bins.length)
     // Write data with same type together for compression.
@@ -206,7 +204,7 @@ object HistogramSerializer {
   final def deserialize(str: String): Histogram = {
     val bytes = org.apache.commons.codec.binary.Base64.decodeBase64(str)
     val bis = new ByteArrayInputStream(bytes)
-    val ins = new DataInputStream(new LZ4BlockInputStream(bis))
+    val ins = new DataInputStream(new BufferedInputStream(bis))
     val height = ins.readDouble()
     val numBins = ins.readInt()
 

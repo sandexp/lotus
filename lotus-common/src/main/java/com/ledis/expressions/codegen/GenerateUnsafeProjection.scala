@@ -27,7 +27,7 @@ import com.ledis.types._
 import com.ledis.utils.collections.row.UnsafeRow
 
 /**
- * Generates a [[com.ledis.sql.catalyst.expressions.Projection]] that returns an `UnsafeRow`.
+ * Generates a [[Projection]] that returns an `UnsafeRow`.
  *
  * It generates the code for all the expressions, computes the total length for all the columns
  * (can be accessed via variables), and then copies the data into a scratch buffer space in the

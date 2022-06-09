@@ -29,6 +29,7 @@ import com.ledis.plans.logical._
 import com.ledis.rules._
 import com.ledis.types.{ArrayType, DataType, MapType, StructType}
 import com.ledis.utils.FilterFunction
+import com.ledis.expressions.EmptyRow
 
 /*
  * This file defines optimization rules related to object manipulation (for the Dataset API).

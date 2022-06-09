@@ -58,7 +58,6 @@ class CountMinSketchImpl extends CountMinSketch implements Serializable {
     if (confidence <= 0D || confidence >= 1D) {
       throw new IllegalArgumentException("Confidence must be within range (0.0, 1.0)");
     }
-
     // 2/w = eps ; w = 2/eps
     // 1/2^depth <= 1-confidence ; depth >= -log2 (1-confidence)
     this.eps = eps;

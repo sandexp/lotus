@@ -71,7 +71,7 @@ The followings are best practices of naming configs for some common cases:
  * @param version the spark version when the configuration was released.
  * @tparam T the value type
  */
-private[spark] abstract class ConfigEntry[T] (
+abstract class ConfigEntry[T] (
     val key: String,
     val prependedKey: Option[String],
     val prependSeparator: String,
@@ -211,7 +211,7 @@ private class ConfigEntryWithDefaultString[T] (
 /**
  * A config entry that does not have a default value.
  */
-private[spark] class OptionalConfigEntry[T](
+class OptionalConfigEntry[T](
     key: String,
     prependedKey: Option[String],
     prependSeparator: String,
@@ -243,7 +243,7 @@ private[spark] class OptionalConfigEntry[T](
 /**
  * A config entry whose default value is defined by another config entry.
  */
-private[spark] class FallbackConfigEntry[T] (
+class FallbackConfigEntry[T] (
     key: String,
     prependedKey: Option[String],
     prependSeparator: String,
@@ -271,11 +271,11 @@ private[spark] class FallbackConfigEntry[T] (
   }
 }
 
-private[spark] object ConfigEntry {
+object ConfigEntry {
 
   val UNDEFINED = "<undefined>"
 
-  private[spark] val knownConfigs =
+  val knownConfigs =
     new java.util.concurrent.ConcurrentHashMap[String, ConfigEntry[_]]()
 
   def registerEntry(entry: ConfigEntry[_]): Unit = {

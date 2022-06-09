@@ -94,8 +94,7 @@ abstract class AbstractSqlParser extends ParserInterface with SQLConfHelper {
     parser.addParseListener(UnclosedCommentProcessor(command, tokenStream))
     parser.removeErrorListeners()
     parser.addErrorListener(ParseErrorListener)
-    
-    parser.legacy_setops_precedence_enabled = conf.setOpsPrecedenceEnforced
+    parser.legacy_setops_precedence_enbled = conf.setOpsPrecedenceEnforced
     parser.legacy_exponent_literal_as_decimal_enabled = conf.exponentLiteralAsDecimalEnabled
     parser.SQL_standard_keyword_behavior = conf.ansiEnabled
 
@@ -347,12 +346,13 @@ case class UnclosedCommentProcessor(
   private def checkUnclosedComment(tokenStream: CommonTokenStream, command: String) = {
     assert(tokenStream.getTokenSource.isInstanceOf[SqlBaseLexer])
     val lexer = tokenStream.getTokenSource.asInstanceOf[SqlBaseLexer]
+    /**
     if (lexer.has_unclosed_bracketed_comment) {
       // The last token is 'EOF' and the penultimate is unclosed bracketed comment
       val failedToken = tokenStream.get(tokenStream.size() - 2)
       assert(failedToken.getType() == SqlBaseParser.BRACKETED_COMMENT)
       val position = Origin(Option(failedToken.getLine), Option(failedToken.getCharPositionInLine))
       throw new ParseException(Some(command), "Unclosed bracketed comment", position, position)
-    }
+    }*/
   }
 }

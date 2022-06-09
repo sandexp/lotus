@@ -38,6 +38,7 @@ import com.ledis.types._
 import com.ledis.utils.Utils
 import com.ledis.utils.collections.AttributeMap
 import com.ledis.utils.collections.row.SpecificInternalRow
+import com.ledis.expressions.EmptyRow
 
 /**
  * Abstract class all optimizers should inherit of, contains the standard batches (extending
@@ -386,7 +387,7 @@ object SimpleTestOptimizer extends SimpleTestOptimizer
 class SimpleTestOptimizer extends Optimizer(
   new CatalogManager(
     FakeV2SessionCatalog,
-    new SessionCatalog(new InMemoryCatalog, EmptyFunctionRegistry)))
+    new SessionCatalog(new InMemoryCatalog(null), EmptyFunctionRegistry)))
 
 /**
  * Remove redundant aliases from a query plan. A redundant alias is an alias that does not change

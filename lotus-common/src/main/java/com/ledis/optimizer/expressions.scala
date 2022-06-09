@@ -32,10 +32,11 @@ import com.ledis.expressions.projection.{Cast, Literal}
 import com.ledis.plans._
 import com.ledis.plans.logical._
 import com.ledis.rules._
-import com.ledis.sql.catalyst.expressions.NullIntolerant
 import com.ledis.types._
 import com.ledis.utils.UTF8String
 import com.ledis.utils.collections.AttributeMap
+import com.ledis.expressions.EmptyRow
+import com.ledis.expressions.NullIntolerant
 
 /*
  * Optimization rules defined in this file should not affect the structure of the logical plan.

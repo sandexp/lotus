@@ -40,10 +40,9 @@ import org.apache.hadoop.fs.Path
  *
  * All public methods should be synchronized for thread-safety.
  */
-class InMemoryCatalog(isDistributed:Boolean, hadoopConfig: Configuration)
+class InMemoryCatalog(hadoopConfig: Configuration)
   extends ExternalCatalog {
   
-
   import CatalogTypes.TablePartitionSpec
 
   private class TableDesc(var table: CatalogTable) {

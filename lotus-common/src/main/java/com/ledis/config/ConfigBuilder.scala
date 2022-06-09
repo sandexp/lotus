@@ -20,8 +20,8 @@ package com.ledis.config
 import java.util.concurrent.TimeUnit
 import java.util.regex.PatternSyntaxException
 
-import com.ledis.utils.{JavaUtils, Utils}
 import com.ledis.utils.collections.ByteUnit
+import com.ledis.utils.{JavaUtils, Utils}
 
 import scala.util.matching.Regex
 
@@ -88,8 +88,6 @@ class TypedConfigBuilder[T](
   val converter: String => T,
   val stringConverter: T => String) {
 
-  import ConfigHelpers._
-
   def this(parent: ConfigBuilder, converter: String => T) = {
     this(parent, converter, Option(_).map(_.toString).orNull)
   }
@@ -120,7 +118,8 @@ class TypedConfigBuilder[T](
 
   /** Turns the config entry into a sequence of values of the underlying type. */
   def toSequence: TypedConfigBuilder[Seq[T]] = {
-    new TypedConfigBuilder(parent, stringToSeq(_, converter), seqToString(_, stringConverter))
+    null
+    //new TypedConfigBuilder(parent, stringToSeq(_, converter), seqToString(_, stringConverter))
   }
 
   /** Creates a [[ConfigEntry]] that does not have a default value. */

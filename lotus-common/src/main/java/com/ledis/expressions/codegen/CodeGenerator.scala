@@ -33,11 +33,15 @@ import com.ledis.expressions.codegen.Block._
 import com.ledis.expressions.expression.{Attribute, EquivalentExpressions, Expression}
 import com.ledis.expressions.util.BoundReference
 import com.ledis.types._
-import com.ledis.utils.UTF8String
+import com.ledis.utils.{UTF8String, Utils}
 import com.ledis.utils.collections.row.{GenericInternalRow, InternalRow, UnsafeRow}
-import com.ledis.utils.collections.{GenericArrayData, MapData, UnsafeArrayData, UnsafeMapData}
+import com.ledis.utils.collections._
 import com.ledis.utils.unsafe.Platform
 import com.ledis.utils.util.SQLOrderingUtil
+import org.codehaus.commons.compiler.util.reflect.ByteArrayClassLoader
+import org.codehaus.janino.{ClassBodyEvaluator, SimpleCompiler}
+import org.codehaus.janino.util.ClassFile
+
 
 /**
  * Java source for evaluating an [[Expression]] given a [[InternalRow]] of input.
@@ -319,7 +323,6 @@ class CodegenContext {
         s"with different initialization statements.")
     }
   }
-
   
   /**
    * Add buffer variable which stores data coming from an [[InternalRow]]. This methods guarantees
@@ -1235,7 +1238,7 @@ class CodeAndComment(val body: String, val comment: collection.Map[String, Strin
  * helpers for referring to Catalyst types and building trees that perform evaluation of individual
  * expressions.
  */
-abstract class CodeGenerator[InType <: AnyRef, OutType <: AnyRef] extends Logging {
+abstract class CodeGenerator[InType <: AnyRef, OutType <: AnyRef] {
 
   protected val genericMutableRowType: String = classOf[GenericInternalRow].getName
 
@@ -1356,7 +1359,7 @@ object CodeGenerator {
     // find other possible classes (see org.codehaus.janinoClassLoaderIClassLoader's
     // findIClass method). Please also see https://issues.apache.org/jira/browse/SPARK-15622 and
     // https://issues.apache.org/jira/browse/SPARK-11636.
-    val parentClassLoader = new ParentClassLoader(Utils.getContextOrSparkClassLoader)
+    val parentClassLoader = new ParentClassLoader(Utils.getContextOrClassLoader)
     evaluator.setParentClassLoader(parentClassLoader)
     // Cannot be under AnalyzerHelper codegen, or fail with java.lang.InstantiationException
     evaluator.setClassName("com.ledis.expressions.GeneratedClass")
@@ -1380,12 +1383,10 @@ object CodeGenerator {
     } catch {
       case e: InternalCompilerException =>
         val msg = s"failed to compile: $e"
-        logGeneratedCode(code)
         throw new InternalCompilerException(msg, e)
       case e: CompileException =>
         val msg = s"failed to compile: $e"
-        logGeneratedCode(code)
-        throw new CompileException(msg, e.getLocation)
+        throw new CompileException(msg, "")
     }
 
     (evaluator.getClazz().getConstructor().newInstance().asInstanceOf[GeneratedClass], codeStats)
@@ -1413,15 +1414,12 @@ object CodeGenerator {
     codeAttrField.setAccessible(true)
     val codeStats = classes.map { case (_, classBytes) =>
       val classCodeSize = classBytes.length
-      CodegenMetrics.METRIC_GENERATED_CLASS_BYTECODE_SIZE.update(classCodeSize)
       try {
         val cf = new ClassFile(new ByteArrayInputStream(classBytes))
         val constPoolSize = cf.getConstantPoolSize
         val methodCodeSizes = cf.methodInfos.asScala.flatMap { method =>
           method.getAttributes().filter(_.getClass eq codeAttr).map { a =>
             val byteCodeSize = codeAttrField.get(a).asInstanceOf[Array[Byte]].length
-            CodegenMetrics.METRIC_GENERATED_METHOD_BYTECODE_SIZE.update(byteCodeSize)
-
             byteCodeSize
           }
         }
@@ -1458,10 +1456,6 @@ object CodeGenerator {
           val result = doCompile(code)
           val endTime = System.nanoTime()
           val duration = endTime - startTime
-          val timeMs: Double = duration.toDouble / NANOS_PER_MILLIS
-          CodegenMetrics.METRIC_SOURCE_CODE_SIZE.update(code.body.length)
-          CodegenMetrics.METRIC_COMPILATION_TIME.update(timeMs.toLong)
-          logInfo(s"Code generated in $timeMs ms")
           _compileTime.add(duration)
           result
         }

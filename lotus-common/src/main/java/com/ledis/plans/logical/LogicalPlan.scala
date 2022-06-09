@@ -17,9 +17,9 @@
 
 package com.ledis.plans.logical
 
-import com.ledis.exception.AnalysisException
 import com.ledis.analysis._
-import com.ledis.expressions._
+import com.ledis.exception.AnalysisException
+import com.ledis.expressions.{AttributeSeq, _}
 import com.ledis.expressions.collections.{AttributeSet, ExpressionSet}
 import com.ledis.expressions.expression._
 import com.ledis.expressions.order.SortOrder
@@ -28,7 +28,6 @@ import com.ledis.expressions.projection.Literal
 import com.ledis.plans.QueryPlan
 import com.ledis.plans.logical.statsEstimation.LogicalPlanStats
 import com.ledis.types.StructType
-
 
 abstract class LogicalPlan
   extends QueryPlan[LogicalPlan]
@@ -185,15 +184,19 @@ abstract class UnaryNode extends LogicalPlan {
    */
   protected def getAllValidConstraints(projectList: Seq[NamedExpression]): ExpressionSet = {
     var allConstraints = child.constraints
+    
     projectList.foreach {
       case a @ Alias(l: Literal, _) =>
         allConstraints += EqualNullSafe(a.toAttribute, l)
       case a @ Alias(e, _) =>
         // For every alias in `projectList`, replace the reference in constraints by its attribute.
-        allConstraints ++= allConstraints.map(_ transform {
-          case expr: Expression if expr.semanticEquals(e) =>
-            a.toAttribute
-        })
+        allConstraints ++= allConstraints.map(
+          //_ transform {
+          // case expr: Expression if expr.semanticEquals(e) =>
+          //  a.toAttribute
+          //}
+          null
+        )
         allConstraints += EqualNullSafe(e, a.toAttribute)
       case _ => // Don't change.
     }

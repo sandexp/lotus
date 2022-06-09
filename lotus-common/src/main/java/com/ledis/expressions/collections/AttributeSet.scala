@@ -68,7 +68,7 @@ object AttributeSet {
  * and also makes doing transformations hard (we always try keep older trees instead of new ones
  * when the transformation was a no-op).
  */
-class AttributeSet private (private val baseSet: mutable.LinkedHashSet[AttributeEquals])
+class AttributeSet (val baseSet: mutable.LinkedHashSet[AttributeEquals])
   extends Iterable[Attribute] with Serializable {
 
   override def hashCode: Int = baseSet.hashCode()
@@ -141,9 +141,6 @@ class AttributeSet private (private val baseSet: mutable.LinkedHashSet[Attribute
   // We must force toSeq to not be strict otherwise we end up with a [[Stream]] that captures all
   // sorts of things in its closure.
   override def toSeq: Seq[Attribute] = {
-    // We need to keep a deterministic output order for `baseSet` because this affects a variable
-    // order in generated code (e.g., `GenerateColumnAccessor`).
-    // See SPARK-18394 for details.
     baseSet.map(_.a).toSeq.sortBy { a => (a.name, a.exprId.id) }
   }
 

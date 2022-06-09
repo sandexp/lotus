@@ -28,6 +28,7 @@ import com.ledis.utils.collections.CaseInsensitiveStringMap
 import com.ledis.utils.reader.{Scan, SupportsReportStatistics}
 import com.ledis.utils.util.CharVarcharUtils
 import com.sun.scenario.effect.Offset
+import com.ledis.utils.reader.{Statistics => V2Statistics}
 
 /**
  * A logical plan representing a data source v2 table.
@@ -177,6 +178,7 @@ object DataSourceV2Relation {
       identifier: Option[Identifier]): DataSourceV2Relation =
     create(table, catalog, identifier, CaseInsensitiveStringMap.empty)
 
+  
   
   /**
    * This is used to transform data source v2 statistics to logical.Statistics.

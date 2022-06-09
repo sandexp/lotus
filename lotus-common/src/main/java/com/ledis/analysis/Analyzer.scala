@@ -48,6 +48,7 @@ import com.ledis.expressions.helpers.AliasHelper
 import com.ledis.expressions.objects._
 import com.ledis.expressions.order.{LambdaFunction, RowOrdering, SortOrder}
 import com.ledis.expressions.predicate._
+import com.ledis.utils.DataSourceV2Implicits._
 import com.ledis.expressions.projection.{AnsiCast, Cast, Literal, UpCast}
 import com.ledis.optimizer.OptimizeUpdateFields
 import com.ledis.plans._
@@ -60,7 +61,10 @@ import com.ledis.utils.{DataSourceV2Relation, FunctionIdentifier, QueryPlanningT
 import com.ledis.utils.collections.CaseInsensitiveStringMap
 import com.ledis.utils.expressions.Transform
 import com.ledis.utils.util.CharVarcharUtils
-import com.ledis.analysis._
+import com.ledis.expressions.EmptyRow
+import com.ledis.dsl.expressions._
+import com.ledis.expressions._
+
 
 /**
  * A trivial [[Analyzer]] with a dummy [[SessionCatalog]] and [[EmptyFunctionRegistry]].
@@ -71,7 +75,7 @@ object SimpleAnalyzer extends Analyzer(
   new CatalogManager(
     FakeV2SessionCatalog,
     new SessionCatalog(
-      new InMemoryCatalog,
+      new InMemoryCatalog(null),
       EmptyFunctionRegistry) {
       override def createDatabase(dbDefinition: CatalogDatabase, ignoreIfExists: Boolean): Unit = {}
     })) {
@@ -3104,10 +3108,11 @@ class Analyzer(override val catalogManager: CatalogManager)
     private def resolveUserSpecifiedColumns(i: InsertIntoStatement): Seq[NamedExpression] = {
       SchemaUtils.checkColumnNameDuplication(
         i.userSpecifiedCols, "in the column list", resolver)
-
+  
       i.userSpecifiedCols.map { col =>
-          i.table.resolve(Seq(col), resolver)
-            .getOrElse(i,throw new AnalysisException(s"Cannot resolve column name $col"))
+        i.table.resolve(Seq(col), resolver)
+                .getOrElse(i,null)
+                .asInstanceOf[NamedExpression]
       }
     }
 
@@ -3247,10 +3252,11 @@ class Analyzer(override val catalogManager: CatalogManager)
      */
     private def validateTopLevelTupleFields(
         deserializer: Expression, inputs: Seq[Attribute]): Unit = {
+      import com.ledis.expressions._
       val ordinals = deserializer.collect {
         case GetColumnByOrdinal(ordinal, _) => ordinal
       }.distinct.sorted
-
+      
       if (ordinals.nonEmpty && ordinals != inputs.indices) {
         fail(inputs.toStructType, ordinals.last)
       }
@@ -3579,7 +3585,6 @@ object CleanupAliases extends Rule[LogicalPlan] with AliasHelper {
  * filter out the rows where the time column is not inside the time window.
  */
 object TimeWindowing extends Rule[LogicalPlan] {
-  import com.ledis.dsl._
 
   private final val WINDOW_COL_NAME = "window"
   private final val WINDOW_START = "start"

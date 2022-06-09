@@ -23,11 +23,11 @@ import com.ledis.expressions._
 import com.ledis.expressions.collections.AttributeSet
 import com.ledis.expressions.expression._
 import com.ledis.expressions.predicate.{And, PredicateHelper}
-import com.ledis.sql.catalyst.expressions.AttributeSeq
 import com.ledis.trees.{CurrentOrigin, TreeNode, TreeNodeTag}
 import com.ledis.types.{DataType, StructType}
 import com.ledis.utils.collections.AttributeMap
 import com.ledis.utils.helpers.SQLConfHelper
+import com.ledis.expressions.AttributeSeq
 
 import scala.collection.mutable
 

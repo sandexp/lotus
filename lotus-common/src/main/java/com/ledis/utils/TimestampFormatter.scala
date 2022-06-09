@@ -129,7 +129,6 @@ class FractionTimestampFormatter(zoneId: ZoneId)
 
   @transient
   override protected lazy val formatter = DateTimeFormatterHelper.fractionFormatter
-
   // The new formatter will omit the trailing 0 in the timestamp string, but the legacy formatter
   // can't. Here we use the legacy formatter to format the given timestamp up to seconds fractions,
   // and custom implementation to format the fractional part without trailing zeros.
