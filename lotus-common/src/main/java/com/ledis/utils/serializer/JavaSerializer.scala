@@ -139,7 +139,7 @@ class JavaSerializer() extends Serializer with Externalizable {
   private var counterReset = 10
   private var extraDebugInfo = false
 
-  protected def this() = this()  // For deserialization only
+  // protected def this() = this()  // For deserialization only
 
   override def newInstance(): SerializerInstance = {
     val classLoader = defaultClassLoader.getOrElse(Thread.currentThread.getContextClassLoader)

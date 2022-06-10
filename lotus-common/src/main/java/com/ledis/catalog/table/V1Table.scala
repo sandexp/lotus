@@ -27,13 +27,13 @@ import com.ledis.utils.expressions.Transform
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable
-
+import com.ledis.catalog.CatalogV2Implicits._
 
 /**
  * An implementation of catalog v2 `Table` to expose v1 table metadata.
  */
 case class V1Table(v1Table: CatalogTable) extends Table {
-  import com.ledis.catalog.CatalogV2Implicits._
+  
   implicit class IdentifierHelper(identifier: TableIdentifier) {
     def quoted: String = {
       identifier.database match {
@@ -76,7 +76,10 @@ case class V1Table(v1Table: CatalogTable) extends Table {
     partitions.toArray
   }
 
-  override def name: String = v1Table.identifier.quoted
+  override def name: String = {
+    
+    v1Table.identifier.quoted
+  }
 
   override def capabilities: java.util.Set[TableCapability] = new java.util.HashSet[TableCapability]()
 

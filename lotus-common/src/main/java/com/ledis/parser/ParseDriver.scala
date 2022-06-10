@@ -190,7 +190,8 @@ private[parser] class UpperCaseCharStream(wrapped: CodePointCharStream) extends 
  * The ParseErrorListener converts parse errors into AnalysisExceptions.
  */
 case object ParseErrorListener extends BaseErrorListener {
-  def syntaxError(
+  
+  override def syntaxError(
       recognizer: Recognizer[_, _],
       offendingSymbol: scala.Any,
       line: Int,

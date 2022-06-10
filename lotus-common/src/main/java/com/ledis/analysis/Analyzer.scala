@@ -467,7 +467,7 @@ class Analyzer(override val catalogManager: CatalogManager)
         Seq(Seq.empty)
     }
 
-    private[analysis] def hasGroupingFunction(e: Expression): Boolean = {
+    def hasGroupingFunction(e: Expression): Boolean = {
       e.collectFirst {
         case g: Grouping => g
         case g: GroupingID => g
@@ -823,8 +823,8 @@ class Analyzer(override val catalogManager: CatalogManager)
                 // Assumption is the aggregate function ignores nulls. This is true for all current
                 // AggregateFunction's with the exception of First and Last in their default mode
                 // (which we handle) and possibly some Hive UDAF's.
-                case First(expr, _) =>
-                  First(ifExpr(expr), true)
+                case com.ledis.expressions.aggregate.First(expr, _) =>
+                  com.ledis.expressions.aggregate.First(ifExpr(expr), true)
                 case Last(expr, _) =>
                   Last(ifExpr(expr), true)
                 case a: AggregateFunction =>
@@ -2654,7 +2654,7 @@ class Analyzer(override val catalogManager: CatalogManager)
      * Construct the output attributes for a [[Generator]], given a list of names.  If the list of
      * names is empty names are assigned from field names in generator.
      */
-    private[analysis] def makeGeneratorOutput(
+    def makeGeneratorOutput(
         generator: Generator,
         names: Seq[String]): Seq[Attribute] = {
       val elementAttrs = generator.elementSchema.toAttributes

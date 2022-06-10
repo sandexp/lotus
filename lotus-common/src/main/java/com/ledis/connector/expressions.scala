@@ -18,11 +18,9 @@
 package com.ledis.connector
 
 // import com.ledis.expressions.projection.Literal
-import com.ledis.expressions.projection.Literal
 import com.ledis.parser.CatalystSqlParser
 import com.ledis.types.{DataType, IntegerType, StringType}
 import com.ledis.utils.expressions.{Expression, NamedReference, Transform}
-import com.ledis.utils.expressions.Literal
 
 /**
  * Helper methods for working with the logical expressions API.
@@ -32,7 +30,7 @@ import com.ledis.utils.expressions.Literal
  */
 object LogicalExpressions {
   def literal[T](value: T): LiteralValue[T] = {
-    val internalLit = Literal(value)
+    val internalLit = com.ledis.expressions.projection.Literal(value)
     literal(value, internalLit.dataType)
   }
 
@@ -241,7 +239,7 @@ object HoursTransform {
   }
 }
 
-final case class LiteralValue[T](value: T, dataType: DataType) extends Literal[T] {
+final case class LiteralValue[T](value: T, dataType: DataType) extends com.ledis.utils.expressions.Literal[T] {
   override def describe: String = {
     if (dataType.isInstanceOf[StringType]) {
       s"'$value'"

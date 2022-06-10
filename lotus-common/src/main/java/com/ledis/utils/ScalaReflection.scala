@@ -18,7 +18,7 @@
 package com.ledis.utils
 
 import com.ledis.analysis.GetColumnByOrdinal
-import com.ledis.expressions.expression.{Attribute, Expression, If, IsNull, KnownNotNull}
+import com.ledis.expressions.expression.{Attribute, Expression, IsNull, KnownNotNull}
 import com.ledis.expressions.objects._
 import com.ledis.expressions.util.BoundReference
 import com.ledis.types._
@@ -345,7 +345,7 @@ object ScalaReflection extends ScalaReflection {
 
         val newInstance = NewInstance(cls, arguments, ObjectType(cls), propagateNull = false)
 
-        If(
+        com.ledis.expressions.expression.If(
           IsNull(path),
           com.ledis.expressions.projection.Literal.create(null, ObjectType(cls)),
           newInstance
