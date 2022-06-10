@@ -17,27 +17,21 @@
 
 package com.ledis.analysis
 
-import java.util
 import java.util.Locale
 import java.util.concurrent.atomic.AtomicBoolean
 
-import com.ledis.exception.{AnalysisException, NoSuchFunctionException, NoSuchTableException}
-
-import scala.collection.mutable
-import scala.collection.mutable.ArrayBuffer
-import scala.util.Random
-import com.ledis.utils._
-import com.ledis.catalog._
 import com.ledis.catalog.CatalogV2Implicits._
+import com.ledis.catalog._
 import com.ledis.catalog.table.TableChange._
 import com.ledis.catalog.table._
 import com.ledis.catalog.util.CatalogV2Util
+import com.ledis.codec.OuterScopes
 import com.ledis.config.SQLConf
 import com.ledis.config.SQLConf.{PartitionOverwriteMode, StoreAssignmentPolicy}
-import com.ledis.errors.QueryCompilationErrors
-import com.ledis.codec.OuterScopes
 import com.ledis.connector.{FieldReference, IdentityTransform}
-import com.ledis.expressions._
+import com.ledis.dsl.expressions._
+import com.ledis.errors.QueryCompilationErrors
+import com.ledis.exception.{AnalysisException, NoSuchFunctionException, NoSuchTableException}
 import com.ledis.expressions.SubExprUtils._
 import com.ledis.expressions.aggregate._
 import com.ledis.expressions.collections.AttributeSet
@@ -48,22 +42,24 @@ import com.ledis.expressions.helpers.AliasHelper
 import com.ledis.expressions.objects._
 import com.ledis.expressions.order.{LambdaFunction, RowOrdering, SortOrder}
 import com.ledis.expressions.predicate._
-import com.ledis.utils.DataSourceV2Implicits._
 import com.ledis.expressions.projection.{AnsiCast, Cast, Literal, UpCast}
+import com.ledis.expressions.{EmptyRow, _}
 import com.ledis.optimizer.OptimizeUpdateFields
 import com.ledis.plans._
 import com.ledis.plans.logical._
 import com.ledis.rules._
 import com.ledis.trees.TreeNodeRef
 import com.ledis.types._
-import com.ledis.utils.helpers.SQLConfHelper
-import com.ledis.utils.{DataSourceV2Relation, FunctionIdentifier, QueryPlanningTracker, UTF8String}
+import com.ledis.utils.DataSourceV2Implicits._
 import com.ledis.utils.collections.CaseInsensitiveStringMap
 import com.ledis.utils.expressions.Transform
+import com.ledis.utils.helpers.SQLConfHelper
 import com.ledis.utils.util.{CharVarcharUtils, SchemaUtils}
-import com.ledis.expressions.EmptyRow
-import com.ledis.dsl.expressions._
-import com.ledis.expressions._
+import com.ledis.utils.{DataSourceV2Relation, FunctionIdentifier, QueryPlanningTracker, UTF8String, _}
+
+import scala.collection.mutable
+import scala.collection.mutable.ArrayBuffer
+import scala.util.Random
 
 
 /**
@@ -93,7 +89,7 @@ object FakeV2SessionCatalog extends TableCatalog {
       ident: Identifier,
       schema: StructType,
       partitions: Array[Transform],
-      properties: util.Map[String, String]): Table = fail()
+      properties: java.util.Map[String, String]): Table = fail()
   override def alterTable(ident: Identifier, changes: TableChange*): Table = fail()
   override def dropTable(ident: Identifier): Boolean = fail()
   override def renameTable(oldIdent: Identifier, newIdent: Identifier): Unit = fail()
@@ -1438,15 +1434,14 @@ class Analyzer(override val catalogManager: CatalogManager)
       if (conflictPlans.isEmpty) {
         right
       } else {
-        
         val planMapping = conflictPlans.toMap
-        right.transformUpWithNewOutput {
+        right.transformUpWithNewOutput ({
           case oldPlan =>
             val newPlanOpt = planMapping.get(oldPlan)
             newPlanOpt.map { newPlan =>
               newPlan -> oldPlan.output.zip(newPlan.output)
             }.getOrElse(oldPlan -> Nil)
-        }
+        },null,null)
       }
     }
 

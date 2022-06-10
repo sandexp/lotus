@@ -2612,7 +2612,7 @@ class AstBuilder extends SqlBaseBaseVisitor[AnyRef] with SQLConfHelper {
           .map(typedVisit[Literal])
           .map(lit => LiteralValue(lit.value, lit.dataType))
       reference.orElse(literal)
-          .getOrElse(throw new ParseException(s"Invalid transform argument", ctx))
+          .getOrElse(null)
     }
   }
 

@@ -63,7 +63,6 @@ class FailureSafeParser[IN](
           Iterator(toResultRow(e.partialResult(), e.record))
         case DropMalformedMode =>
           Iterator.empty
-        case FailFastMode => _
       }
     }
   }

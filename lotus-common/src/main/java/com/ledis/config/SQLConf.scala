@@ -3741,7 +3741,7 @@ class SQLConf extends Serializable {
         val symbol = ScalaReflection.mirror.staticModule("org.apache.spark.sql.hive.HiveUtils")
         ScalaReflection.mirror.reflectModule(symbol).instance
       } catch {
-        case NonFatal(e) => _
+        case NonFatal(e) =>
       }
     }
   }
@@ -3794,7 +3794,7 @@ class SQLConf extends Serializable {
    */
   private def logDeprecationWarning(key: String): Unit = {
     SQLConf.deprecatedSQLConfigs.get(key).foreach {
-      case DeprecatedConfig(configName, version, comment) => _
+      case DeprecatedConfig(configName, version, comment) =>
     }
   }
 

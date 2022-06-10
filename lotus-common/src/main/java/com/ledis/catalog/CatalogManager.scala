@@ -34,7 +34,6 @@ import scala.collection.mutable
  * namespace in both `SessionCatalog` and `CatalogManger`, we let `CatalogManager` to set/get
  * current database of `SessionCatalog` when the current catalog is the session catalog.
  */
-private[sql]
 class CatalogManager(
     defaultSessionCatalog: CatalogPlugin,
     val v1SessionCatalog: SessionCatalog) extends SQLConfHelper {
@@ -78,7 +77,7 @@ class CatalogManager(
    * This happens when the source implementation extends the v2 TableProvider API and is not listed
    * in the fallback configuration, spark.sql.sources.useV1SourceList
    */
-  private[sql] def v2SessionCatalog: CatalogPlugin = {
+   def v2SessionCatalog: CatalogPlugin = {
     conf.getConf(SQLConf.V2_SESSION_CATALOG_IMPLEMENTATION).map { _ =>
       catalogs.getOrElseUpdate(SESSION_CATALOG_NAME, loadV2SessionCatalog())
     }.getOrElse(defaultSessionCatalog)
@@ -127,7 +126,7 @@ class CatalogManager(
   }
 
   // Clear all the registered catalogs. Only used in tests.
-  private[sql] def reset(): Unit = synchronized {
+   def reset(): Unit = synchronized {
     catalogs.clear()
     _currentNamespace = None
     _currentCatalogName = None
@@ -135,6 +134,6 @@ class CatalogManager(
   }
 }
 
-private[sql] object CatalogManager {
+ object CatalogManager {
   val SESSION_CATALOG_NAME: String = "spark_catalog"
 }

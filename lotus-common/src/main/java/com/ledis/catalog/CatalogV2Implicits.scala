@@ -28,7 +28,7 @@ import com.ledis.utils.{FunctionIdentifier, TableIdentifier}
 /**
  * Conversion helpers for working with v2 [[CatalogPlugin]].
  */
-private[sql] object CatalogV2Implicits {
+object CatalogV2Implicits {
   import com.ledis.connector.LogicalExpressions._
 
   implicit class PartitionTypeHelper(colNames: Seq[String]) {

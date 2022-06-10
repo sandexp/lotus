@@ -190,10 +190,16 @@ abstract class UnaryNode extends LogicalPlan {
         allConstraints += EqualNullSafe(a.toAttribute, l)
       case a @ Alias(e, _) =>
         // For every alias in `projectList`, replace the reference in constraints by its attribute.
-        allConstraints ++= allConstraints.map(
+        allConstraints.baseSet ++= allConstraints.baseSet.map(
           _ transform {
            case expr: Expression if expr.semanticEquals(e) =>
             a.toAttribute
+          }
+        )
+        allConstraints.originals ++= allConstraints.originals.map(
+          _ transform {
+            case expr: Expression if expr.semanticEquals(e) =>
+              a.toAttribute
           }
         )
         allConstraints += EqualNullSafe(e, a.toAttribute)

@@ -1605,21 +1605,21 @@ object ReplaceDistinctWithAggregate extends Rule[LogicalPlan] {
  * Replaces logical [[Deduplicate]] operator with an [[Aggregate]] operator.
  */
 object ReplaceDeduplicateWithAggregate extends Rule[LogicalPlan] {
-  def apply(plan: LogicalPlan): LogicalPlan = plan transformUpWithNewOutput {
-    case d @ Deduplicate(keys, child)  =>
-      val keyExprIds = keys.map(_.exprId)
-      val aggCols = child.output.map { attr =>
-        if (keyExprIds.contains(attr.exprId)) {
-          attr
-        } else {
-          Alias(new First(attr).toAggregateExpression(), attr.name)()
-        }
-      }
-      val nonemptyKeys = if (keys.isEmpty) Literal(1) :: Nil else keys
-      val newAgg = Aggregate(nonemptyKeys, aggCols, child)
-      val attrMapping = d.output.zip(newAgg.output)
-      newAgg -> attrMapping
-  }
+  def apply(plan: LogicalPlan): LogicalPlan = plan transformUpWithNewOutput({
+	  case d @ Deduplicate(keys, child)  =>
+		  val keyExprIds = keys.map(_.exprId)
+		  val aggCols = child.output.map { attr =>
+			  if (keyExprIds.contains(attr.exprId)) {
+				  attr
+			  } else {
+				  Alias(new First(attr).toAggregateExpression(), attr.name)()
+			  }
+		  }
+		  val nonemptyKeys = if (keys.isEmpty) Literal(1) :: Nil else keys
+		  val newAgg = Aggregate(nonemptyKeys, aggCols, child)
+		  val attrMapping = d.output.zip(newAgg.output)
+		  newAgg -> attrMapping
+  },null,null)
 }
 
 /**

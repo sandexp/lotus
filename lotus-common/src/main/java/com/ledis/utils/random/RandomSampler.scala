@@ -50,7 +50,6 @@ trait RandomSampler[T, U] extends Pseudorandom with Cloneable with Serializable 
     throw new UnsupportedOperationException("clone() is not implemented.")
 }
 
-private[spark]
 object RandomSampler {
   /** Default random number generator used by random samplers. */
   def newDefaultRNG: Random = new XORShiftRandom

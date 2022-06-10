@@ -93,7 +93,7 @@ object DecimalPrecision extends TypeCoercionRule {
   }
 
   /** Decimal precision promotion for +, -, *, /, %, pmod, and binary comparison. */
-  private[catalyst] val decimalAndDecimal: PartialFunction[Expression, Expression] = {
+  val decimalAndDecimal: PartialFunction[Expression, Expression] = {
     // Skip nodes whose children have not been resolved yet
     case e if !e.childrenResolved => e
 

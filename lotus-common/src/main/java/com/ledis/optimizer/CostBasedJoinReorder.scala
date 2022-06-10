@@ -302,6 +302,7 @@ object JoinReorderDP extends PredicateHelper {
     val newJoin = Join(left, right, Inner, joinConds.reduceOption(And), JoinHint.NONE)
     val collectedJoinConds = joinConds ++ oneJoinPlan.joinConds ++ otherJoinPlan.joinConds
     val remainingConds = conditions -- collectedJoinConds
+    
     val neededAttr = AttributeSet(remainingConds.flatMap(_.references)) ++ topOutput
     val neededFromNewJoin = newJoin.output.filter(neededAttr.contains)
     val newPlan =

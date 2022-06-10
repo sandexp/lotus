@@ -606,7 +606,7 @@ object RewriteCorrelatedScalarSubquery extends Rule[LogicalPlan] with AliasHelpe
    * Rewrite [[Filter]], [[Project]] and [[Aggregate]] plans containing correlated scalar
    * subqueries.
    */
-  def apply(plan: LogicalPlan): LogicalPlan = plan transformUpWithNewOutput {
+  def apply(plan: LogicalPlan): LogicalPlan = plan transformUpWithNewOutput ({
     case a @ Aggregate(grouping, expressions, child) =>
       val subqueries = ArrayBuffer.empty[ScalarSubquery]
       val rewriteExprs = expressions.map(extractCorrelatedScalarSubqueries(_, subqueries))
@@ -637,6 +637,7 @@ object RewriteCorrelatedScalarSubquery extends Rule[LogicalPlan] with AliasHelpe
       } else {
         p -> Nil
       }
+  
     case f @ Filter(condition, child) =>
       val subqueries = ArrayBuffer.empty[ScalarSubquery]
       val rewriteCondition = extractCorrelatedScalarSubqueries(condition, subqueries)
@@ -649,5 +650,5 @@ object RewriteCorrelatedScalarSubquery extends Rule[LogicalPlan] with AliasHelpe
       } else {
         f -> Nil
       }
-  }
+  },null,null)
 }

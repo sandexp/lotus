@@ -161,7 +161,7 @@ trait BaseGenericInternalRow extends InternalRow {
  * the array is not copied, and thus could technically be mutated after creation, this is not
  * allowed.
  */
-class GenericRow(protected[sql] val values: Array[Any]) extends Row {
+class GenericRow(val values: Array[Any]) extends Row {
   /** No-arg constructor for serialization. */
   protected def this() = this(null)
 

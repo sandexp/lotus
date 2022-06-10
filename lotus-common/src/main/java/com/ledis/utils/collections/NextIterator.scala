@@ -18,7 +18,7 @@
 package com.ledis.utils.collections
 
 /** Provides a basic/boilerplate Iterator implementation. */
-private[spark] abstract class NextIterator[U] extends Iterator[U] {
+abstract class NextIterator[U] extends Iterator[U] {
 
   private var gotNext = false
   private var nextValue: U = _

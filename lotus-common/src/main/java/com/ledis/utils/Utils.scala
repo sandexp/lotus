@@ -658,8 +658,7 @@ object Utils {
     val process = builder.start()
     if (redirectStderr) {
       val threadName = "redirect stderr for command " + command(0)
-      def log(s: String): Unit = null
-      processStreamByLine(threadName, process.getErrorStream, log)
+      processStreamByLine(threadName, process.getErrorStream, null)
     }
     process
   }
@@ -715,7 +714,6 @@ object Utils {
       block
     } catch {
       case e: ControlThrowable => throw e
-      case t: Throwable => _
     }
   }
 

@@ -164,9 +164,13 @@ abstract class SetOperation(left: LogicalPlan, right: LogicalPlan) extends Binar
   protected def rightConstraints: ExpressionSet = {
     require(left.output.size == right.output.size)
     val attributeRewrites = AttributeMap(right.output.zip(left.output))
-    right.constraints.map(_ transform {
+    right.constraints.originals.map(_ transform {
       case a: Attribute => attributeRewrites(a)
     })
+    right.constraints.baseSet.map(_ transform {
+      case a: Attribute => attributeRewrites(a)
+    })
+    right.constraints
   }
 
   override lazy val resolved: Boolean =
@@ -306,9 +310,13 @@ case class Union(
       constraints: ExpressionSet): ExpressionSet = {
     require(reference.size == original.size)
     val attributeRewrites = AttributeMap(original.zip(reference))
-    constraints.map(_ transform {
+    constraints.baseSet.map(_ transform {
       case a: Attribute => attributeRewrites(a)
     })
+    constraints.originals.map(_ transform {
+      case a: Attribute => attributeRewrites(a)
+    })
+    constraints
   }
 
   

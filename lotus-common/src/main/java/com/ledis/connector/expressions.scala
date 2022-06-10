@@ -17,6 +17,7 @@
 
 package com.ledis.connector
 
+// import com.ledis.expressions.projection.Literal
 import com.ledis.expressions.projection.Literal
 import com.ledis.parser.CatalystSqlParser
 import com.ledis.types.{DataType, IntegerType, StringType}

@@ -98,7 +98,5 @@ object ReplaceNullWithFalseInPredicate extends Rule[LogicalPlan] {
       If(replaceNullWithFalse(pred), replaceNullWithFalse(trueVal), replaceNullWithFalse(falseVal))
     case e if e.dataType == BooleanType =>
       e
-    case e =>
-      _
   }
 }

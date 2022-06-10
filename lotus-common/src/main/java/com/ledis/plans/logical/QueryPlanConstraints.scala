@@ -22,7 +22,6 @@ import com.ledis.expressions.collections.ExpressionSet
 import com.ledis.expressions.expression.{Attribute, Expression, IsNotNull}
 import com.ledis.expressions.predicate.EqualTo
 import com.ledis.expressions.projection.Cast
-import com.ledis.sql.catalyst.expressions.NullIntolerant
 
 
 trait QueryPlanConstraints extends ConstraintHelper { self: LogicalPlan =>
@@ -84,10 +83,17 @@ trait ConstraintHelper {
   private def replaceConstraints(
       constraints: ExpressionSet,
       source: Expression,
-      destination: Expression): ExpressionSet =
-    constraints.map(_ transform {
-    case e: Expression if e.semanticEquals(source) => destination
-  })
+      destination: Expression): ExpressionSet = {
+    constraints.baseSet.map(_ transform {
+        case e: Expression if e.semanticEquals(source) => destination
+      }
+    )
+    constraints.originals.map(_ transform {
+        case e: Expression if e.semanticEquals(source) => destination
+      }
+    )
+    constraints
+  }
 
   /**
    * Infers a set of `isNotNull` constraints from null intolerant expressions as well as
