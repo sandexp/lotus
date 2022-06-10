@@ -1,34 +1,19 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+package com.ledis.utils.time
 
-package com.ledis.utils
-
-import java.time.{LocalDate, LocalDateTime, LocalTime}
 import java.time.temporal.ChronoField
+import java.time.{LocalDate, LocalDateTime, LocalTime}
+import java.util.Calendar._
 import java.util.{Calendar, TimeZone}
-import java.util.Calendar.{DAY_OF_MONTH, DST_OFFSET, ERA, HOUR_OF_DAY, MINUTE, MONTH, SECOND, YEAR, ZONE_OFFSET}
 
-import scala.collection.mutable.AnyRefMap
-import com.ledis.utils.DateTimeUtils._
-import com.ledis.utils.DateTimeConstants._
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
+import DateTimeConstants.{MICROS_PER_SECOND, MILLIS_PER_DAY}
+import com.ledis.utils.Utils
+import com.ledis.utils.util.DateTimeUtils._
+import com.ledis.utils.time.DateTimeConstants._
 
+import scala.collection.mutable.AnyRefMap
 
 /**
  * The collection of functions for rebasing days and microseconds from/to the hybrid calendar

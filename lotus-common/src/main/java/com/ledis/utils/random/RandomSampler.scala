@@ -22,7 +22,6 @@ import java.util.Random
 import com.ledis.utils.XORShiftRandom
 
 import scala.reflect.ClassTag
-
 import org.apache.commons.math3.distribution.PoissonDistribution
 
 /**

@@ -39,8 +39,9 @@ public interface SupportsOverwrite extends WriteBuilder, SupportsTruncate {
    */
   WriteBuilder overwrite(Filter[] filters);
 
+  // fixme Always.True
   @Override
   default WriteBuilder truncate() {
-    return overwrite(new Filter[] { AlwaysTrue$.MODULE$ });
+    return overwrite(new Filter[] { null});
   }
 }

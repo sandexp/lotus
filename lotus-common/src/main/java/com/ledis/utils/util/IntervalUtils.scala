@@ -5,7 +5,8 @@ import java.util.concurrent.TimeUnit
 import com.ledis.config.SQLConf
 import com.ledis.types.{CalendarInterval, Decimal}
 import com.ledis.utils.UTF8String
-import com.ledis.utils.DateTimeConstants._
+import com.ledis.utils.time.DateTimeConstants._
+import DateTimeUtils._
 
 import scala.util.control.NonFatal
 

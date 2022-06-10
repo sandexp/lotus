@@ -1,4 +1,4 @@
-package com.ledis.utils
+package com.ledis.utils.util
 
 import java.text.{DecimalFormat, DecimalFormatSymbols, ParsePosition}
 import java.util.Locale
@@ -7,8 +7,8 @@ import com.ledis.exception.AnalysisException
 import com.ledis.expressions.CreateMap
 import com.ledis.expressions.expression.Expression
 import com.ledis.types.{DataType, MapType, StringType, StructType}
+import com.ledis.utils.UTF8String
 import com.ledis.utils.collections.ArrayBasedMapData
-import com.ledis.utils.util.CharVarcharUtils
 
 object ExprUtils {
 

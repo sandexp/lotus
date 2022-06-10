@@ -21,7 +21,7 @@ import scala.collection.JavaConverters._
 
 import com.google.common.util.concurrent.AtomicLongMap
 
-import com.ledis.utils.DateTimeConstants.NANOS_PER_SECOND
+import com.ledis.utils.time.DateTimeConstants.NANOS_PER_SECOND
 
 case class QueryExecutionMetering() {
   private val timeMap = AtomicLongMap.create[String]()

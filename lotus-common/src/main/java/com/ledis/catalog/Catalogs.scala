@@ -18,7 +18,6 @@
 package com.ledis.catalog
 
 import java.lang.reflect.InvocationTargetException
-import java.util
 import java.util.NoSuchElementException
 import java.util.regex.Pattern
 
@@ -26,8 +25,6 @@ import com.ledis.config.SQLConf
 import com.ledis.exception.CatalogNotFoundException
 import com.ledis.utils.Utils
 import com.ledis.utils.collections.CaseInsensitiveStringMap
-
-import scala.collection.mutable
 
 object Catalogs {
   /**
@@ -50,7 +47,7 @@ object Catalogs {
         throw new CatalogNotFoundException(
           s"Catalog '$name' plugin class not found: spark.sql.catalog.$name is not defined")
     }
-    val loader = Utils.getContextOrSparkClassLoader
+    val loader = Utils.getContextOrClassLoader
     try {
       val pluginClass = loader.loadClass(pluginClassName)
       if (!classOf[CatalogPlugin].isAssignableFrom(pluginClass)) {

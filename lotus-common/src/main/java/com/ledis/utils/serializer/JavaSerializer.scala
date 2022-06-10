@@ -20,7 +20,8 @@ package com.ledis.utils.serializer
 import java.io._
 import java.nio.ByteBuffer
 
-import com.ledis.utils.{ByteBufferInputStream, ByteBufferOutputStream, Utils}
+import com.ledis.utils.io.{ByteBufferInputStream, ByteBufferOutputStream}
+import com.ledis.utils.Utils
 
 import scala.reflect.ClassTag
 

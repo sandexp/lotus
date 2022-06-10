@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.ledis.utils
+package com.ledis.utils.io
 
 import java.io.InputStream
 import java.nio.ByteBuffer

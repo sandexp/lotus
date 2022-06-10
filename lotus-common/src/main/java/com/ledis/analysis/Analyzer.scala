@@ -60,7 +60,7 @@ import com.ledis.utils.helpers.SQLConfHelper
 import com.ledis.utils.{DataSourceV2Relation, FunctionIdentifier, QueryPlanningTracker, UTF8String}
 import com.ledis.utils.collections.CaseInsensitiveStringMap
 import com.ledis.utils.expressions.Transform
-import com.ledis.utils.util.CharVarcharUtils
+import com.ledis.utils.util.{CharVarcharUtils, SchemaUtils}
 import com.ledis.expressions.EmptyRow
 import com.ledis.dsl.expressions._
 import com.ledis.expressions._
@@ -1438,6 +1438,7 @@ class Analyzer(override val catalogManager: CatalogManager)
       if (conflictPlans.isEmpty) {
         right
       } else {
+        
         val planMapping = conflictPlans.toMap
         right.transformUpWithNewOutput {
           case oldPlan =>

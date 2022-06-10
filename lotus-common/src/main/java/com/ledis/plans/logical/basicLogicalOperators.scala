@@ -311,6 +311,7 @@ case class Union(
     })
   }
 
+  
   private def merge(a: ExpressionSet, b: ExpressionSet): ExpressionSet = {
     val common = a.intersect(b)
     // The constraint with only one reference could be easily inferred as predicate

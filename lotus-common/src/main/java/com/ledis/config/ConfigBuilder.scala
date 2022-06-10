@@ -21,7 +21,8 @@ import java.util.concurrent.TimeUnit
 import java.util.regex.PatternSyntaxException
 
 import com.ledis.utils.collections.ByteUnit
-import com.ledis.utils.{JavaUtils, Utils}
+import com.ledis.utils.Utils
+import com.ledis.utils.util.JavaUtils
 
 import scala.util.matching.Regex
 

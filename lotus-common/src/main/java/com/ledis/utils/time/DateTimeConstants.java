@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.ledis.utils;
+package com.ledis.utils.time;
 
 public class DateTimeConstants {
 

@@ -93,7 +93,7 @@ object ExpressionEncoder {
 
     encoders.foreach(_.assertUnresolved())
 
-    val cls = Utils.getContextOrSparkClassLoader.loadClass(s"scala.Tuple${encoders.size}")
+    val cls = Utils.getContextOrClassLoader.loadClass(s"scala.Tuple${encoders.size}")
 
     val newSerializerInput = BoundReference(0, ObjectType(cls), nullable = true)
     val serializers = encoders.zipWithIndex.map { case (enc, index) =>

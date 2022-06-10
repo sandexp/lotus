@@ -1601,7 +1601,6 @@ object ReplaceDistinctWithAggregate extends Rule[LogicalPlan] {
     case Distinct(child) => Aggregate(child.output, child.output, child)
   }
 }
-
 /**
  * Replaces logical [[Deduplicate]] operator with an [[Aggregate]] operator.
  */

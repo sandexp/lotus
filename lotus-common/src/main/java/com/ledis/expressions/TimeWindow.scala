@@ -24,7 +24,7 @@ import com.ledis.expressions.codegen.{CodeGenerator, CodegenContext, ExprCode}
 import com.ledis.expressions.codegen.Block._
 import com.ledis.expressions.expression.{Expression, NonSQLExpression, UnaryExpression, Unevaluable}
 import com.ledis.expressions.projection.{IntegerLiteral, NonNullLiteral}
-import com.ledis.utils.DateTimeConstants.MICROS_PER_DAY
+import com.ledis.utils.time.DateTimeConstants.MICROS_PER_DAY
 import com.ledis.types._
 import com.ledis.utils.UTF8String
 import com.ledis.utils.util.IntervalUtils

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.ledis.utils.helpers
+package com.ledis.utils.time
 
 import java.time._
 import java.time.chrono.IsoChronology
@@ -26,8 +26,8 @@ import java.util.{Date, Locale}
 import com.google.common.cache.CacheBuilder
 import com.ledis.config.SQLConf
 import com.ledis.config.SQLConf.LegacyBehaviorPolicy._
-import com.ledis.utils.TimestampFormatter
-import com.ledis.utils.helpers.DateTimeFormatterHelper._
+import com.ledis.utils.time.DateTimeFormatterHelper._
+
 
 trait DateTimeFormatterHelper {
   private def getOrDefault(accessor: TemporalAccessor, field: ChronoField, default: Int): Int = {

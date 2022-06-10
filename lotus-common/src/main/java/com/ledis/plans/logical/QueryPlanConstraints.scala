@@ -81,7 +81,6 @@ trait ConstraintHelper {
     inferredConstraints -- constraints
   }
   
-  
   private def replaceConstraints(
       constraints: ExpressionSet,
       source: Expression,

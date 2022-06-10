@@ -25,7 +25,7 @@ import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
-import static com.ledis.utils.DateTimeConstants.*;
+import static com.ledis.utils.time.DateTimeConstants.*;
 
 /**
  * The class representing calendar intervals. The calendar interval is stored internally in

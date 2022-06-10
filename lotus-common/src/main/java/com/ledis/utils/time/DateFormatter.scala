@@ -15,17 +15,16 @@
  * limitations under the License.
  */
 
-package com.ledis.utils
+package com.ledis.utils.time
 
 import java.text.SimpleDateFormat
 import java.time.{LocalDate, ZoneId}
 import java.util.{Date, Locale}
 
 import com.ledis.config.SQLConf
-import com.ledis.utils.helpers.DateTimeFormatterHelper
 import com.ledis.config.SQLConf.LegacyBehaviorPolicy.LEGACY
-import com.ledis.utils.DateTimeUtils._
-
+import com.ledis.utils.util.DateTimeUtils
+import com.ledis.utils.util.DateTimeUtils._
 import org.apache.commons.lang3.time.FastDateFormat
 
 

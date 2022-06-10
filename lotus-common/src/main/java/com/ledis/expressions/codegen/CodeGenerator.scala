@@ -20,27 +20,27 @@ package com.ledis.expressions.codegen
 import java.io.ByteArrayInputStream
 import java.util.{Map => JavaMap}
 
-import scala.collection.JavaConverters._
-import scala.collection.mutable
-import scala.collection.mutable.ArrayBuffer
-import scala.util.control.NonFatal
 import com.google.common.cache.{CacheBuilder, CacheLoader}
 import com.google.common.util.concurrent.{ExecutionError, UncheckedExecutionException}
 import com.ledis.config.SQLConf
 import com.ledis.exception.{CompileException, InternalCompilerException}
-import com.ledis.expressions._
 import com.ledis.expressions.codegen.Block._
 import com.ledis.expressions.expression.{Attribute, EquivalentExpressions, Expression}
 import com.ledis.expressions.util.BoundReference
 import com.ledis.types._
-import com.ledis.utils.{UTF8String, Utils}
-import com.ledis.utils.collections.row.{GenericInternalRow, InternalRow, UnsafeRow}
 import com.ledis.utils.collections._
+import com.ledis.utils.collections.row.{GenericInternalRow, InternalRow, UnsafeRow}
 import com.ledis.utils.unsafe.Platform
 import com.ledis.utils.util.SQLOrderingUtil
+import com.ledis.utils.{ParentClassLoader, UTF8String, Utils}
 import org.codehaus.commons.compiler.util.reflect.ByteArrayClassLoader
-import org.codehaus.janino.{ClassBodyEvaluator, SimpleCompiler}
 import org.codehaus.janino.util.ClassFile
+import org.codehaus.janino.{ClassBodyEvaluator, SimpleCompiler}
+
+import scala.collection.JavaConverters._
+import scala.collection.mutable
+import scala.collection.mutable.ArrayBuffer
+import scala.util.control.NonFatal
 
 
 /**
@@ -1350,7 +1350,6 @@ object CodeGenerator {
    */
   private[this] def doCompile(code: CodeAndComment): (GeneratedClass, ByteCodeStats) = {
     val evaluator = new ClassBodyEvaluator()
-
     // A special classloader used to wrap the actual parent classloader of
     // [[org.codehaus.janino.ClassBodyEvaluator]] (see CodeGenerator.doCompile). This classloader
     // does not throw a ClassNotFoundException with a cause set (i.e. exception.getCause returns

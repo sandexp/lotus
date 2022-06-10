@@ -20,21 +20,16 @@ package com.ledis.utils.serializer
 import java.io._
 import java.nio.ByteBuffer
 
+import com.ledis.utils.collections.NextIterator
+
 import scala.reflect.ClassTag
 
 
 /**
  * :: DeveloperApi ::
  * A serializer. Because some serialization libraries are not thread safe, this class is used to
- * create [[org.apache.spark.serializer.SerializerInstance]] objects that do the actual
+ * create [[SerializerInstance]] objects that do the actual
  * serialization and are guaranteed to only be called from one thread at a time.
- *
- * Implementations of this trait should implement:
- *
- * 1. a zero-arg constructor or a constructor that accepts a [[org.apache.spark.SparkConf]]
- * as parameter. If both constructors are defined, the latter takes precedence.
- *
- * 2. Java serialization interface.
  *
  * @note Serializers are not required to be wire-compatible across different versions of Spark.
  * They are intended to be used to serialize/de-serialize data within a single Spark application.

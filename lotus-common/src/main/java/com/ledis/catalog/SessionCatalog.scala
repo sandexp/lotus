@@ -31,7 +31,7 @@ import org.apache.hadoop.fs.Path
 import com.ledis.analysis._
 import com.ledis.analysis.FunctionRegistry.FunctionBuilder
 import com.ledis.catalog.util.CatalogUtils
-import com.ledis.config.{SQLConf}
+import com.ledis.config.SQLConf
 import com.ledis.expressions.expression.Expression
 import com.ledis.expressions.{ExpressionInfo, ImplicitCastInputTypes}
 import com.ledis.parser.{CatalystSqlParser, ParserInterface}
@@ -40,7 +40,7 @@ import com.ledis.types.StructType
 import com.ledis.utils.collections.CaseInsensitiveStringMap
 import com.ledis.utils._
 import com.ledis.utils.helpers.SQLConfHelper
-import com.ledis.utils.util.{CharVarcharUtils, StringUtils}
+import com.ledis.utils.util.{CharVarcharUtils, PartitioningUtils, StringUtils}
 import com.ledis.config.StaticSQLConf.GLOBAL_TEMP_DATABASE
 import com.ledis.expressions._
 

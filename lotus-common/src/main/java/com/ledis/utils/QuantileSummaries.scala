@@ -20,7 +20,6 @@ package com.ledis.utils
 import com.ledis.utils.QuantileSummaries.Stats
 
 import scala.collection.mutable.{ArrayBuffer, ListBuffer}
-
 /**
  * Helper class to compute approximate quantile summary.
  * This implementation is based on the algorithm proposed in the paper:

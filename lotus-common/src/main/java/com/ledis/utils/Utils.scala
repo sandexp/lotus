@@ -32,6 +32,7 @@ import com.google.common.cache.LoadingCache
 import com.google.common.io.ByteStreams
 import com.google.common.net.InetAddresses
 import com.ledis.utils.serializer.{DeserializationStream, SerializationStream, SerializerInstance}
+import com.ledis.utils.util.JavaUtils
 import org.apache.commons.lang3.SystemUtils
 
 import scala.annotation.tailrec
